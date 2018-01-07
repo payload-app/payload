@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@hharnisc/async-data-fetch@^1.2.4-beta02":
-  version "1.2.4-beta02"
-  resolved "https://registry.yarnpkg.com/@hharnisc/async-data-fetch/-/async-data-fetch-1.2.4-beta02.tgz#ddab9675abd1a5c26fad216e69bde299b20248ee"
+"@hharnisc/async-data-fetch@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@hharnisc/async-data-fetch/-/async-data-fetch-1.2.4.tgz#9c1961ae800b8cdb358b684079cd2365a310dbd6"
   dependencies:
     "@hharnisc/micro-rpc-client" "^0.1.2"
 
