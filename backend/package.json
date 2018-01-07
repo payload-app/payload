@@ -4,7 +4,7 @@
   "description": "Payload Backend Application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "micro"
   },
   "keywords": [
     "payload",
@@ -13,6 +13,8 @@
   "author": "hharnisc@gmail.com",
   "license": "MIT",
   "dependencies": {
-    "@hharnisc/micro-rpc": "^0.1.0"
+    "@hharnisc/micro-rpc": "^0.1.0",
+    "micro": "^9.0.2",
+    "microrouter": "^3.0.0"
   }
 }
