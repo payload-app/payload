@@ -8,7 +8,7 @@ services:
     volumes:
      - ./frontend:/usr/src/app/
     ports:
-      - 3000:3000
+      - 8080:3000
     links:
       - backend
   backend:
@@ -17,5 +17,5 @@ services:
       dockerfile: Dockerfile.development
     volumes:
      - ./backend:/usr/src/app/
-    expose:
-      - 3000
+    ports:
+      - 8081:3000

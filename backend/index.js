@@ -7,6 +7,7 @@ const {
   get,
   post,
 } = require('microrouter')
+const cors = require('micro-cors');
 
 const rpcHandler = rpc(
   method('listRepos', () => 'OK'),
@@ -20,5 +21,5 @@ const healthHandler = () => ({
 
 module.exports = router(
   get('/healthz', healthHandler),
-  post('/rpc', rpcHandler),
+  cors()(post('/rpc', rpcHandler)), // TODO: set origin in production
 )
