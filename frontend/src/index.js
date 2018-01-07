@@ -17,6 +17,8 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
+// TODO: move the store stuff to a better spot, just through everything
+// in here so to get things working
 const composeEnhancers =
     typeof window === 'object' &&
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
@@ -38,6 +40,8 @@ const store = createStore(
   ),
 );
 
+// EXAMPLE: fetch for list repo, check Redux dev tools and
+// network tab for the request
 store.dispatch(asyncDataFetchActions.fetch({
   name: 'listRepos',
 }))
