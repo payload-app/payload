@@ -7,6 +7,7 @@ import {
   compose,
   combineReducers,
 } from 'redux';
+import { createLogger } from 'redux-logger'
 import {
   reducer as asyncDataFetchReducer,
   middleware as asyncDataFetchMiddleware,
@@ -17,6 +18,7 @@ import App from './App';
 
 // TODO: move the store stuff to a better spot, just through everything
 // in here so to get things working
+const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
     typeof window === 'object' &&
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
@@ -34,6 +36,7 @@ const store = createStore(
           url: "http://localhost:8081/rpc", // TODO: prod host
         }
       }),
+      logger
     ),
   ),
 );
