@@ -13,9 +13,7 @@ import {
   storeKey as asyncDataFetchStoreKey,
   actions as asyncDataFetchActions,
 } from '@hharnisc/async-data-fetch';
-import './index.css';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 
 // TODO: move the store stuff to a better spot, just through everything
 // in here so to get things working
@@ -52,4 +50,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root')
 );
-registerServiceWorker();
