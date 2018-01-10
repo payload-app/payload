@@ -7,6 +7,7 @@ import { actions as asyncDataFetchActions } from './store/async-data-fetch-middl
 import App from './App';
 import type { listReposReturnType } from 'payload-api-types'
 import * as formatters from './helpers/formatters'
+import * as guards from './helpers/guards'
 
 // EXAMPLE: fetch for list repo, check Redux dev tools and
 // network tab for the request
@@ -16,17 +17,9 @@ store.dispatch(asyncDataFetchActions.fetch({
     formatters.arrayToKeyedObj(results, 'repoId')
 }))
 
-const getElementAndThrowIfNull = (elementName: string) => {
-  const root = document.getElementById(elementName)
-  if (root === null) {
-    throw new Error(`Element ${ elementName } does not exist`)
-  }
-  return root
-}
-
 ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  getElementAndThrowIfNull('root')
-);
+  guards.getElementById('root')
+)
