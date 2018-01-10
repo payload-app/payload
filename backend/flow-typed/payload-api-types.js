@@ -5,4 +5,7 @@ declare module 'payload-api-types' {
     repoId: number,
     active: boolean
   }>
+
+  declare export type activateRepoMethodType = (repoId: number) => string
+  declare export type deactivateRepoMethodType = (repoId: number) => string
 }
