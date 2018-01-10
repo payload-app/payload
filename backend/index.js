@@ -1,4 +1,6 @@
 // @flow
+import type { listReposMethodType } from 'payload-api-types'
+
 const {
   rpc,
   method
@@ -9,9 +11,11 @@ const {
   post,
 } = require('microrouter')
 const cors = require('micro-cors');
+const listReposFixture = require('./fixtures/listRepos')
 
+const listRepos: listReposMethodType = () => listReposFixture
 const rpcHandler = rpc(
-  method('listRepos', () => 'OK'),
+  method('listRepos', listRepos),
   method('activateRepo', () => 'OK'),
   method('deactivateRepo', () => 'OK'),
 )
