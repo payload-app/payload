@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -47,9 +48,17 @@ store.dispatch(asyncDataFetchActions.fetch({
   name: 'listRepos',
 }))
 
+const getElementAndThrowIfNull = (elementName: string) => {
+  const root = document.getElementById(elementName)
+  if (root === null) {
+    throw new Error(`Element ${ elementName } does not exist`)
+  }
+  return root
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById('root')
+  getElementAndThrowIfNull('root')
 );
