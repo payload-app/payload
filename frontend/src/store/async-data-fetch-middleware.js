@@ -6,11 +6,11 @@ import {
 
 // hax
 export const actions = {
-  fetch: ({ name, args, format }) => ({
+  fetch: ({ name, args, transform }) => ({
     type: actionTypes.FETCH,
     name,
     args,
-    format,
+    transform,
   })
 }
 
@@ -37,8 +37,8 @@ export default ({
             name: action.name,
             args,
             id,
-            // add format option here
-            result: action.format ? action.format(result) : result,
+            // add transform option here
+            result: action.transform ? action.transform(result) : result,
           })))
           .catch((error) => {
             store.dispatch(fetchActions.fetchFail({
