@@ -4,8 +4,13 @@
   "description": "Broadcast Playload Status To Commits On Repos",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "micro"
   },
   "author": "hharnisc@gmail.com",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@hharnisc/micro-rpc": "^0.1.0",
+    "micro": "^9.1.0",
+    "microrouter": "^3.0.0"
+  }
 }
