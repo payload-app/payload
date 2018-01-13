@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './store'
-import { actions as asyncDataFetchActions } from './store/async-data-fetch-middleware'
+import { actions as asyncDataFetchActions } from '@hharnisc/async-data-fetch'
 import App from './App';
 import type { listReposReturnType } from 'payload-api-types'
 import * as transform from './helpers/transformers'
@@ -13,7 +13,7 @@ import * as guard from './helpers/guards'
 // network tab for the request
 store.dispatch(asyncDataFetchActions.fetch({
   name: 'listRepos',
-  transform: (results: listReposReturnType) =>
+  format: (results: listReposReturnType) =>
     transform.arrayToKeyedObj(results, 'repoId')
 }))
 

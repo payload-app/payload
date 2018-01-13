@@ -8,8 +8,8 @@ import { createLogger } from 'redux-logger'
 import {
   reducer as asyncDataFetchReducer,
   storeKey as asyncDataFetchStoreKey,
+  middleware as asyncDataFetchMiddleware,
 } from '@hharnisc/async-data-fetch';
-import asyncDataFetchMiddleware from './async-data-fetch-middleware'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
