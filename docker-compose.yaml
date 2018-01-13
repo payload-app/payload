@@ -19,3 +19,11 @@ services:
      - ./backend:/usr/src/app/
     ports:
       - 8081:3000
+  status-broadcaster:
+    build:
+      context: ./status-broadcaster
+      dockerfile: Dockerfile.development
+    volumes:
+     - ./status-broadcaster:/usr/src/app/
+    ports:
+      - 8082:3000
