@@ -1,0 +1,11 @@
+{
+  "name": "payload-status-broadcaster",
+  "version": "0.0.1",
+  "description": "Broadcast Playload Status To Commits On Repos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hharnisc@gmail.com",
+  "license": "MIT"
+}
