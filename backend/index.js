@@ -1,10 +1,5 @@
 // @flow
-import type {
-  listReposMethodType,
-  activateRepoMethodType,
-  deactivateRepoMethodType
-} from 'payload-api-types'
-
+import type { RepoList } from 'api-types'
 const {
   rpc,
   method
@@ -17,13 +12,10 @@ const {
 const cors = require('micro-cors');
 const listReposFixture = require('./fixtures/listRepos')
 
-const listRepos: listReposMethodType = () => listReposFixture
-const activateRepo: activateRepoMethodType = () => 'OK'
-const deactivateRepo: deactivateRepoMethodType = () => 'OK'
 const rpcHandler = rpc(
-  method('listRepos', listRepos),
-  method('activateRepo', activateRepo),
-  method('deactivateRepo', deactivateRepo),
+  method('listRepos', (): RepoList => listReposFixture),
+  method('activateRepo', () => 'OK'),
+  method('deactivateRepo', () => 'OK'),
 )
 
 const healthHandler = () => ({

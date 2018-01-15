@@ -3,7 +3,7 @@
 [include]
 
 [libs]
-../backend/flow-typed
+api-types
 [lints]
 
 [options]

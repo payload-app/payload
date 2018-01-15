@@ -1,7 +1,7 @@
 // @flow
-import type { listReposReturnType } from 'payload-api-types'
+import type { RepoList } from 'api-types'
 
-const fixture: listReposReturnType = [
+const fixture: RepoList = [
   {
     name: 'casesandberg/react-color',
     repoId: 40446628,
