@@ -26,7 +26,7 @@ services:
     volumes:
      - ./status-broadcaster:/usr/src/app/
     ports:
-      - 8082:3000
+      - 8082:8082
   webhook-collector:
     build:
       context: ./webhook-collector
