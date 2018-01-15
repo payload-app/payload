@@ -6,6 +6,6 @@ WORKDIR /usr/src/app
 ENV NODE_ENV development
 RUN npm install -g nodemon
 
-EXPOSE 3000
+EXPOSE 8082
 
-CMD nodemon --exec npm start
+CMD nodemon --exec npm run start-dev

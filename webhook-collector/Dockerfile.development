@@ -4,7 +4,8 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 ENV NODE_ENV development
+RUN npm install -g nodemon
 
-EXPOSE 8080
+EXPOSE 8083
 
-CMD npm run start-dev
+CMD nodemon --exec npm run start-dev
