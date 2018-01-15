@@ -1,9 +1,47 @@
 {
   "private": true,
   "scripts": {
-    "flow": "flow"
+    "flow": "flow",
+    "eslint": "eslint **/*.js",
+    "eslint-fix": "eslint **/*.js --fix"
   },
   "devDependencies": {
-    "flow-bin": "^0.63.1"
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.15.0",
+    "eslint-plugin-flowtype": "^2.41.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-prettier": "^2.4.0",
+    "flow-bin": "^0.63.1",
+    "prettier": "^1.10.2"
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+    },
+    "plugins": [
+      "prettier",
+      "flowtype",
+      "import"
+    ],
+    "extends": [
+      "plugin:flowtype/recommended",
+      "plugin:import/errors",
+      "plugin:import/warnings"
+    ],
+    "rules": {
+      "prettier/prettier": [2,{
+        "singleQuote": true,
+        "trailingComma": "all",
+        "semi": false,
+        "bracketSpacing": true
+      }],
+      "import/no-unresolved": [2, {
+        "ignore": ["api-types"]
+      }],
+      "import/no-named-as-default": 0
+    }
   }
 }
