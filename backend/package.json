@@ -4,7 +4,8 @@
   "description": "Payload Backend Application",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node node_modules/micro/bin/micro.js"
+    "start": "babel-node node_modules/micro/bin/micro.js",
+    "start-dev": "babel-node -- node_modules/micro/bin/micro.js -p 8081"
   },
   "keywords": [
     "payload",
