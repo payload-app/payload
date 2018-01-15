@@ -1,0 +1,16 @@
+{
+  "name": "payload-webhook-collector",
+  "version": "0.0.1",
+  "description": "Collect webhooks",
+  "main": "index.js",
+  "scripts": {
+    "start": "micro",
+    "start-dev": "micro -p 8083"
+  },
+  "author": "hharnisc@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "micro": "^9.1.0",
+    "microrouter": "^3.0.0"
+  }
+}
