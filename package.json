@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "flow": "flow"
+  },
+  "devDependencies": {
+    "flow-bin": "^0.63.1"
+  }
+}
