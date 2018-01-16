@@ -13,7 +13,7 @@ export const fetchSavedRepos = asyncDataFetchActions.fetch({
 
 export const fetchGithubRepos = {
   [GITHUB_API]: {
-    endpoint: 'users/casesandberg/repos',
+    endpoint: 'user/repos',
     type: FETCH_REPOS,
     transform: results => {
       const repos = results.map(

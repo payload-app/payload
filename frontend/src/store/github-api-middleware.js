@@ -23,6 +23,8 @@ export type GithubAction = {
   transform?: any => any,
 }
 
+let token
+
 export const middleware = ({
   baseUrl = 'https://api.github.com/',
 }: Config = {}) => {
@@ -41,7 +43,7 @@ export const middleware = ({
       request(
         {
           method,
-          url: `${baseUrl}${endpoint}`,
+          url: `${baseUrl}${endpoint}?access_token=${token}`,
         },
         (error, { statusCode }, body) => {
           if (statusCode !== 200) {
@@ -60,3 +62,15 @@ export const middleware = ({
     }
   }: Middleware)
 }
+
+export const getTokenFromUrl = (url: string): Promise<*> =>
+  new Promise(resolve => {
+    const params = new URLSearchParams(url)
+    token = params.get('access_token')
+    params.delete('access_token')
+    if (token) {
+      resolve(token)
+    } else {
+      // reject()
+    }
+  })
