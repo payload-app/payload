@@ -7,7 +7,7 @@ const uid = require('uid-promise')
 
 const githubUrl = process.env.GH_HOST || 'github.com'
 
-const states = []
+const states = [] // TODO: Move to data somewhere
 
 const redirectWithQueryString = (res, data) => {
   const location = `${process.env.REDIRECT_URL}?${querystring.stringify(data)}`
