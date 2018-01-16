@@ -1,21 +1,16 @@
-import {
-  createStore,
-  applyMiddleware,
-  compose,
-  combineReducers,
-} from 'redux';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { createLogger } from 'redux-logger'
 import {
   reducer as asyncDataFetchReducer,
   storeKey as asyncDataFetchStoreKey,
   middleware as asyncDataFetchMiddleware,
-} from '@hharnisc/async-data-fetch';
+} from '@hharnisc/async-data-fetch'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
-    typeof window === 'object' &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
-      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) : compose;
+  typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+    : compose
 
 export default createStore(
   combineReducers({
@@ -26,10 +21,10 @@ export default createStore(
     applyMiddleware(
       asyncDataFetchMiddleware({
         rpcClientOptions: {
-          url: "http://localhost:8081/rpc", // TODO: prod host
-        }
+          url: 'http://localhost:8081/rpc', // TODO: prod host
+        },
       }),
-      logger
+      logger,
     ),
   ),
-);
+)
