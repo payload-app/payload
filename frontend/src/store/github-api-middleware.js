@@ -43,9 +43,9 @@ export const middleware = ({
           method,
           url: `${baseUrl}${endpoint}`,
         },
-        (error, response, body) => {
-          if (error) {
-            next({ type, error, status: status.FAILURE })
+        (error, { statusCode }, body) => {
+          if (statusCode !== 200) {
+            next({ type, statusCode, status: status.FAILURE })
           } else {
             next({
               type,
