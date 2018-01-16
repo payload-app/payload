@@ -12,6 +12,7 @@
   "dependencies": {
     "@hharnisc/micro-rpc": "^0.1.0",
     "ioredis": "^3.2.2",
+    "js-sha256": "^0.9.0",
     "micro": "^9.1.0",
     "microrouter": "^3.0.0"
   }
