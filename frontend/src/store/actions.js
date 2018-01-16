@@ -2,7 +2,7 @@
 import type { RepoList, Repo } from 'api-types'
 import { actions as asyncDataFetchActions } from '@hharnisc/async-data-fetch'
 import * as transform from '../helpers/transformers'
-import { GITHUB_API } from './github-api-middleware'
+import { GITHUB_API } from '@middleware/github-api'
 
 export const FETCH_REPOS = 'FETCH_REPOS'
 

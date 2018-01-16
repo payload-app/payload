@@ -1,7 +1,7 @@
 // @flow
 import type { RepoList, Repo } from 'api-types'
 import { FETCH_REPOS } from './actions'
-import { status as GITHUB_API_STATUS } from './github-api-middleware'
+import { status as GITHUB_API_STATUS } from '@middleware/github-api'
 
 export const storeKey = 'repos'
 

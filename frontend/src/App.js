@@ -3,7 +3,7 @@ import type { RepoList } from 'api-types'
 import React from 'react'
 import * as actions from './store/actions'
 import { connect } from 'react-redux'
-import { getTokenFromUrl } from './store/github-api-middleware'
+import { getTokenFromUrl } from '@middleware/github-api'
 import { selectors as repoSelectors } from './store/repos'
 
 type Props = {
