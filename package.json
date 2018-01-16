@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "flow": "flow",
-    "eslint": "eslint **/*.js",
-    "eslint-fix": "eslint **/*.js --fix"
+    "eslint": "eslint . --ext .js --ignore-pattern node_modules",
+    "eslint-fix": "npm run eslint -- --fix"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

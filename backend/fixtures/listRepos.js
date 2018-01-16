@@ -5,8 +5,8 @@ const fixture: RepoList = [
   {
     name: 'casesandberg/react-color',
     repoId: 40446628,
-    active: true
-  }
+    active: true,
+  },
 ]
 
 module.exports = fixture

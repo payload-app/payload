@@ -1,9 +1,5 @@
 const { json } = require('micro')
-const {
-  router,
-  get,
-  post,
-} = require('microrouter')
+const { router, get, post } = require('microrouter')
 
 const healthHandler = () => ({
   status: 'OK',

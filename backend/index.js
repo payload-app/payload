@@ -1,15 +1,8 @@
 // @flow
 import type { RepoList } from 'api-types'
-const {
-  rpc,
-  method
-} = require('@hharnisc/micro-rpc')
-const {
-  router,
-  get,
-  post,
-} = require('microrouter')
-const cors = require('micro-cors');
+const { rpc, method } = require('@hharnisc/micro-rpc')
+const { router, get, post } = require('microrouter')
+const cors = require('micro-cors')
 const listReposFixture = require('./fixtures/listRepos')
 
 const rpcHandler = rpc(
