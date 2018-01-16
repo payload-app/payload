@@ -35,16 +35,15 @@ services:
      - ./webhook-collector:/usr/src/app/
     ports:
       - 8083:8083
-  rabbitmq:
-    image: "rabbitmq:3-management"
-    hostname: "rabbit-1"
-    environment:
-      RABBITMQ_ERLANG_COOKIE: "rabbit-1"
-      RABBITMQ_DEFAULT_USER: "rabbitmq"
-      RABBITMQ_DEFAULT_PASS: "rabbitmq"
-      RABBITMQ_DEFAULT_VHOST: "/"
+  queue-service:
+    build:
+      context: ./queue-service
+      dockerfile: Dockerfile.development
+    volumes:
+     - ./queue-service:/usr/src/app/
     ports:
-      - "15672:15672"
-      - "5672:5672"
-    labels:
-      NAME: "rabbit-1"
+     - 8084:8084
+    links:
+     - redis
+  redis:
+    image: redis
