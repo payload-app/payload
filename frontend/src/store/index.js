@@ -5,7 +5,7 @@ import {
   storeKey as asyncDataFetchStoreKey,
   middleware as asyncDataFetchMiddleware,
 } from '@hharnisc/async-data-fetch'
-import { reducer as repos } from './repos'
+import { reducer as reposReducer, storeKey as reposStoreKey } from './repos'
 import { middleware as githubApiMiddleware } from './github-api-middleware'
 import thunk from 'redux-thunk'
 
@@ -18,7 +18,7 @@ const composeEnhancers =
 export default createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
-    repos,
+    [reposStoreKey]: reposReducer,
   }),
   {},
   composeEnhancers(
