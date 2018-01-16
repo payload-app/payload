@@ -16,7 +16,8 @@ const redis = new Redis({
 })
 
 const rpcHandler = rpc(
-  method('createTask', () => 'OK'),
+  method('createTask', ({ queue, task }) =>
+    redis.lpush(queue, JSON.stringify(task))),
   method('processTask', () => 'OK'),
   method('completeTask', () => 'OK'),
 )
