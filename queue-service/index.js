@@ -40,12 +40,12 @@ const rpcHandler = rpc(
     queue,
     task,
     retries=0,
-    timeout=60, // seconds
+    lease=60, // seconds
   }) =>
     redis.lpush(queue, JSON.stringify({
       task,
       retries,
-      timeout,
+      lease,
     }))),
   method('processTask', async ({
     queue,
@@ -55,11 +55,9 @@ const rpcHandler = rpc(
       processingQueue({ queue })
     )
     if (item) {
-      const { timeout } = JSON.parse(item)
-      redis.setex(leasedKey({ queue, item }), timeout, workerName())
+      const { lease } = JSON.parse(item)
+      redis.setex(leasedKey({ queue, item }), lease, workerName())
     }
-    // TODO: think about if the id should be returned for completeing and failing tasks
-    // TODO: think about the format of the lease key
     return JSON.parse(item)
   }),
   method('failTask', () => 'OK'),
