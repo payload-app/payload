@@ -17,7 +17,8 @@
     "@hharnisc/micro-rpc": "^0.1.0",
     "micro": "^9.0.2",
     "micro-cors": "^0.0.4",
-    "microrouter": "^3.0.0"
+    "microrouter": "^3.0.0",
+    "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
