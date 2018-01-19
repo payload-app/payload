@@ -1,7 +1,5 @@
 // @flow
 import type { RepoList, Repo } from 'api-types'
-import { FETCH_REPOS } from './actions'
-import { status as GITHUB_API_STATUS } from '@middleware/github-api'
 
 export const storeKey = 'repos'
 
@@ -9,15 +7,6 @@ type State = { [number]: Repo }
 
 export const reducer = (state: State = {}, action: any) => {
   switch (action.type) {
-    case FETCH_REPOS: {
-      if (GITHUB_API_STATUS.SUCCESS) {
-        return {
-          ...state,
-          ...action.repos,
-        }
-      }
-      return state
-    }
     default:
       return state
   }

@@ -6,7 +6,6 @@ import {
   middleware as asyncDataFetchMiddleware,
 } from '@hharnisc/async-data-fetch'
 import { reducer as reposReducer, storeKey as reposStoreKey } from './repos'
-import { middleware as githubApiMiddleware } from '@middleware/github-api'
 import thunk from 'redux-thunk'
 
 const logger = createLogger({ level: 'info', collapsed: true })
@@ -23,7 +22,6 @@ export default createStore(
   {},
   composeEnhancers(
     applyMiddleware(
-      githubApiMiddleware(),
       asyncDataFetchMiddleware({
         rpcClientOptions: {
           url: 'http://localhost:8081/rpc', // TODO: prod host
