@@ -1,12 +1,12 @@
 // @flow
 import type { RepoList, Repo, ListGithubRepoArgs } from 'api-types'
 import { actions as asyncDataFetchActions } from '@hharnisc/async-data-fetch'
-import * as transform from '../helpers/transformers'
+import { arrayToKeyedObj } from '../helpers/transformers'
 
 export const fetchSavedRepos = asyncDataFetchActions.fetch({
   name: 'listRepos',
   format: (results: RepoList) => ({
-    repos: transform.arrayToKeyedObj(results, 'repoId'),
+    repos: arrayToKeyedObj(results, 'repoId'),
   }),
 })
 
@@ -24,7 +24,7 @@ export const fetchGithubRepos = ({ token }: ListGithubRepoArgs) =>
           }: Repo),
       )
       return {
-        repos: transform.arrayToKeyedObj(strippedDownRepoData, 'repoId'),
+        repos: arrayToKeyedObj(strippedDownRepoData, 'repoId'),
       }
     },
   })
