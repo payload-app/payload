@@ -7,13 +7,15 @@ import { getTokenFromUrl } from '@middleware/github-api'
 import { selectors as repoSelectors } from './store/repos'
 
 type Props = {
-  onLoad: () => void,
+  onLoad: ({ token: string }) => void,
   repos: RepoList,
 }
 
 export class App extends React.Component<Props> {
   componentDidMount() {
-    getTokenFromUrl(window.location.search).then(() => this.props.onLoad())
+    getTokenFromUrl(window.location.search).then(token =>
+      this.props.onLoad({ token }),
+    )
   }
 
   render() {
@@ -35,9 +37,9 @@ export default connect(
     repos: repoSelectors.getReposSortedActiveFirst({ state }),
   }),
   {
-    onLoad: () => dispatch => {
+    onLoad: ({ token }) => dispatch => {
       dispatch(actions.fetchSavedRepos)
-      dispatch(actions.fetchGithubRepos)
+      dispatch(actions.fetchGithubRepos({ token }))
     },
   },
 )(App)

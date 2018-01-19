@@ -8,4 +8,6 @@ declare module 'api-types' {
   }
 
   declare export type RepoList = Array<Repo>
+
+  declare export type ListGithubRepoArgs = { token: string }
 }
