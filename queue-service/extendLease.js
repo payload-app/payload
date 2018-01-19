@@ -16,6 +16,7 @@ module.exports = ({ redisClient }) => async ({ workerName, taskId, queue }) => {
   try {
     const validation = await validate({
       value: {
+        queue,
         workerName,
         taskId,
       },
@@ -27,13 +28,17 @@ module.exports = ({ redisClient }) => async ({ workerName, taskId, queue }) => {
     })
   }
 
-  const { lease } = await getItemFromTaskId({
+  const item = await getItemFromTaskId({
     redisClient,
     taskId,
     workerName,
     queue,
   })
 
-  await redisClient.setex(taskId, lease, workerName)
+  await redisClient.setex(
+    taskId,
+    item.lease,
+    JSON.stringify({ workerName, item: JSON.stringify(item), queue }),
+  )
   return { status: 'OK' }
 }

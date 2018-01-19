@@ -1,3 +1,4 @@
+const uuidv4 = require('uuid/v4')
 const Joi = require('joi')
 const { deleteProcessingTask } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
@@ -43,6 +44,7 @@ module.exports = ({ redisClient }) => async ({ queue, workerName, taskId }) => {
       queue,
       JSON.stringify({
         ...item,
+        taskId: uuidv4(),
         retries: item.retries - 1,
       }),
     )
