@@ -5,7 +5,9 @@ import * as transform from '../helpers/transformers'
 
 export const fetchSavedRepos = asyncDataFetchActions.fetch({
   name: 'listRepos',
-  format: (results: RepoList) => transform.arrayToKeyedObj(results, 'repoId'),
+  format: (results: RepoList) => ({
+    repos: transform.arrayToKeyedObj(results, 'repoId'),
+  }),
 })
 
 export const fetchGithubRepos = ({ token }: ListGithubRepoArgs) =>
