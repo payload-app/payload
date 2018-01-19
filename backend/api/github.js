@@ -19,7 +19,11 @@ const githubApiCall = ({
     request(
       {
         method: method || 'GET',
-        url: `${GITHUB_URL}${endpoint}?access_token=${token}`,
+        url: `${GITHUB_URL}${endpoint}`,
+        headers: {
+          'User-Agent': 'Payload',
+          Authorization: `token ${token}`,
+        },
       },
       (error, { statusCode }, body) => {
         if (statusCode !== 200 || error) {
