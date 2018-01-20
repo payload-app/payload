@@ -49,7 +49,7 @@ services:
     image: redis
   datastore:
     image: google/cloud-sdk:latest
-    hostname: mydatastore
+    hostname: datastore
     expose:
       - 8085
     ports:
