@@ -1,0 +1,20 @@
+{
+  "name": "payload-queue-service",
+  "version": "0.0.1",
+  "description": "A service to manage the queue",
+  "main": "index.js",
+  "scripts": {
+    "start": "micro",
+    "start-dev": "micro -p 8084"
+  },
+  "author": "hharnisc@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "@hharnisc/micro-rpc": "^0.1.0",
+    "ioredis": "^3.2.2",
+    "joi": "^13.1.0",
+    "micro": "^9.1.0",
+    "microrouter": "^3.0.0",
+    "uuid": "^3.2.1"
+  }
+}

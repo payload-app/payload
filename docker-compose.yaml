@@ -35,3 +35,15 @@ services:
      - ./webhook-collector:/usr/src/app/
     ports:
       - 8083:8083
+  queue-service:
+    build:
+      context: ./queue-service
+      dockerfile: Dockerfile.development
+    volumes:
+     - ./queue-service:/usr/src/app/
+    ports:
+     - 8084:8084
+    links:
+     - redis
+  redis:
+    image: redis
