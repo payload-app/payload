@@ -47,3 +47,11 @@ services:
      - redis
   redis:
     image: redis
+  datastore:
+    image: google/cloud-sdk:latest
+    hostname: mydatastore
+    expose:
+      - 8085
+    ports:
+      - 8085:8085
+    command: gcloud beta emulators datastore start --project=pi-docker --host-port datastore:8085 --no-store-on-disk
