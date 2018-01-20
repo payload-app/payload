@@ -65,15 +65,18 @@ const requeueTask = async ({
   queue,
   item,
   decrementRetry = true,
-}) =>
+}) => {
+  const taskId = uuidv4()
   await redisClient.lpush(
     queue,
     JSON.stringify({
       ...item,
-      taskId: uuidv4(),
+      taskId,
       retries: decrementRetry ? item.retries - 1 : item.retries,
     }),
   )
+  return { taskId }
+}
 
 module.exports = {
   processingQueue,

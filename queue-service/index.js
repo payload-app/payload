@@ -8,17 +8,18 @@ const processTask = require('./processTask')
 const extendLease = require('./extendLease')
 const failTask = require('./failTask')
 const garbageCollect = require('./garbageCollect')
+const requeueTask = require('./requeueTask')
 
 const redisClient = new Redis({
   host: 'redis',
   port: 6379,
 })
 
-// TODO: garbage collection endpoint
 const rpcHandler = rpc(
   method('createTask', createTask({ redisClient })),
   method('processTask', processTask({ redisClient })),
   method('extendLease', extendLease({ redisClient })),
+  method('requeueTask', requeueTask({ redisClient })),
   method('failTask', failTask({ redisClient })),
   method('completeTask', completeTask({ redisClient })),
   method('garbageCollect', garbageCollect({ redisClient })),

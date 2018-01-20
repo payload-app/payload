@@ -1,6 +1,6 @@
 const Joi = require('joi')
-const { deleteProcessingTask } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
+const { deleteProcessingTask } = require('./utils')
 const {
   validate,
   parseValidationErrorMessage,
@@ -35,29 +35,20 @@ module.exports = ({ redisClient }) => async ({ queue, workerName, taskId }) => {
     workerName,
     queue,
   })
-
-  let response = {
-    requeued: false,
-  }
-  if (item.retries > 0) {
-    const { taskId: newTaskId } = await requeueTask({
-      redisClient,
-      queue,
-      item,
-    })
-    response = {
-      ...response,
-      newTaskId,
-      requeued: true,
-    }
-  }
+  const { taskId: newTaskId } = await requeueTask({
+    redisClient,
+    queue,
+    item,
+    decrementRetry: false,
+  })
   const { leaseRemove, remove } = await deleteProcessingTask({
     queue,
-    redisClient,
     item,
+    redisClient,
   })
   return {
-    ...response,
+    newTaskId,
+    requeued: true,
     removedLease: leaseRemove === 1,
     removedProcessing: remove === 1,
   }
