@@ -1,3 +1,4 @@
+const uuidv4 = require('uuid/v4')
 const { promisify } = require('util')
 const Joi = require('joi')
 const { createError } = require('@hharnisc/micro-rpc')
@@ -20,12 +21,12 @@ const deleteProcessingTask = async ({ queue, item, redisClient }) => {
   }
 }
 
-const validate = ({ value, schema, options = { abortEarly: false } }) =>
+const validate = async ({ value, schema, options = { abortEarly: false } }) =>
   validateWithPromise(value, schema, options)
 
 const parseValidationErrorMessage = ({ error }) => {
-  if (error.details) {
-    error.details.map(item => item.message).join(',')
+  if (error.details && error.details.length) {
+    return error.details.map(item => item.message).join(',')
   } else {
     return error.message
   }
@@ -59,10 +60,26 @@ const getItemFromTaskId = async ({
   return JSON.parse(item)
 }
 
+const requeueTask = async ({
+  redisClient,
+  queue,
+  item,
+  decrementRetry = true,
+}) =>
+  await redisClient.lpush(
+    queue,
+    JSON.stringify({
+      ...item,
+      taskId: uuidv4(),
+      retries: decrementRetry ? item.retries - 1 : item.retries,
+    }),
+  )
+
 module.exports = {
   processingQueue,
   deleteProcessingTask,
   validate,
   parseValidationErrorMessage,
   getItemFromTaskId,
+  requeueTask,
 }

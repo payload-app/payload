@@ -7,6 +7,7 @@ const createTask = require('./createTask')
 const processTask = require('./processTask')
 const extendLease = require('./extendLease')
 const failTask = require('./failTask')
+const garbageCollect = require('./garbageCollect')
 
 const redisClient = new Redis({
   host: 'redis',
@@ -20,6 +21,7 @@ const rpcHandler = rpc(
   method('extendLease', extendLease({ redisClient })),
   method('failTask', failTask({ redisClient })),
   method('completeTask', completeTask({ redisClient })),
+  method('garbageCollect', garbageCollect({ redisClient })),
 )
 
 const healthHandler = async (req, res) => {

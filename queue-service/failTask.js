@@ -1,4 +1,3 @@
-const uuidv4 = require('uuid/v4')
 const Joi = require('joi')
 const { deleteProcessingTask } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
@@ -6,6 +5,7 @@ const {
   validate,
   parseValidationErrorMessage,
   getItemFromTaskId,
+  requeueTask,
 } = require('./utils')
 
 const schema = Joi.object().keys({
@@ -40,14 +40,11 @@ module.exports = ({ redisClient }) => async ({ queue, workerName, taskId }) => {
     requeued: false,
   }
   if (item.retries > 0) {
-    await redisClient.lpush(
+    await requeueTask({
+      redisClient,
       queue,
-      JSON.stringify({
-        ...item,
-        taskId: uuidv4(),
-        retries: item.retries - 1,
-      }),
-    )
+      item,
+    })
     response = {
       ...response,
       requeued: true,

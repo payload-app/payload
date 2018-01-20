@@ -13,7 +13,7 @@ const schema = Joi.object().keys({
     .max(10),
   lease: Joi.number()
     .min(60)
-    .max(600),
+    .max(6000),
 })
 
 module.exports = ({ redisClient }) => async ({
