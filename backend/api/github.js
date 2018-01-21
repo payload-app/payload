@@ -6,12 +6,14 @@ const GITHUB_URL = 'https://api.github.com/'
 
 type GithubApiCall = {
   method?: string,
+  userAgent?: string,
   endpoint: string,
   token: string,
 }
 
 const githubApiCall = ({
   method,
+  userAgent = 'Payload',
   endpoint,
   token,
 }: GithubApiCall): Promise<*> =>
@@ -19,7 +21,7 @@ const githubApiCall = ({
     method: method || 'GET',
     url: `${GITHUB_URL}${endpoint}`,
     headers: {
-      'User-Agent': 'Payload',
+      'User-Agent': userAgent,
       Authorization: `token ${token}`,
     },
   })
