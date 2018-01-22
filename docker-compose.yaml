@@ -57,6 +57,10 @@ services:
     build:
       context: ./user-service
       dockerfile: Dockerfile.development
+    environment:
+     - PG_USER=postgres
+     - PG_HOST=postgres
+     - PG_DATABASE=payload
     volumes:
      - ./user-service:/usr/src/app/
     ports:

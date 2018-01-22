@@ -6,9 +6,9 @@ const createUser = require('./createUser')
 
 const initDB = async handler => {
   const pgClient = new Client({
-    user: 'postgres', // TODO: these should be env vars
-    host: 'postgres',
-    database: 'payload',
+    user: process.env.PG_USER,
+    host: process.env.PG_HOST,
+    database: process.env.PG_DATABASE,
   })
   await pgClient.connect() // TODO: use a pool instead
   return handler({ pgClient })
