@@ -49,6 +49,8 @@ services:
     image: redis
   postgres:
     image: postgres
+    volumes:
+     - ./postgres:/docker-entrypoint-initdb.d/
     ports:
       - 5432:5432
   user-service:
