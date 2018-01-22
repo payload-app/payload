@@ -1,26 +1,30 @@
-const { Client } = require('pg')
+const { Pool } = require('pg')
 const { send } = require('micro')
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const { router, get, post } = require('microrouter')
 const createUser = require('./createUser')
 
 const initDB = async handler => {
-  const pgClient = new Client({
+  const pgPool = new Pool({
     user: process.env.PG_USER,
     host: process.env.PG_HOST,
     database: process.env.PG_DATABASE,
   })
-  await pgClient.connect() // TODO: use a pool instead
-  return handler({ pgClient })
+  return handler({ pgPool })
 }
 
-const rpcHandler = ({ pgClient }) =>
-  rpc(method('createUser', createUser({ pgClient })))
+const rpcHandler = ({ pgPool }) =>
+  rpc(method('createUser', createUser({ pgPool })))
 
-const healthHandler = ({ pgClient }) => async (req, res) => {
+// TODO: write decortator to get a Client
+// TODO: handle server closing by draining the connection pool -- pgPool.end
+
+const healthHandler = ({ pgPool }) => async (req, res) => {
   try {
+    const pgClient = await pgPool.connect()
     await pgClient.query('SELECT NOW()')
     send(res, 200, { status: 'OK' })
+    pgClient.release(true)
   } catch (err) {
     send(res, 500, {
       status: 'cannot reach postgres',
@@ -28,9 +32,9 @@ const healthHandler = ({ pgClient }) => async (req, res) => {
   }
 }
 
-module.exports = initDB(({ pgClient }) =>
+module.exports = initDB(({ pgPool }) =>
   router(
-    get('/healthz', healthHandler({ pgClient })),
-    post('/rpc', rpcHandler({ pgClient })),
+    get('/healthz', healthHandler({ pgPool })),
+    post('/rpc', rpcHandler({ pgPool })),
   ),
 )
