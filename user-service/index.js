@@ -16,19 +16,17 @@ const initDB = async handler => {
 const rpcHandler = ({ pgPool }) =>
   rpc(method('createUser', createUser({ pgPool })))
 
-// TODO: write decortator to get a Client
-// TODO: handle server closing by draining the connection pool -- pgPool.end
-
 const healthHandler = ({ pgPool }) => async (req, res) => {
+  const pgClient = await pgPool.connect()
   try {
-    const pgClient = await pgPool.connect()
     await pgClient.query('SELECT NOW()')
     send(res, 200, { status: 'OK' })
-    pgClient.release(true)
   } catch (err) {
     send(res, 500, {
       status: 'cannot reach postgres',
     })
+  } finally {
+    pgClient.release(true)
   }
 }
 
