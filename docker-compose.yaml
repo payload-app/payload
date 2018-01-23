@@ -47,23 +47,32 @@ services:
      - redis
   redis:
     image: redis
-  postgres:
-    image: postgres
-    volumes:
-     - ./postgres:/docker-entrypoint-initdb.d/
+  mongodb:
+    image: mongo:latest
     ports:
-      - 5432:5432
+        - 27017:27017
+    command: mongod --smallfiles
+  init-db:
+    build:
+      context: ./init-db
+      dockerfile: Dockerfile.development
+    environment:
+     - MONGO_URL=mongodb://mongodb:27017
+     - MONGO_DB=payload
+    volumes:
+     - ./init-db:/usr/src/app/
+    links:
+      - mongodb
   user-service:
     build:
       context: ./user-service
       dockerfile: Dockerfile.development
     environment:
-     - PG_USER=postgres
-     - PG_HOST=postgres
-     - PG_DATABASE=payload
+     - MONGO_URL=mongodb://mongodb:27017
+     - MONGO_DB=payload
     volumes:
      - ./user-service:/usr/src/app/
     ports:
      - 8086:8086
     links:
-     - postgres
+     - mongodb

@@ -1,2 +1,0 @@
-CREATE DATABASE payload;
-GRANT ALL PRIVILEGES ON DATABASE payload TO postgres;
