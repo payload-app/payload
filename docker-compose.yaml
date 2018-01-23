@@ -47,11 +47,32 @@ services:
      - redis
   redis:
     image: redis
-  datastore:
-    image: google/cloud-sdk:latest
-    hostname: datastore
-    expose:
-      - 8085
+  mongodb:
+    image: mongo:latest
     ports:
-      - 8085:8085
-    command: gcloud beta emulators datastore start --project=pi-docker --host-port datastore:8085 --no-store-on-disk
+        - 27017:27017
+    command: mongod --smallfiles
+  init-db:
+    build:
+      context: ./init-db
+      dockerfile: Dockerfile.development
+    environment:
+     - MONGO_URL=mongodb://mongodb:27017
+     - MONGO_DB=payload
+    volumes:
+     - ./init-db:/usr/src/app/
+    links:
+      - mongodb
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.development
+    environment:
+     - MONGO_URL=mongodb://mongodb:27017
+     - MONGO_DB=payload
+    volumes:
+     - ./user-service:/usr/src/app/
+    ports:
+     - 8086:8086
+    links:
+     - mongodb
