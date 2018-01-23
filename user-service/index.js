@@ -4,6 +4,7 @@ const { send } = require('micro')
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const { router, get, post } = require('microrouter')
 const createUser = require('./createUser')
+const getUser = require('./getUser')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -14,7 +15,10 @@ const initDB = async handler => {
 }
 
 const rpcHandler = ({ collectionClient }) =>
-  rpc(method('createUser', createUser({ collectionClient })))
+  rpc(
+    method('createUser', createUser({ collectionClient })),
+    method('getUser', getUser({ collectionClient })),
+  )
 
 const healthHandler = ({ collectionClient }) => async (req, res) => {
   try {
