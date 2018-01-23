@@ -40,9 +40,14 @@ module.exports = ({ collectionClient }) => async ({
       message: parseValidationErrorMessage({ error }),
     })
   }
-
-  const { insertedId } = await collectionClient.insertOne(user)
-  return {
-    id: insertedId,
+  try {
+    const { insertedId } = await collectionClient.insertOne(user)
+    return {
+      id: insertedId,
+    }
+  } catch (error) {
+    throw createError({
+      message: `${error.message}`,
+    })
   }
 }
