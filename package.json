@@ -41,7 +41,9 @@
       "import/no-unresolved": [2, {
         "ignore": ["api-types"]
       }],
-      "import/no-named-as-default": 0
+      "import/no-named-as-default": 0,
+      "import/no-named-as-default-member": 0,
+      "no-unused-vars": 2
     }
   }
 }

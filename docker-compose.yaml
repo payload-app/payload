@@ -35,6 +35,14 @@ services:
      - ./webhook-collector:/usr/src/app/
     ports:
       - 8083:8083
+  github-auth:
+    build:
+      context: ./github-auth
+      dockerfile: Dockerfile.development
+    volumes:
+     - ./github-auth:/usr/src/app/
+    ports:
+      - 8088:8088
   queue-service:
     build:
       context: ./queue-service
