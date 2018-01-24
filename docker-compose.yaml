@@ -43,3 +43,44 @@ services:
      - ./github-auth:/usr/src/app/
     ports:
       - 8088:8088
+  queue-service:
+    build:
+      context: ./queue-service
+      dockerfile: Dockerfile.development
+    volumes:
+     - ./queue-service:/usr/src/app/
+    ports:
+     - 8084:8084
+    links:
+     - redis
+  redis:
+    image: redis
+  mongodb:
+    image: mongo:latest
+    ports:
+        - 27017:27017
+    command: mongod --smallfiles
+  init-db:
+    build:
+      context: ./init-db
+      dockerfile: Dockerfile.development
+    environment:
+     - MONGO_URL=mongodb://mongodb:27017
+     - MONGO_DB=payload
+    volumes:
+     - ./init-db:/usr/src/app/
+    links:
+      - mongodb
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.development
+    environment:
+     - MONGO_URL=mongodb://mongodb:27017
+     - MONGO_DB=payload
+    volumes:
+     - ./user-service:/usr/src/app/
+    ports:
+     - 8086:8086
+    links:
+     - mongodb

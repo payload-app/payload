@@ -1,0 +1,11 @@
+FROM node:9.3.0-alpine
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+ENV NODE_ENV development
+RUN npm install -g nodemon
+
+EXPOSE 8086
+
+CMD nodemon --exec npm run start-dev

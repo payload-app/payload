@@ -1,0 +1,14 @@
+{
+  "name": "payload-init-db",
+  "version": "0.0.1",
+  "description": "Init the Payload database",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "hharnisc@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "mongodb": "^3.0.1"
+  }
+}
