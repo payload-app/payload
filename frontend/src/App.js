@@ -1,20 +1,19 @@
 // @flow
 import type { RepoList } from 'api-types'
 import React from 'react'
-import { fetchSavedRepos, fetchGithubRepos } from './store/actions'
 import { connect } from 'react-redux'
 import { getTokenFromUrl } from '@middleware/github-api'
-import { selectors as repoSelectors } from './store/repos'
+import { selectors as repoSelectors, actions as repoActions } from './repos'
 
 type Props = {
-  onLoad: ({ token: string }) => void,
+  fetchRepos: ({ token: string }) => void,
   repos: RepoList,
 }
 
 export class App extends React.Component<Props> {
   componentDidMount() {
     getTokenFromUrl(window.location.search).then(token =>
-      this.props.onLoad({ token }),
+      this.props.fetchRepos({ token }),
     )
   }
 
@@ -36,10 +35,5 @@ export default connect(
   state => ({
     repos: repoSelectors.getReposSortedActiveFirst({ state }),
   }),
-  {
-    onLoad: ({ token }) => dispatch => {
-      dispatch(fetchSavedRepos)
-      dispatch(fetchGithubRepos({ token }))
-    },
-  },
+  { fetchRepos: repoActions.fetchRepos },
 )(App)

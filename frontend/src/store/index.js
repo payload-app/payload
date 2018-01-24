@@ -5,8 +5,11 @@ import {
   storeKey as asyncDataFetchStoreKey,
   middleware as asyncDataFetchMiddleware,
 } from '@hharnisc/async-data-fetch'
-import { reducer as reposReducer, storeKey as reposStoreKey } from './repos'
-import thunk from 'redux-thunk'
+import {
+  reducer as repoReducer,
+  storeKey as repoStoreKey,
+  middleware as repoMiddleware,
+} from '../repos'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -17,7 +20,7 @@ const composeEnhancers =
 export default createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
-    [reposStoreKey]: reposReducer,
+    [repoStoreKey]: repoReducer,
   }),
   {},
   composeEnhancers(
@@ -27,8 +30,8 @@ export default createStore(
           url: 'http://localhost:8081/rpc', // TODO: prod host
         },
       }),
+      repoMiddleware,
       logger,
-      thunk,
     ),
   ),
 )
