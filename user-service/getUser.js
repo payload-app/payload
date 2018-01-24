@@ -9,7 +9,7 @@ const schema = Joi.object().keys({
 
 module.exports = ({ collectionClient }) => async ({ id }) => {
   try {
-    const validation = await validate({
+    await validate({
       value: {
         id,
       },

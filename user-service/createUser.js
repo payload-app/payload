@@ -31,7 +31,7 @@ module.exports = ({ collectionClient }) => async ({
     type,
   }
   try {
-    const validation = await validate({
+    await validate({
       value: user,
       schema,
     })
