@@ -21,7 +21,7 @@ module.exports = ({ collectionClient }) => async ({
   lastName,
   accessToken,
   email,
-  type = 'github',
+  type,
 }) => {
   try {
     await validate({
