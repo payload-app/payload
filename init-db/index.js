@@ -7,9 +7,7 @@ const initUserCollection = async ({ dbClient }) => {
   console.log('Init User Collection...')
   await dbClient.createCollection('users')
   // emails must be unique within a type
-  await dbClient
-    .collection('users')
-    .createIndex({ email: 1, type: 1 }, { unique: 1 })
+  await dbClient.collection('users').createIndex({ email: 1 }, { unique: 1 })
   console.log('Init User Collection...Done')
 }
 

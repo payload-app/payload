@@ -9,7 +9,9 @@ const schema = Joi.object().keys({
   lastName: Joi.string().required(),
   accessToken: Joi.string().required(),
   email: Joi.string().required(),
-  type: Joi.string().required(),
+  type: Joi.string()
+    .valid(['github'])
+    .required(),
 })
 
 module.exports = ({ collectionClient }) => async ({
@@ -19,20 +21,19 @@ module.exports = ({ collectionClient }) => async ({
   lastName,
   accessToken,
   email,
-  type = 'github',
+  type,
 }) => {
-  const user = {
-    avatar,
-    username,
-    firstName,
-    lastName,
-    accessToken,
-    email,
-    type,
-  }
   try {
     await validate({
-      value: user,
+      value: {
+        avatar,
+        username,
+        firstName,
+        lastName,
+        accessToken,
+        email,
+        type,
+      },
       schema,
     })
   } catch (error) {
@@ -41,7 +42,18 @@ module.exports = ({ collectionClient }) => async ({
     })
   }
   try {
-    const { insertedId } = await collectionClient.insertOne(user)
+    const { insertedId } = await collectionClient.insertOne({
+      email,
+      accounts: {
+        [type]: {
+          avatar,
+          username,
+          firstName,
+          lastName,
+          accessToken,
+        },
+      },
+    })
     return {
       id: insertedId,
     }
