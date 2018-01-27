@@ -23,7 +23,7 @@ export class App extends React.Component<Props> {
       <div>
         Payload
         <br />
-        <a href="http://localhost:8088/login">Github Auth</a>
+        <a href="/login">Github Auth</a>
         <br />
         {repos.map(repo => <div key={repo.repoId}>{repo.name}</div>)}
       </div>

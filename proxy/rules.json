@@ -1,0 +1,16 @@
+{
+  "rules": [
+    { "pathname": "/api/**", "dest": "http://backend:3000" },
+    {
+      "pathname": "/login",
+      "dest": "http://github-auth:3000",
+      "handleRedirects": "manual"
+    },
+    {
+      "pathname": "/callback**",
+      "dest": "http://github-auth:3000",
+      "handleRedirects": "manual"
+    },
+    { "pathname": "/**", "dest": "http://frontend:3000" }
+  ]
+}

@@ -61,7 +61,6 @@ const createSession = async ({ accessToken }) => {
 const callback = async (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   const { code, state } = req.query
-
   if (!code && !state) {
     redirectWithQueryString(res, {
       error: 'Provide code and state query param',
@@ -88,7 +87,7 @@ const callback = async (req, res) => {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
           redirectWithQueryString(res, { access_token: qs.access_token })
-          createSession({ accessToken: qs.access_token })
+          // createSession({ accessToken: qs.access_token })
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })

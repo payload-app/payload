@@ -27,7 +27,7 @@ export default createStore(
     applyMiddleware(
       asyncDataFetchMiddleware({
         rpcClientOptions: {
-          url: 'http://localhost:8081/rpc', // TODO: prod host
+          url: '/api/rpc',
         },
       }),
       repoMiddleware,
