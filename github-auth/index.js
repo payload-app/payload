@@ -1,4 +1,6 @@
 require('dotenv').config()
+const cookie = require('cookie')
+const ms = require('ms')
 const querystring = require('querystring')
 const axios = require('axios')
 const { router, get } = require('microrouter')
@@ -34,7 +36,7 @@ const login = async (req, res) => {
   )
 }
 
-const createSession = async ({ accessToken }) => {
+const createSession = async ({ accessToken, res }) => {
   const { status, data } = await axios({
     method: 'GET',
     url: `${githubApiUrl}/user`,
@@ -52,10 +54,17 @@ const createSession = async ({ accessToken }) => {
     email: data.email,
     type: 'github',
   })
-  const response = await sessionServiceClient.call('createSession', {
+  const token = await sessionServiceClient.call('createSession', {
     userId,
   })
-  console.log('response', response)
+  res.setHeader(
+    'Set-Cookie',
+    cookie.serialize('local_payload_session', token, {
+      httpOnly: true,
+      maxAge: ms('30 days') / 1000,
+      domain: '.local.payloadapp.com',
+    }),
+  )
 }
 
 const callback = async (req, res) => {
@@ -86,8 +95,8 @@ const callback = async (req, res) => {
         if (qs.error) {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
+          await createSession({ accessToken: qs.access_token, res })
           redirectWithQueryString(res, { access_token: qs.access_token })
-          // createSession({ accessToken: qs.access_token })
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })
