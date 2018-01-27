@@ -5,8 +5,7 @@ const { createError } = require('@hharnisc/micro-rpc')
 const schema = Joi.object().keys({
   avatar: Joi.string().required(),
   username: Joi.string().required(),
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
+  name: Joi.string().required(),
   accessToken: Joi.string().required(),
   email: Joi.string().required(),
   type: Joi.string()
@@ -17,8 +16,7 @@ const schema = Joi.object().keys({
 module.exports = ({ collectionClient }) => async ({
   avatar,
   username,
-  firstName,
-  lastName,
+  name,
   accessToken,
   email,
   type,
@@ -28,8 +26,7 @@ module.exports = ({ collectionClient }) => async ({
       value: {
         avatar,
         username,
-        firstName,
-        lastName,
+        name,
         accessToken,
         email,
         type,
@@ -48,8 +45,7 @@ module.exports = ({ collectionClient }) => async ({
         [type]: {
           avatar,
           username,
-          firstName,
-          lastName,
+          name,
           accessToken,
         },
       },

@@ -4,8 +4,7 @@
   "description": "Payload User Service",
   "main": "index.js",
   "scripts": {
-    "start": "micro",
-    "start-dev": "micro -p 8086"
+    "start": "micro"
   },
   "author": "hharnisc@gmail.com",
   "license": "MIT",

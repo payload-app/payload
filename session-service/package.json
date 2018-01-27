@@ -4,8 +4,7 @@
   "description": "Payload Session Service",
   "main": "index.js",
   "scripts": {
-    "start": "micro",
-    "start-dev": "micro -p 8087"
+    "start": "micro"
   },
   "author": "hharnisc@gmail.com",
   "license": "MIT",

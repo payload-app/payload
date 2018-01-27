@@ -4,8 +4,16 @@ const axios = require('axios')
 const { router, get } = require('microrouter')
 const redirect = require('micro-redirect')
 const uid = require('uid-promise')
+const RPCClient = require('@hharnisc/micro-rpc-client')
 
 const githubUrl = process.env.GH_HOST || 'github.com'
+const githubApiUrl = process.env.GH_API_HOST || 'https://api.github.com'
+const userServiceClient = new RPCClient({
+  url: 'http://user-service:3000/rpc',
+})
+const sessionServiceClient = new RPCClient({
+  url: 'http://session-service:3000/rpc',
+})
 
 const states = [] // TODO: Move to data somewhere
 
@@ -24,6 +32,30 @@ const login = async (req, res) => {
       process.env.GH_CLIENT_ID
     }&state=${state}&scope=repo`,
   )
+}
+
+const createSession = async ({ accessToken }) => {
+  const { status, data } = await axios({
+    method: 'GET',
+    url: `${githubApiUrl}/user`,
+    responseType: 'json',
+    headers: {
+      'User-Agent': 'Payload',
+      Authorization: `token ${accessToken}`,
+    },
+  })
+  const { id: userId } = await userServiceClient.call('createUser', {
+    avatar: data.avatar_url,
+    username: data.login,
+    name: data.name,
+    accessToken,
+    email: data.email,
+    type: 'github',
+  })
+  const response = await sessionServiceClient.call('createSession', {
+    userId,
+  })
+  console.log('response', response)
 }
 
 const callback = async (req, res) => {
@@ -56,6 +88,7 @@ const callback = async (req, res) => {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
           redirectWithQueryString(res, { access_token: qs.access_token })
+          createSession({ accessToken: qs.access_token })
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })

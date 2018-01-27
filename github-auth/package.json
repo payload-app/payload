@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/mxstbr/micro-github.git#readme",
   "dependencies": {
+    "@hharnisc/micro-rpc-client": "^0.1.2",
     "axios": "^0.15.3",
     "dotenv": "^4.0.0",
     "micro": "^6.2.1",

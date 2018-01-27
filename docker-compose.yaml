@@ -43,6 +43,9 @@ services:
      - ./github-auth:/usr/src/app/
     ports:
       - 8088:8088
+    links:
+      - user-service
+      - session-service
   queue-service:
     build:
       context: ./queue-service
@@ -80,8 +83,6 @@ services:
      - MONGO_DB=payload
     volumes:
      - ./user-service:/usr/src/app/
-    ports:
-     - 8086:8086
     links:
      - mongodb
   session-service:
@@ -92,5 +93,3 @@ services:
      - JWT_SECRET=s3cr3t
     volumes:
      - ./session-service:/usr/src/app/
-    ports:
-     - 8087:8087
