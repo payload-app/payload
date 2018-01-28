@@ -1,0 +1,14 @@
+{
+  "name": "payload-worker",
+  "version": "0.0.1",
+  "description": "Payload worker",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "hharnisc@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "@hharnisc/micro-rpc-client": "^0.1.2"
+  }
+}

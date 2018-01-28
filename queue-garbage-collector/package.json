@@ -1,0 +1,14 @@
+{
+  "name": "payload-queue-garbage-collector",
+  "version": "0.0.1",
+  "description": "Payload Queue Garbage Collector",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "hharnisc@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "@hharnisc/micro-rpc-client": "^0.1.2"
+  }
+}
