@@ -94,3 +94,15 @@ services:
      - JWT_SECRET=s3cr3t
     volumes:
      - ./session-service:/usr/src/app/
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile.development
+    volumes:
+     - ./worker:/usr/src/app/
+    links:
+     - queue-service
+    environment:
+     - WORKER_QUEUE=payload-worker
+     - WORKER_NAME=worker-1
+    restart: always

@@ -13,7 +13,7 @@ const schema = Joi.object().keys({
 
 module.exports = ({ redisClient }) => async ({ queue, workerName }) => {
   try {
-    const validation = await validate({
+    await validate({
       value: {
         queue,
         workerName,
