@@ -15,6 +15,6 @@ const webhookHandler = async (req, res) => {
 }
 
 module.exports = router(
-  get('/healthz', healthHandler),
-  post('/', webhookHandler),
+  get('/webhook/healthz', healthHandler),
+  post('/webhook', webhookHandler),
 )
