@@ -1,13 +1,14 @@
 {
   "rules": [
-    { "pathname": "/api/**", "dest": "http://backend:3000" },
+    { "pathname": "/webhook", "dest": "http://webhook-collector:3000" },
+    { "pathname": "/api", "dest": "http://backend:3000" },
     {
       "pathname": "/login",
       "dest": "http://github-auth:3000",
       "handleRedirects": "manual"
     },
     {
-      "pathname": "/callback**",
+      "pathname": "/callback",
       "dest": "http://github-auth:3000",
       "handleRedirects": "manual"
     },

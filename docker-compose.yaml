@@ -13,6 +13,7 @@ services:
       - frontend
       - backend
       - github-auth
+      - webhook-collector
   frontend:
     build:
       context: ./frontend
@@ -37,6 +38,10 @@ services:
       dockerfile: Dockerfile.development
     volumes:
      - ./webhook-collector:/usr/src/app/
+    environment:
+     - WORKER_QUEUE=payload-worker
+    links:
+     - queue-service
   github-auth:
     build:
       context: ./github-auth

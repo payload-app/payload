@@ -4,8 +4,7 @@
   "description": "A service to manage the queue",
   "main": "index.js",
   "scripts": {
-    "start": "micro",
-    "start-dev": "micro -p 8084"
+    "start": "micro"
   },
   "author": "hharnisc@gmail.com",
   "license": "MIT",
