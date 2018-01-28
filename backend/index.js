@@ -1,18 +1,29 @@
 // @flow
-import type { RepoList, ListGithubRepoArgs } from 'api-types'
+import type { RepoList } from 'api-types'
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const { router, get, post } = require('microrouter')
 const { githubApiCall } = require('./api/github')
-const cors = require('micro-cors')
 const listReposFixture = require('./fixtures/listRepos')
+const setSession = require('./setSession')
 
-const rpcHandler = rpc(
-  method('listRepos', (): RepoList => listReposFixture),
-  method('listGithubRepos', ({ token }: ListGithubRepoArgs) =>
-    githubApiCall({ endpoint: 'user/repos', token }),
+const parseGithubTokenFromSession = ({ session }) => {
+  if (session) {
+    return session.user.accounts.github.accessToken
+  }
+}
+
+const rpcHandler = setSession(
+  rpc(
+    method('listRepos', (): RepoList => listReposFixture),
+    method('listGithubRepos', (_, { session }) => {
+      return githubApiCall({
+        endpoint: 'user/repos',
+        token: parseGithubTokenFromSession({ session }),
+      })
+    }),
+    method('activateRepo', () => 'OK'),
+    method('deactivateRepo', () => 'OK'),
   ),
-  method('activateRepo', () => 'OK'),
-  method('deactivateRepo', () => 'OK'),
 )
 
 const healthHandler = () => ({
@@ -20,6 +31,6 @@ const healthHandler = () => ({
 })
 
 module.exports = router(
-  get('/healthz', healthHandler),
-  cors()(post('/rpc', rpcHandler)), // TODO: set origin in production
+  get('/api/healthz', healthHandler),
+  post('/api/rpc', rpcHandler),
 )

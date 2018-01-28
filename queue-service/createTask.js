@@ -23,7 +23,7 @@ module.exports = ({ redisClient }) => async ({
   lease = 60, // seconds
 }) => {
   try {
-    const validation = await validate({
+    await validate({
       value: {
         queue,
         task,

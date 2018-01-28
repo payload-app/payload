@@ -4,8 +4,7 @@
   "description": "Payload Backend Application",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node node_modules/micro/bin/micro.js",
-    "start-dev": "babel-node -- node_modules/micro/bin/micro.js -p 8081"
+    "start": "babel-node node_modules/micro/bin/micro.js"
   },
   "keywords": [
     "payload",
@@ -15,8 +14,9 @@
   "license": "MIT",
   "dependencies": {
     "@hharnisc/micro-rpc": "^0.1.0",
+    "@hharnisc/micro-rpc-client": "^0.1.2",
+    "cookie": "^0.3.1",
     "micro": "^9.0.2",
-    "micro-cors": "^0.0.4",
     "microrouter": "^3.0.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2"

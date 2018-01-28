@@ -5,7 +5,7 @@ export const middleware = ({ dispatch }) => next => action => {
   switch (action.type) {
     case actionTypes.FETCH_REPOS:
       dispatch(actions.fetchSavedRepos())
-      dispatch(actions.fetchGithubRepos({ token: action.token }))
+      dispatch(actions.fetchGithubRepos())
     default:
       break
   }

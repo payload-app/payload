@@ -1,7 +1,7 @@
 {
-  "name": "payload-user-service",
+  "name": "payload-session-service",
   "version": "0.0.1",
-  "description": "Payload User Service",
+  "description": "Payload Session Service",
   "main": "index.js",
   "scripts": {
     "start": "micro"
@@ -11,8 +11,8 @@
   "dependencies": {
     "@hharnisc/micro-rpc": "^0.1.0",
     "joi": "^13.1.1",
+    "jsonwebtoken": "^8.1.1",
     "micro": "^9.1.0",
-    "microrouter": "^3.0.0",
-    "mongodb": "^3.0.1"
+    "microrouter": "^3.0.0"
   }
 }

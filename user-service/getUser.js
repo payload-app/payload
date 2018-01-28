@@ -25,7 +25,7 @@ const getUserByEmail = async ({ email, collectionClient }) => {
     email,
   })
   if (!user) {
-    throw new Error(`Could not find user with id ${id}`)
+    throw new Error(`Could not find user with email ${email}`)
   }
   return user
 }

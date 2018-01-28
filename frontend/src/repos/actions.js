@@ -9,9 +9,8 @@ export const actionTypes = {
 }
 
 export const actions = {
-  fetchRepos: ({ token }: { token: string }) => ({
+  fetchRepos: () => ({
     type: actionTypes.FETCH_REPOS,
-    token,
   }),
   fetchSavedRepos: () =>
     asyncDataFetchActions.fetch({
@@ -20,10 +19,9 @@ export const actions = {
         repos: arrayToKeyedObj(results, (repo: Repo) => repo.repoId),
       }),
     }),
-  fetchGithubRepos: ({ token }: ListGithubRepoArgs) =>
+  fetchGithubRepos: () =>
     asyncDataFetchActions.fetch({
       name: 'listGithubRepos',
-      args: { token },
       format: results => {
         const strippedDownRepoData = results.map(
           repo =>

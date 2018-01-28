@@ -4,6 +4,7 @@ const axios = require('axios')
 const { router, get } = require('microrouter')
 const redirect = require('micro-redirect')
 const uid = require('uid-promise')
+const createSession = require('./createSession')
 
 const githubUrl = process.env.GH_HOST || 'github.com'
 
@@ -26,10 +27,10 @@ const login = async (req, res) => {
   )
 }
 
+// TODO: redirect to error page to display error message
 const callback = async (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   const { code, state } = req.query
-
   if (!code && !state) {
     redirectWithQueryString(res, {
       error: 'Provide code and state query param',
@@ -55,15 +56,15 @@ const callback = async (req, res) => {
         if (qs.error) {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
-          redirectWithQueryString(res, { access_token: qs.access_token })
+          await createSession({ accessToken: qs.access_token, res })
+          redirect(res, 302, process.env.REDIRECT_URL)
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })
       }
     } catch (err) {
       redirectWithQueryString(res, {
-        error:
-          'Please provide GH_CLIENT_ID and GH_CLIENT_SECRET as environment variables. (or GitHub might be down)',
+        error: err.message,
       })
     }
   }
