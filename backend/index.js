@@ -6,7 +6,7 @@ const { githubApiCall } = require('./api/github')
 const listReposFixture = require('./fixtures/listRepos')
 const setSession = require('./setSession')
 
-const parseTokenFromSession = ({ session }) => {
+const parseGithubTokenFromSession = ({ session }) => {
   if (session) {
     return session.user.accounts.github.accessToken
   }
@@ -18,7 +18,7 @@ const rpcHandler = setSession(
     method('listGithubRepos', (_, { session }) => {
       return githubApiCall({
         endpoint: 'user/repos',
-        token: parseTokenFromSession({ session }),
+        token: parseGithubTokenFromSession({ session }),
       })
     }),
     method('activateRepo', () => 'OK'),
