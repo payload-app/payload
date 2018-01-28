@@ -28,6 +28,7 @@ export default createStore(
       asyncDataFetchMiddleware({
         rpcClientOptions: {
           url: '/api/rpc',
+          sendCredentials: 'same-origin',
         },
       }),
       repoMiddleware,

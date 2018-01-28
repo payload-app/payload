@@ -2,7 +2,6 @@
 import type { RepoList } from 'api-types'
 import React from 'react'
 import { connect } from 'react-redux'
-import { getTokenFromUrl } from '@middleware/github-api'
 import { selectors as repoSelectors, actions as repoActions } from './repos'
 
 type Props = {
@@ -12,9 +11,9 @@ type Props = {
 
 export class App extends React.Component<Props> {
   componentDidMount() {
-    getTokenFromUrl(window.location.search).then(token =>
-      this.props.fetchRepos({ token }),
-    )
+    // TODO get user data first as a check to make sure we're authenticated
+    // TODO we'll want to fetch this in middleware somewhere
+    this.props.fetchRepos()
   }
 
   render() {
