@@ -1,21 +1,12 @@
 require('dotenv').config()
-const cookie = require('cookie')
-const ms = require('ms')
 const querystring = require('querystring')
 const axios = require('axios')
 const { router, get } = require('microrouter')
 const redirect = require('micro-redirect')
 const uid = require('uid-promise')
-const RPCClient = require('@hharnisc/micro-rpc-client')
+const createSession = require('./createSession')
 
 const githubUrl = process.env.GH_HOST || 'github.com'
-const githubApiUrl = process.env.GH_API_HOST || 'https://api.github.com'
-const userServiceClient = new RPCClient({
-  url: 'http://user-service:3000/rpc',
-})
-const sessionServiceClient = new RPCClient({
-  url: 'http://session-service:3000/rpc',
-})
 
 const states = [] // TODO: Move to data somewhere
 
@@ -36,37 +27,7 @@ const login = async (req, res) => {
   )
 }
 
-const createSession = async ({ accessToken, res }) => {
-  const { status, data } = await axios({
-    method: 'GET',
-    url: `${githubApiUrl}/user`,
-    responseType: 'json',
-    headers: {
-      'User-Agent': 'Payload',
-      Authorization: `token ${accessToken}`,
-    },
-  })
-  const { id: userId } = await userServiceClient.call('createUser', {
-    avatar: data.avatar_url,
-    username: data.login,
-    name: data.name,
-    accessToken,
-    email: data.email,
-    type: 'github',
-  })
-  const token = await sessionServiceClient.call('createSession', {
-    userId,
-  })
-  res.setHeader(
-    'Set-Cookie',
-    cookie.serialize('local_payload_session', token, {
-      httpOnly: true,
-      maxAge: ms('30 days') / 1000,
-      domain: '.local.payloadapp.com',
-    }),
-  )
-}
-
+// TODO: redirect to error page to display error message
 const callback = async (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   const { code, state } = req.query
@@ -96,15 +57,14 @@ const callback = async (req, res) => {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
           await createSession({ accessToken: qs.access_token, res })
-          redirectWithQueryString(res, { access_token: qs.access_token })
+          redirectWithQueryString(res)
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })
       }
     } catch (err) {
       redirectWithQueryString(res, {
-        error:
-          'Please provide GH_CLIENT_ID and GH_CLIENT_SECRET as environment variables. (or GitHub might be down)',
+        error: err.message,
       })
     }
   }
