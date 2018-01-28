@@ -57,7 +57,7 @@ const callback = async (req, res) => {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
           await createSession({ accessToken: qs.access_token, res })
-          redirectWithQueryString(res)
+          redirect(res, 302, process.env.REDIRECT_URL)
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })
