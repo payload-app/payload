@@ -43,9 +43,6 @@ const cleanBatch = async ({
         }
       }),
     )
-    console.log('startIdx', startIdx)
-    console.log('batchSize', batchSize)
-    console.log('cleanedTaskIds', cleanedTaskIds)
     return await cleanBatch({
       redisClient,
       queue,
@@ -59,7 +56,7 @@ const cleanBatch = async ({
 
 module.exports = ({ redisClient }) => async ({ queue }) => {
   try {
-    const validation = await validate({
+    await validate({
       value: {
         queue,
       },
