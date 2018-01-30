@@ -14,6 +14,9 @@ const initUserCollection = async ({ dbClient }) => {
 const initOrganizationCollection = async ({ dbClient }) => {
   console.log('Init Organization Collection...')
   await dbClient.createCollection('organizations')
+  await dbClient
+    .collection('organizations')
+    .createIndex({ orgId: 1, type: 1 }, { unique: 1 })
   console.log('Init Organization Collection...Done')
 }
 
