@@ -112,6 +112,8 @@ services:
      - ./user-service:/usr/src/app/
     links:
      - mongodb
+    ports:
+     - 3000:3000
     networks:
      - main
   session-service:
@@ -161,8 +163,6 @@ services:
      - MONGO_DB=payload
     volumes:
      - ./organization-service:/usr/src/app/
-    ports:
-     - 3000:3000
     links:
      - mongodb
     networks:
