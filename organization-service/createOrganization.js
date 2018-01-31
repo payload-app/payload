@@ -1,4 +1,3 @@
-const { ObjectID } = require('mongodb')
 const Joi = require('joi')
 const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
@@ -12,12 +11,7 @@ const schema = Joi.object().keys({
   userIds: Joi.array().unique(),
 })
 
-const userIdDifference = ({ userIds, dbUserIds }) => {
-  const dbUserIdsSet = new Set(dbUserIds)
-  return userIds.filter(userId => !dbUserIdsSet.has(userId))
-}
-
-module.exports = ({ collectionClient, userCollectionClient }) => async ({
+module.exports = ({ collectionClient, userServiceClient }) => async ({
   orgId,
   name,
   type,
@@ -40,15 +34,10 @@ module.exports = ({ collectionClient, userCollectionClient }) => async ({
   }
   // TODO: when adding userIds - https://docs.mongodb.com/manual/reference/operator/update/addToSet/
   try {
-    const dbUsers = await userCollectionClient
-      .find({
-        _id: {
-          $in: userIds.map(userId => ObjectID(userId)),
-        },
-      })
-      .toArray()
-    const dbUserIds = dbUsers.map(dbUser => dbUser._id.toString())
-    const missingUserIds = userIdDifference({ userIds, dbUserIds })
+    const users = await userServiceClient.call('getUsers', {
+      ids: userIds,
+    })
+    const missingUserIds = userIds.filter((userId, idx) => !users[idx])
     if (missingUserIds.length) {
       throw new Error(
         `Could not find user(s) with ids: ${JSON.stringify(missingUserIds)}`,

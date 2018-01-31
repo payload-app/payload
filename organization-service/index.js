@@ -2,33 +2,34 @@ const { promisify } = require('util')
 const { MongoClient } = require('mongodb')
 const { send } = require('micro')
 const { rpc, method } = require('@hharnisc/micro-rpc')
+const RPCClient = require('@hharnisc/micro-rpc-client')
 const { router, get, post } = require('microrouter')
 const createOrganization = require('./createOrganization')
 const getOrganization = require('./getOrganization')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
-const initDB = async handler => {
+const init = async handler => {
   const client = await promisifiedMongoClient.connect(process.env.MONGO_URL)
   const collectionClient = client
     .db(process.env.MONGO_DB)
     .collection('organizations')
-  const userCollectionClient = client
-    .db(process.env.MONGO_DB)
-    .collection('users')
-  return handler({ collectionClient, userCollectionClient })
+  const userServiceClient = new RPCClient({
+    url: 'http://user-service:3000/rpc',
+  })
+  return handler({ collectionClient, userServiceClient })
 }
 
-const rpcHandler = ({ collectionClient, userCollectionClient }) =>
+const rpcHandler = ({ collectionClient, userServiceClient }) =>
   rpc(
     method(
       'createOrganization',
-      createOrganization({ collectionClient, userCollectionClient }),
+      createOrganization({ collectionClient, userServiceClient }),
     ),
     method('getOrganization', getOrganization({ collectionClient })),
   )
 
-const healthHandler = ({ collectionClient, userCollectionClient }) => async (
+const healthHandler = ({ collectionClient, userServiceClient }) => async (
   req,
   res,
 ) => {
@@ -37,10 +38,7 @@ const healthHandler = ({ collectionClient, userCollectionClient }) => async (
     if (!dbResponse.ok) {
       throw new Error('MongoDB organizations collection is not ok')
     }
-    const userDBResponse = await userCollectionClient.stats()
-    if (!userDBResponse.ok) {
-      throw new Error('MongoDB users collection is not ok')
-    }
+    await userServiceClient.call('methods')
     send(res, 200, { status: 'OK' })
   } catch (err) {
     send(res, 500, {
@@ -49,9 +47,9 @@ const healthHandler = ({ collectionClient, userCollectionClient }) => async (
   }
 }
 
-module.exports = initDB(({ collectionClient, userCollectionClient }) =>
+module.exports = init(({ collectionClient, userServiceClient }) =>
   router(
-    get('/healthz', healthHandler({ collectionClient, userCollectionClient })),
-    post('/rpc', rpcHandler({ collectionClient, userCollectionClient })),
+    get('/healthz', healthHandler({ collectionClient, userServiceClient })),
+    post('/rpc', rpcHandler({ collectionClient, userServiceClient })),
   ),
 )
