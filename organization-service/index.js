@@ -6,6 +6,7 @@ const RPCClient = require('@hharnisc/micro-rpc-client')
 const { router, get, post } = require('microrouter')
 const createOrganization = require('./createOrganization')
 const getOrganization = require('./getOrganization')
+const addOrganizationUsers = require('./addOrganizationUsers')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -27,6 +28,10 @@ const rpcHandler = ({ collectionClient, userServiceClient }) =>
       createOrganization({ collectionClient, userServiceClient }),
     ),
     method('getOrganization', getOrganization({ collectionClient })),
+    method(
+      'addOrganizationUsers',
+      addOrganizationUsers({ collectionClient, userServiceClient }),
+    ),
   )
 
 const healthHandler = ({ collectionClient, userServiceClient }) => async (

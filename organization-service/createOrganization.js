@@ -32,7 +32,6 @@ module.exports = ({ collectionClient, userServiceClient }) => async ({
       message: parseValidationErrorMessage({ error }),
     })
   }
-  // TODO: when adding userIds - https://docs.mongodb.com/manual/reference/operator/update/addToSet/
   try {
     const users = await userServiceClient.call('getUsers', {
       ids: userIds,

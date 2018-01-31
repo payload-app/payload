@@ -33,7 +33,7 @@ const updateUserById = async ({
       },
     },
   )
-  if (result.modifiedCount !== 1) {
+  if (result.matchedCount !== 1) {
     throw new Error(`Could not update user with id ${id}`)
   }
   return await collectionClient.findOne({ _id: ObjectID(id) })
@@ -55,7 +55,7 @@ const updateUserByEmail = async ({
       },
     },
   )
-  if (result.modifiedCount !== 1) {
+  if (result.matchedCount !== 1) {
     throw new Error(`Could not update user with email ${email}`)
   }
   return await collectionClient.findOne({ email })
