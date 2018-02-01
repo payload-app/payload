@@ -30,7 +30,7 @@ const updateOrganizationById = async ({ id, userIds, collectionClient }) => {
   return await collectionClient.findOne({ _id: ObjectID(id) })
 }
 
-const getOrganizationByTypeOrgId = async ({
+const updateOrganizationByTypeOrgId = async ({
   orgId,
   type,
   userIds,
@@ -88,7 +88,7 @@ module.exports = ({ collectionClient, userServiceClient }) => async ({
     if (id) {
       return await updateOrganizationById({ id, userIds, collectionClient })
     }
-    return await getOrganizationByTypeOrgId({
+    return await updateOrganizationByTypeOrgId({
       orgId,
       type,
       userIds,
