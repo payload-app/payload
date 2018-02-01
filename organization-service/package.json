@@ -1,7 +1,7 @@
 {
-  "name": "payload-user-service",
+  "name": "payload-organization-service",
   "version": "0.0.1",
-  "description": "Payload User Service",
+  "description": "Payload Organization Service",
   "main": "index.js",
   "scripts": {
     "start": "micro"

@@ -34,7 +34,7 @@ module.exports = async ({ accessToken, res }) => {
   }
   let userId
   try {
-    const { _id } = await userServiceClient.call('updateUser', user)
+    const { _id } = await userServiceClient.call('updateAccount', user)
     userId = _id
   } catch (err) {
     if (err.message !== `Could not update user with email ${data.email}`) {

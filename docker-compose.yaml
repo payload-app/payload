@@ -1,5 +1,9 @@
 version: '2'
 
+networks:
+  main:
+    driver: bridge
+
 services:
   proxy:
     build:
@@ -14,24 +18,32 @@ services:
       - backend
       - github-auth
       - webhook-collector
+    networks:
+     - main
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.development
     volumes:
      - ./frontend:/usr/src/app/
+    networks:
+     - main
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.development
     volumes:
      - ./backend:/usr/src/app/
+    networks:
+      - main
   status-broadcaster:
     build:
       context: ./status-broadcaster
       dockerfile: Dockerfile.development
     volumes:
      - ./status-broadcaster:/usr/src/app/
+    networks:
+     - main
   webhook-collector:
     build:
       context: ./webhook-collector
@@ -42,6 +54,8 @@ services:
      - WORKER_QUEUE=payload-worker
     links:
      - queue-service
+    networks:
+     - main
   github-auth:
     build:
       context: ./github-auth
@@ -51,6 +65,8 @@ services:
     links:
       - user-service
       - session-service
+    networks:
+     - main
   queue-service:
     build:
       context: ./queue-service
@@ -59,11 +75,17 @@ services:
      - ./queue-service:/usr/src/app/
     links:
      - redis
+    networks:
+     - main
   redis:
     image: redis
+    networks:
+     - main
   mongodb:
     image: mongo:latest
     command: mongod --smallfiles
+    networks:
+     - main
   init-db:
     build:
       context: ./init-db
@@ -75,10 +97,14 @@ services:
      - ./init-db:/usr/src/app/
     links:
       - mongodb
+    networks:
+     - main
   user-service:
     build:
       context: ./user-service
       dockerfile: Dockerfile.development
+    networks:
+      - main
     environment:
      - MONGO_URL=mongodb://mongodb:27017
      - MONGO_DB=payload
@@ -86,6 +112,8 @@ services:
      - ./user-service:/usr/src/app/
     links:
      - mongodb
+    networks:
+     - main
   session-service:
     build:
       context: ./session-service
@@ -94,6 +122,8 @@ services:
      - JWT_SECRET=s3cr3t
     volumes:
      - ./session-service:/usr/src/app/
+    networks:
+     - main
   worker:
     build:
       context: ./worker
@@ -106,6 +136,8 @@ services:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-1
     restart: always
+    networks:
+     - main
   queue-garbage-collector:
     build:
       context: ./queue-garbage-collector
@@ -118,3 +150,18 @@ services:
      - WORKER_QUEUE=payload-worker
      - SLEEP_AFTER_COLLECT=60 #seconds
     restart: always
+    networks:
+     - main
+  organization-service:
+    build:
+      context: ./organization-service
+      dockerfile: Dockerfile.development
+    environment:
+     - MONGO_URL=mongodb://mongodb:27017
+     - MONGO_DB=payload
+    volumes:
+     - ./organization-service:/usr/src/app/
+    links:
+     - mongodb
+    networks:
+     - main

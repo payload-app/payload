@@ -7,33 +7,22 @@ const schema = Joi.object()
   .keys({
     id: Joi.string(),
     email: Joi.string(),
-    avatar: Joi.string().required(),
-    username: Joi.string().required(),
-    name: Joi.string().required(),
-    accessToken: Joi.string().required(),
-    type: Joi.string()
-      .valid(['github'])
+    organizationIds: Joi.array()
+      .unique()
       .required(),
   })
   .xor('id', 'email')
 
-const updateUserById = async ({
-  id,
-  accountType,
-  accountData,
-  collectionClient,
-}) => {
+const updateUserById = async ({ id, organizationIds, collectionClient }) => {
   const result = await collectionClient.updateOne(
     {
       _id: ObjectID(id),
     },
     {
-      $set: {
-        [`accounts.${accountType}`]: accountData,
-      },
+      $addToSet: { organizationIds: { $each: organizationIds } },
     },
   )
-  if (result.modifiedCount !== 1) {
+  if (result.matchedCount !== 1) {
     throw new Error(`Could not update user with id ${id}`)
   }
   return await collectionClient.findOne({ _id: ObjectID(id) })
@@ -41,8 +30,7 @@ const updateUserById = async ({
 
 const updateUserByEmail = async ({
   email,
-  accountType,
-  accountData,
+  organizationIds,
   collectionClient,
 }) => {
   const result = await collectionClient.updateOne(
@@ -50,36 +38,26 @@ const updateUserByEmail = async ({
       email,
     },
     {
-      $set: {
-        [`accounts.${accountType}`]: accountData,
-      },
+      $addToSet: { organizationIds: { $each: organizationIds } },
     },
   )
-  if (result.modifiedCount !== 1) {
+  if (result.matchedCount !== 1) {
     throw new Error(`Could not update user with email ${email}`)
   }
   return await collectionClient.findOne({ email })
 }
 
-module.exports = ({ collectionClient }) => async ({
+module.exports = ({ collectionClient, organizationServiceClient }) => async ({
   id,
   email,
-  avatar,
-  username,
-  name,
-  accessToken,
-  type,
+  organizationIds,
 }) => {
   try {
     await validate({
       value: {
         id,
         email,
-        avatar,
-        username,
-        name,
-        accessToken,
-        type,
+        organizationIds,
       },
       schema,
     })
@@ -88,25 +66,33 @@ module.exports = ({ collectionClient }) => async ({
       message: parseValidationErrorMessage({ error }),
     })
   }
-  const accountData = {
-    avatar,
-    username,
-    name,
-    accessToken,
-  }
   try {
+    const organizations = await organizationServiceClient.call(
+      'getOrganizations',
+      {
+        ids: organizationIds,
+      },
+    )
+    const missingOrganizationIds = organizationIds.filter(
+      (userId, idx) => !organizations[idx],
+    )
+    if (missingOrganizationIds.length) {
+      throw new Error(
+        `Could not find organizations(s) with ids: ${JSON.stringify(
+          missingOrganizationIds,
+        )}`,
+      )
+    }
     if (id) {
       return await updateUserById({
         id,
-        accountType: type,
-        accountData,
+        organizationIds,
         collectionClient,
       })
     }
     return await updateUserByEmail({
       email,
-      accountType: type,
-      accountData,
+      organizationIds,
       collectionClient,
     })
   } catch (error) {
