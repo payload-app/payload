@@ -7,8 +7,8 @@ const { router, get, post } = require('microrouter')
 const createUser = require('./createUser')
 const getUser = require('./getUser')
 const getUsers = require('./getUsers')
-const updateUserAccount = require('./updateUserAccount')
-const updateUserOrganizations = require('./updateUserOrganizations')
+const updateAccount = require('./updateAccount')
+const addOrganizations = require('./addOrganizations')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -33,12 +33,12 @@ const rpcHandler = ({ collectionClient, organizationServiceClient }) =>
       getUsers({ collectionClient, organizationServiceClient }),
     ),
     method(
-      'updateUserAccount',
-      updateUserAccount({ collectionClient, organizationServiceClient }),
+      'updateAccount',
+      updateAccount({ collectionClient, organizationServiceClient }),
     ),
     method(
-      'updateUserOrganizations',
-      updateUserOrganizations({ collectionClient, organizationServiceClient }),
+      'addOrganizations',
+      addOrganizations({ collectionClient, organizationServiceClient }),
     ),
   )
 

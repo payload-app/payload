@@ -24,7 +24,7 @@ const updateOrganizationById = async ({ id, userIds, collectionClient }) => {
       $addToSet: { userIds: { $each: userIds } },
     },
   )
-  if (result.modifiedCount !== 1) {
+  if (result.matchedCount !== 1) {
     throw new Error(`Could not update organization with id ${id}`)
   }
   return await collectionClient.findOne({ _id: ObjectID(id) })
