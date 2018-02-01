@@ -112,8 +112,6 @@ services:
      - ./user-service:/usr/src/app/
     links:
      - mongodb
-    ports:
-     - 3000:3000
     networks:
      - main
   session-service:
