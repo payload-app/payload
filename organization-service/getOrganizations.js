@@ -38,7 +38,7 @@ module.exports = ({ collectionClient }) => async ({ ids }) => {
         }
         const organizationId = stringIdOrganization._id
         return {
-          organizationObject,
+          ...organizationObject,
           [organizationId]: stringIdOrganization,
         }
       },

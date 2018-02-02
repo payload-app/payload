@@ -34,6 +34,8 @@ services:
       dockerfile: Dockerfile.development
     volumes:
      - ./backend:/usr/src/app/
+    links:
+     - github-service
     networks:
       - main
   status-broadcaster:
@@ -65,6 +67,7 @@ services:
     links:
       - user-service
       - session-service
+      - github-service
     networks:
      - main
   queue-service:
@@ -163,5 +166,13 @@ services:
      - ./organization-service:/usr/src/app/
     links:
      - mongodb
+    networks:
+     - main
+  github-service:
+    build:
+      context: ./github-service
+      dockerfile: Dockerfile.development
+    volumes:
+     - ./github-service:/usr/src/app/
     networks:
      - main
