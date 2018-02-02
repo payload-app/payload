@@ -1,0 +1,18 @@
+{
+  "name": "payload-github-service",
+  "version": "0.0.1",
+  "description": "Github service for Payload",
+  "main": "index.js",
+  "scripts": {
+    "start": "micro"
+  },
+  "author": "hharnisc@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "@hharnisc/micro-rpc": "^0.1.0",
+    "axios": "^0.17.1",
+    "joi": "^13.1.1",
+    "micro": "^9.1.0",
+    "microrouter": "^3.0.0"
+  }
+}
