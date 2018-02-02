@@ -1,5 +1,6 @@
 const axios = require('axios')
 const Joi = require('joi')
+const { createError } = require('@hharnisc/micro-rpc')
 const { validate, parseValidationErrorMessage } = require('./utils')
 
 const schema = Joi.object().keys({

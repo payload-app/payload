@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const { createError } = require('@hharnisc/micro-rpc')
 const {
   validate,
   parseValidationErrorMessage,
