@@ -61,7 +61,6 @@ module.exports = ({ githubApiUrl }) => async ({
   }
   const responses = [parsedResponse({ response })]
   for (let page of range(2, parseLastPage({ linkHeader }))) {
-    console.log('page', page)
     const response = await ghRequest({
       ...githubArgs,
       page,
@@ -71,6 +70,5 @@ module.exports = ({ githubApiUrl }) => async ({
       page,
     })
   }
-  console.log(responses)
   return responses
 }
