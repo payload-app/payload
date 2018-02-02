@@ -37,7 +37,7 @@ module.exports = ({ collectionClient }) => async ({ ids }) => {
       }
       const userId = stringIdUser._id
       return {
-        userObject,
+        ...userObject,
         [userId]: stringIdUser,
       }
     }, {})

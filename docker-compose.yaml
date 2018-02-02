@@ -65,6 +65,7 @@ services:
     links:
       - user-service
       - session-service
+      - github-service
     networks:
      - main
   queue-service:
@@ -171,7 +172,5 @@ services:
       dockerfile: Dockerfile.development
     volumes:
      - ./github-service:/usr/src/app/
-    ports:
-     - 3000:3000
     networks:
      - main

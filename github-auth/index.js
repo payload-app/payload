@@ -4,11 +4,25 @@ const axios = require('axios')
 const { router, get } = require('microrouter')
 const redirect = require('micro-redirect')
 const uid = require('uid-promise')
+const RPCClient = require('@hharnisc/micro-rpc-client')
 const createSession = require('./createSession')
 
 const githubUrl = process.env.GH_HOST || 'github.com'
 
 const states = [] // TODO: Move to data somewhere
+
+const githubServiceClient = new RPCClient({
+  url: 'http://github-service:3000/rpc',
+})
+const userServiceClient = new RPCClient({
+  url: 'http://user-service:3000/rpc',
+})
+const organizationServiceClient = new RPCClient({
+  url: 'http://organization-service:3000/rpc',
+})
+const sessionServiceClient = new RPCClient({
+  url: 'http://session-service:3000/rpc',
+})
 
 const redirectWithQueryString = (res, data) => {
   const location = `${process.env.REDIRECT_URL}?${querystring.stringify(data)}`
@@ -56,7 +70,14 @@ const callback = async (req, res) => {
         if (qs.error) {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
-          await createSession({ accessToken: qs.access_token, res })
+          await createSession({
+            userServiceClient,
+            organizationServiceClient,
+            sessionServiceClient,
+            githubServiceClient,
+            accessToken: qs.access_token,
+            res,
+          })
           redirect(res, 302, process.env.REDIRECT_URL)
         }
       } else {
