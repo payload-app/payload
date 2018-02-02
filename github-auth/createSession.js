@@ -30,7 +30,6 @@ module.exports = async ({
   const token = await sessionServiceClient.call('createSession', {
     userId,
   })
-  console.log('token', token)
   res.setHeader(
     'Set-Cookie',
     cookie.serialize('local_payload_session', token, {
