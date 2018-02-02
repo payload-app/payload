@@ -34,6 +34,8 @@ services:
       dockerfile: Dockerfile.development
     volumes:
      - ./backend:/usr/src/app/
+    links:
+     - github-service
     networks:
       - main
   status-broadcaster:

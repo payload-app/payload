@@ -2,25 +2,19 @@
 import type { RepoList } from 'api-types'
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const { router, get, post } = require('microrouter')
-const { githubApiCall } = require('./api/github')
-const listReposFixture = require('./fixtures/listRepos')
+const RPCClient = require('@hharnisc/micro-rpc-client')
 const setSession = require('./setSession')
+const listReposFixture = require('./fixtures/listRepos')
+const listGithubRepos = require('./listGithubRepos')
 
-const parseGithubTokenFromSession = ({ session }) => {
-  if (session) {
-    return session.user.accounts.github.accessToken
-  }
-}
+const githubServiceClient = new RPCClient({
+  url: 'http://github-service:3000/rpc',
+})
 
 const rpcHandler = setSession(
   rpc(
     method('listRepos', (): RepoList => listReposFixture),
-    method('listGithubRepos', (_, { session }) => {
-      return githubApiCall({
-        endpoint: 'user/repos',
-        token: parseGithubTokenFromSession({ session }),
-      })
-    }),
+    method('listGithubRepos', listGithubRepos({ githubServiceClient })),
     method('activateRepo', () => 'OK'),
     method('deactivateRepo', () => 'OK'),
   ),
