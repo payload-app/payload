@@ -41,7 +41,7 @@ const updateRepoByOwner = async ({ owner, repo, type, collectionClient }) => {
   )
   if (result.matchedCount !== 1) {
     throw new Error(
-      `Could not update user with owner ${owner} repo ${repo} type ${type}`,
+      `Could not update repo with owner ${owner} repo ${repo} type ${type}`,
     )
   }
   return await collectionClient.findOne({

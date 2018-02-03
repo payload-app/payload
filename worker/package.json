@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "@hharnisc/micro-rpc-client": "^0.1.2",
+    "nodegit": "^0.20.3",
     "winston": "^2.4.0"
   }
 }

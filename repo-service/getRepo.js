@@ -13,42 +13,28 @@ const schema = Joi.object()
   .xor('id', 'owner')
   .with('owner', ['repo', 'type'])
 
-const updateRepoById = async ({ id, collectionClient }) => {
-  const result = await collectionClient.updateOne(
-    {
-      _id: ObjectID(id),
-    },
-    {
-      $set: { active: false },
-    },
-  )
-  if (result.matchedCount !== 1) {
-    throw new Error(`Could not update repo with id ${id}`)
+const getRepoById = async ({ id, collectionClient }) => {
+  const repository = await collectionClient.findOne({
+    _id: ObjectID(id),
+  })
+  if (!repository) {
+    throw new Error(`Could not find repository with id ${id}`)
   }
-  return await collectionClient.findOne({ _id: ObjectID(id) })
+  return repository
 }
 
-const updateRepoByOwner = async ({ owner, repo, type, collectionClient }) => {
-  const result = await collectionClient.updateOne(
-    {
-      owner,
-      repo,
-      type,
-    },
-    {
-      $set: { active: false },
-    },
-  )
-  if (result.matchedCount !== 1) {
-    throw new Error(
-      `Could not update repo with owner ${owner} repo ${repo} type ${type}`,
-    )
-  }
-  return await collectionClient.findOne({
+const getRepoByOwner = async ({ owner, repo, type, collectionClient }) => {
+  const repository = await collectionClient.findOne({
     owner,
     repo,
     type,
   })
+  if (!repository) {
+    throw new Error(
+      `Could not find repo with owner ${owner} repository ${repo} type ${type}`,
+    )
+  }
+  return repository
 }
 
 module.exports = ({ collectionClient }) => async ({
@@ -74,12 +60,12 @@ module.exports = ({ collectionClient }) => async ({
   }
   try {
     if (id) {
-      return await updateRepoById({
+      return await getRepoById({
         id,
         collectionClient,
       })
     }
-    return await updateRepoByOwner({
+    return await getRepoByOwner({
       owner,
       repo,
       type,

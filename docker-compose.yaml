@@ -135,6 +135,9 @@ services:
      - ./worker:/usr/src/app/
     links:
      - queue-service
+     - repo-service
+     - user-service
+     - organization-service
     environment:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-1
