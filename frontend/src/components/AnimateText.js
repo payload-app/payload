@@ -8,19 +8,17 @@ export const AnimateText = ({
   children,
 }) => {
   return (
-    children && (
-      <Typist
-        startDelay={delay}
-        stdTypingDelay={0}
-        avgTypingDelay={speed}
-        cursor={{
-          show: cursor,
-        }}
-        key={children}
-      >
-        {children}
-      </Typist>
-    )
+    <Typist
+      startDelay={delay}
+      stdTypingDelay={0}
+      avgTypingDelay={speed}
+      cursor={{
+        show: cursor,
+      }}
+      key={children}
+    >
+      {children}
+    </Typist>
   )
 }
 
