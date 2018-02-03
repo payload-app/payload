@@ -1,6 +1,26 @@
+const winston = require('winston')
 const { promisify } = require('util')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const sleep = promisify(setTimeout)
+
+const logger = new winston.Logger({
+  transports: [
+    new winston.transports.File({
+      level: 'info',
+      filename: './worker.log',
+      json: true,
+      maxsize: 5242880, //5MB
+      maxFiles: 5,
+      colorize: false,
+    }),
+    new winston.transports.Console({
+      level: 'debug',
+      json: false,
+      colorize: true,
+    }),
+  ],
+  exitOnError: false,
+})
 
 const queueServiceClient = new RPCClient({
   url: 'http://queue-service:3000/rpc',
@@ -9,7 +29,7 @@ const queueServiceClient = new RPCClient({
 const main = async () => {
   const queue = process.env.WORKER_QUEUE
   const workerName = process.env.WORKER_NAME
-  console.log(`Worker ${workerName} Checking Queue ${queue}`)
+  logger.info(`Worker ${workerName} Checking Queue ${queue}`)
 
   const work = await queueServiceClient.call('processTask', {
     queue,
@@ -18,24 +38,22 @@ const main = async () => {
 
   if (work) {
     const { task, taskId } = work
-    console.log('***')
-    console.log(`Found Task: ${taskId}`)
-    console.log(JSON.stringify(task))
-    console.log('***')
-    console.log('doing fake work for 10 seconds')
+    logger.info(`Found Task: ${taskId}`)
+    logger.info(JSON.stringify(task))
+    logger.info('doing fake work for 10 seconds')
     await sleep(10000) // 10 seconds
     const result = await queueServiceClient.call('completeTask', {
       queue,
       workerName,
       taskId,
     })
-    console.log(`Completed Task ${taskId} - ${JSON.stringify(result)}`)
+    logger.info(`Completed Task ${taskId} - ${JSON.stringify(result)}`)
   } else {
-    console.log(`No Task Found On Queue ${queue}`)
+    logger.info(`No Task Found On Queue ${queue}`)
   }
 
-  console.log(`Sleeping 10 Seconds`)
-  await sleep(10000)
+  logger.info(`Sleeping 60 Seconds`)
+  await sleep(60000)
 }
 
 main()

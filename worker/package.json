@@ -9,6 +9,7 @@
   "author": "hharnisc@gmail.com",
   "license": "MIT",
   "dependencies": {
-    "@hharnisc/micro-rpc-client": "^0.1.2"
+    "@hharnisc/micro-rpc-client": "^0.1.2",
+    "winston": "^2.4.0"
   }
 }
