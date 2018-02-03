@@ -196,3 +196,18 @@ services:
      - mongodb
     networks:
      - main
+  run-service:
+    build:
+      context: ./run-service
+      dockerfile: Dockerfile.development
+    ports:
+    - 3002:3000
+    environment:
+     - MONGO_URL=mongodb://mongodb:27017
+     - MONGO_DB=payload
+    volumes:
+     - ./run-service:/usr/src/app/
+    links:
+     - repo-service
+    networks:
+     - main
