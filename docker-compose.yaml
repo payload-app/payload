@@ -189,7 +189,5 @@ services:
      - organization-service
      - user-service
      - mongodb
-    ports:
-     - 3000:3000
     networks:
      - main
