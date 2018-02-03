@@ -5,6 +5,7 @@ const { rpc, method } = require('@hharnisc/micro-rpc')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const { router, get, post } = require('microrouter')
 const createRepo = require('./createRepo')
+const activateRepo = require('./activateRepo')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -40,6 +41,7 @@ const rpcHandler = ({
         userServiceClient,
       }),
     ),
+    method('activateRepo', activateRepo({ collectionClient })),
   )
 
 const healthHandler = ({
