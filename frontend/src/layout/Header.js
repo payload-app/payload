@@ -14,12 +14,20 @@ export class Header extends React.Component {
           delay={200}
           style={{
             fontSize: 38,
-            height: 50,
+            height: 46,
+            display: 'block',
+            textTransform: 'uppercase',
           }}
         >
           {layout.headline}
         </AnimateText>
-        <AnimateText style={{ fontSize: 15 }} cursor={true}>
+        <AnimateText
+          style={{
+            fontSize: 15,
+            textTransform: 'uppercase',
+          }}
+          cursor={true}
+        >
           {layout.subhead}
         </AnimateText>
       </div>
