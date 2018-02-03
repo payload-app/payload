@@ -56,6 +56,9 @@ services:
      - WORKER_QUEUE=payload-worker
     links:
      - queue-service
+     - repo-service
+     - user-service
+     - organization-service
     networks:
      - main
   github-auth:
@@ -135,9 +138,6 @@ services:
      - ./worker:/usr/src/app/
     links:
      - queue-service
-     - repo-service
-     - user-service
-     - organization-service
     environment:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-1
