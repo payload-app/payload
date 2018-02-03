@@ -1,14 +1,21 @@
 // @flow
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
 import store from './store'
-import App from './App'
 import { getElementById } from './helpers/guards'
+
+import { Layout } from './layout'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import Pages from './pages'
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Layout>
+      <Router>
+        <Pages />
+      </Router>
+    </Layout>
   </Provider>,
   getElementById('root'),
 )

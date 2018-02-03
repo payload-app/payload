@@ -11,6 +11,7 @@
     "eslint-plugin-flowtype": "^2.41.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-prettier": "^2.4.0",
+    "eslint-plugin-react": "^7.6.1",
     "flow-bin": "^0.63.1",
     "prettier": "^1.10.2"
   },
@@ -29,21 +30,32 @@
     "extends": [
       "plugin:flowtype/recommended",
       "plugin:import/errors",
-      "plugin:import/warnings"
+      "plugin:import/warnings",
+      "plugin:react/recommended"
     ],
     "rules": {
-      "prettier/prettier": [2,{
-        "singleQuote": true,
-        "trailingComma": "all",
-        "semi": false,
-        "bracketSpacing": true
-      }],
-      "import/no-unresolved": [2, {
-        "ignore": ["api-types"]
-      }],
+      "prettier/prettier": [
+        2,
+        {
+          "singleQuote": true,
+          "trailingComma": "all",
+          "semi": false,
+          "bracketSpacing": true
+        }
+      ],
+      "import/no-unresolved": [
+        2,
+        {
+          "ignore": [
+            "api-types"
+          ]
+        }
+      ],
       "import/no-named-as-default": 0,
       "import/no-named-as-default-member": 0,
-      "no-unused-vars": 2
+      "no-unused-vars": 2,
+      "react/display-name": 0,
+      "react/prop-types": 0
     }
   }
 }

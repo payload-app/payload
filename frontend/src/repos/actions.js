@@ -1,5 +1,5 @@
 // @flow
-import type { Repo, ListGithubRepoArgs } from 'api-types'
+import type { Repo } from 'api-types'
 import { actions as asyncDataFetchActions } from '@hharnisc/async-data-fetch'
 
 import { arrayToKeyedObj } from '../helpers/transformers'
