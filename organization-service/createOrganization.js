@@ -3,7 +3,6 @@ const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
 
 const schema = Joi.object().keys({
-  orgId: Joi.number().required(), // the type specific orgId
   name: Joi.string().required(),
   type: Joi.string()
     .valid(['github'])
@@ -12,7 +11,6 @@ const schema = Joi.object().keys({
 })
 
 module.exports = ({ collectionClient, userServiceClient }) => async ({
-  orgId,
   name,
   type,
   userIds,
@@ -20,7 +18,6 @@ module.exports = ({ collectionClient, userServiceClient }) => async ({
   try {
     await validate({
       value: {
-        orgId,
         name,
         type,
         userIds,
@@ -43,7 +40,6 @@ module.exports = ({ collectionClient, userServiceClient }) => async ({
       )
     }
     const { insertedId } = await collectionClient.insertOne({
-      orgId,
       name,
       type,
       userIds,

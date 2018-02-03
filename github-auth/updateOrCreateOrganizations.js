@@ -17,7 +17,6 @@ module.exports = async ({
   })
   const pageOrgArgs = pages.reduce((pageArgs, page) => {
     const onePageArgs = page.data.map(data => ({
-      orgId: data.id,
       name: data.login,
       type: 'github',
       userIds: [userId],
@@ -40,7 +39,7 @@ module.exports = async ({
     } catch (err) {
       if (
         err.message !==
-        `Could not update organization with orgId ${orgArgs.orgId} and type ${
+        `Could not update organization with name ${orgArgs.name} and type ${
           orgArgs.type
         }`
       ) {

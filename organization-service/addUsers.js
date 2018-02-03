@@ -6,14 +6,14 @@ const { createError } = require('@hharnisc/micro-rpc')
 const schema = Joi.object()
   .keys({
     id: Joi.string(),
-    orgId: Joi.number(),
+    name: Joi.number(),
     type: Joi.string(),
     userIds: Joi.array()
       .unique()
       .required(),
   })
-  .xor('id', 'orgId')
-  .and('orgId', 'type')
+  .xor('id', 'name')
+  .and('name', 'type')
 
 const updateOrganizationById = async ({ id, userIds, collectionClient }) => {
   const result = await collectionClient.updateOne(
@@ -30,15 +30,15 @@ const updateOrganizationById = async ({ id, userIds, collectionClient }) => {
   return await collectionClient.findOne({ _id: ObjectID(id) })
 }
 
-const updateOrganizationByTypeOrgId = async ({
-  orgId,
+const updateOrganizationByTypeOrgName = async ({
+  name,
   type,
   userIds,
   collectionClient,
 }) => {
   const result = await collectionClient.updateOne(
     {
-      orgId,
+      name,
       type,
     },
     {
@@ -47,15 +47,15 @@ const updateOrganizationByTypeOrgId = async ({
   )
   if (result.matchedCount !== 1) {
     throw new Error(
-      `Could not update organization with orgId ${orgId} and type ${type}`,
+      `Could not update organization with name ${name} and type ${type}`,
     )
   }
-  return await collectionClient.findOne({ orgId, type })
+  return await collectionClient.findOne({ name, type })
 }
 
 module.exports = ({ collectionClient, userServiceClient }) => async ({
   id,
-  orgId,
+  name,
   type,
   userIds,
 }) => {
@@ -63,7 +63,7 @@ module.exports = ({ collectionClient, userServiceClient }) => async ({
     await validate({
       value: {
         id,
-        orgId,
+        name,
         type,
         userIds,
       },
@@ -88,8 +88,8 @@ module.exports = ({ collectionClient, userServiceClient }) => async ({
     if (id) {
       return await updateOrganizationById({ id, userIds, collectionClient })
     }
-    return await updateOrganizationByTypeOrgId({
-      orgId,
+    return await updateOrganizationByTypeOrgName({
+      name,
       type,
       userIds,
       collectionClient,

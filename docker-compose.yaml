@@ -176,3 +176,18 @@ services:
      - ./github-service:/usr/src/app/
     networks:
      - main
+  repo-service:
+    build:
+      context: ./repo-service
+      dockerfile: Dockerfile.development
+    environment:
+     - MONGO_URL=mongodb://mongodb:27017
+     - MONGO_DB=payload
+    volumes:
+     - ./repo-service:/usr/src/app/
+    links:
+     - organization-service
+     - user-service
+     - mongodb
+    networks:
+     - main
