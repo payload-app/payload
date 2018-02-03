@@ -6,11 +6,11 @@ const { createError } = require('@hharnisc/micro-rpc')
 const schema = Joi.object()
   .keys({
     id: Joi.string(),
-    orgId: Joi.number(),
+    name: Joi.string(),
     type: Joi.string(),
   })
-  .xor('id', 'orgId')
-  .and('orgId', 'type')
+  .xor('id', 'name')
+  .and('name', 'type')
 
 const getOrganizationById = async ({ id, collectionClient }) => {
   const organization = await collectionClient.findOne({
@@ -22,29 +22,29 @@ const getOrganizationById = async ({ id, collectionClient }) => {
   return organization
 }
 
-const getOrganizationByTypeOrgId = async ({
-  orgId,
+const getOrganizationByTypeOrgName = async ({
+  name,
   type,
   collectionClient,
 }) => {
   const organization = await collectionClient.findOne({
-    orgId,
+    name,
     type,
   })
   if (!organization) {
     throw new Error(
-      `Could not find organization with orgId ${orgId} and type ${type}`,
+      `Could not find organization with name ${name} and type ${type}`,
     )
   }
   return organization
 }
 
-module.exports = ({ collectionClient }) => async ({ id, orgId, type }) => {
+module.exports = ({ collectionClient }) => async ({ id, name, type }) => {
   try {
     await validate({
       value: {
         id,
-        orgId,
+        name,
         type,
       },
       schema,
@@ -58,7 +58,7 @@ module.exports = ({ collectionClient }) => async ({ id, orgId, type }) => {
     if (id) {
       return await getOrganizationById({ id, collectionClient })
     }
-    return await getOrganizationByTypeOrgId({ orgId, type, collectionClient })
+    return await getOrganizationByTypeOrgName({ name, type, collectionClient })
   } catch (error) {
     throw createError({
       message: error.message,
