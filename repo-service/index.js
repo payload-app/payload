@@ -7,6 +7,7 @@ const { router, get, post } = require('microrouter')
 const createRepo = require('./createRepo')
 const activateRepo = require('./activateRepo')
 const deactivateRepo = require('./deactivateRepo')
+const getRepo = require('./getRepo')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -44,6 +45,7 @@ const rpcHandler = ({
     ),
     method('activateRepo', activateRepo({ collectionClient })),
     method('deactivateRepo', deactivateRepo({ collectionClient })),
+    method('getRepo', getRepo({ collectionClient })),
   )
 
 const healthHandler = ({

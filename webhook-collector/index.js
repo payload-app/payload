@@ -6,9 +6,50 @@ const queueServiceClient = new RPCClient({
   url: 'http://queue-service:3000/rpc',
 })
 
+const organizationServiceClient = new RPCClient({
+  url: 'http://organization-service:3000/rpc',
+})
+
+const userServiceClient = new RPCClient({
+  url: 'http://user-service:3000/rpc',
+})
+
+const repoServiceClient = new RPCClient({
+  url: 'http://repo-service:3000/rpc',
+})
+
 const healthHandler = () => ({
   status: 'OK',
 })
+
+const getGithubAccessToken = async ({ owner, repo }) => {
+  const repository = await repoServiceClient.call('getRepo', {
+    owner,
+    repo,
+  })
+  if (!repository.active) {
+    throw new Error('repository is not active')
+  }
+  let userId = repository.userId
+  if (repository.ownerType === 'organization') {
+    const organization = await organizationServiceClient.call(
+      'getOrganization',
+      {
+        name: repository.owner,
+        type: 'github',
+      },
+    )
+    // choose a random id to grab an access token from
+    userId =
+      organization.userIds[
+        Math.floor(Math.random() * organization.userIds.length)
+      ]
+  }
+  const user = await userServiceClient.call('getUser', {
+    id: userId,
+  })
+  return user.accounts.github.accessToken
+}
 
 const enqueuePullRequest = async ({ payload }) => {
   const action = payload.action
@@ -30,12 +71,16 @@ const enqueuePullRequest = async ({ payload }) => {
     sha: pullRequest.head.sha,
     branch: pullRequest.head.ref,
   }
+
+  const accessToken = await getGithubAccessToken({ owner, repo })
+
   const task = {
     owner,
     repo,
     base,
     head,
     ownerType,
+    accessToken,
     type: 'github',
   }
   const { taskId } = await queueServiceClient.call('createTask', {

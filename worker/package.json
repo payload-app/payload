@@ -9,6 +9,10 @@
   "author": "hharnisc@gmail.com",
   "license": "MIT",
   "dependencies": {
-    "@hharnisc/micro-rpc-client": "^0.1.2"
+    "@hharnisc/micro-rpc-client": "^0.1.2",
+    "child-process-promise": "^2.2.1",
+    "rimraf": "^2.6.2",
+    "simple-git": "^1.89.0",
+    "winston": "^2.4.0"
   }
 }

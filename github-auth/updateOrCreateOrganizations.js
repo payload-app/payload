@@ -27,14 +27,7 @@ module.exports = async ({
   for (let orgArgs of pageOrgArgs) {
     let organizationId
     try {
-      const updateArgs = {
-        ...orgArgs,
-        name: undefined,
-      }
-      const { _id } = await organizationServiceClient.call(
-        'addUsers',
-        updateArgs,
-      )
+      const { _id } = await organizationServiceClient.call('addUsers', orgArgs)
       organizationId = _id
     } catch (err) {
       if (
