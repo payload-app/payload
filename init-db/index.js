@@ -20,6 +20,16 @@ const initOrganizationCollection = async ({ dbClient }) => {
   console.log('Init Organization Collection...Done')
 }
 
+const initRepositoriesCollection = async ({ dbClient }) => {
+  console.log('Init Repositories Collection...')
+  await dbClient.createCollection('repositories')
+  await dbClient
+    .collection('repositories')
+    .createIndex({ owner: 1, repo: 1, type: 1 }, { unique: 1 })
+  await dbClient.collection('repositories').createIndex({ userId: 1 })
+  console.log('Init Repositories Collection...Done')
+}
+
 const initDB = async () => {
   console.log('Connecting to Client...')
   const mongoClient = await promisifiedMongoClient.connect(
@@ -29,6 +39,7 @@ const initDB = async () => {
   console.log('Connecting to Client...Done')
   await initUserCollection({ dbClient })
   await initOrganizationCollection({ dbClient })
+  await initRepositoriesCollection({ dbClient })
   mongoClient.close()
 }
 
