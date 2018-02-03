@@ -1,9 +1,11 @@
-const util = require('util')
+const { join } = require('path')
 const winston = require('winston')
+const git = require('simple-git/promise')
 const { promisify } = require('util')
+const rimraf = require('rimraf')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const sleep = promisify(setTimeout)
-const exec = util.promisify(require('child_process').exec)
+const rmrf = promisify(rimraf)
 
 const logger = new winston.Logger({
   transports: [
@@ -40,12 +42,26 @@ const repoServiceClient = new RPCClient({
   url: 'http://repo-service:3000/rpc',
 })
 
-const cloneRepo = async ({ accessToken, owner, repo, sha }) => {
-  const { stdout, stderr } = await exec(
-    `git clone https://${accessToken}@github.com/${owner}/${repo}.git /tmp/${sha}`,
+const cleanup = async ({ sha, workingDirBase = '/tmp' }) => {
+  await rmrf(join(workingDirBase, sha))
+}
+
+const cloneRepo = async ({
+  accessToken,
+  owner,
+  repo,
+  sha,
+  workingDirBase = '/tmp',
+}) => {
+  logger.info(`Cloning Repo ${owner}/${repo}`)
+  await git(workingDirBase).clone(
+    `https://${accessToken}@github.com/${owner}/${repo}.git`,
+    sha,
   )
-  console.log('stdout:', stdout)
-  console.log('stderr:', stderr)
+  logger.info(`Completed Cloning Repo`)
+  logger.info(`Checking Out Sha: ${sha}`)
+  await git(join(workingDirBase, sha)).checkout(sha)
+  logger.info(`Completed Checking Out Sha: ${sha}`)
 }
 
 const getGithubAccessTokenFromTask = async ({ task }) => {
@@ -89,17 +105,26 @@ const main = async () => {
     const { task, taskId } = work
     logger.info(`Found Task: ${taskId}`)
     logger.info(JSON.stringify(task))
+
     const accessToken = await getGithubAccessTokenFromTask({ task })
-    logger.info(
-      `Cloning repo: https://github.com/${task.owner}/${task.repo}.git`,
-    )
-    await cloneRepo({
-      accessToken,
-      owner: task.owner,
-      repo: task.repo,
-      sha: task.base.sha,
-    })
-    logger.info(`Completed Cloning Repo`)
+    const { owner, repo, base: { sha } } = task
+    try {
+      await cloneRepo({
+        owner,
+        repo,
+        sha,
+        accessToken,
+      })
+    } catch (err) {
+      console.log('err', err)
+      logger.info('Sleeping 110 Seconds')
+      await sleep(110000)
+    } finally {
+      await cleanup({
+        sha,
+      })
+    }
+
     const result = await queueServiceClient.call('completeTask', {
       queue,
       workerName,
