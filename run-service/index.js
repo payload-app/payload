@@ -8,6 +8,7 @@ const createRun = require('./createRun')
 const getRun = require('./getRun')
 const startRun = require('./startRun')
 const stopRun = require('./stopRun')
+const setBaseRun = require('./setBaseRun')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -35,6 +36,7 @@ const rpcHandler = ({ collectionClient, repoServiceClient }) =>
     method('getRun', getRun({ collectionClient })),
     method('startRun', startRun({ collectionClient })),
     method('stopRun', stopRun({ collectionClient })),
+    method('setBaseRun', setBaseRun({ collectionClient })),
   )
 
 const healthHandler = ({ collectionClient, repoServiceClient }) => async (
