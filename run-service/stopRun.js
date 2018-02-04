@@ -3,16 +3,31 @@ const Joi = require('joi')
 const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
 
-const schema = Joi.object().keys({
-  id: Joi.string().required(),
-  errorMessage: Joi.string(),
-})
+const schema = Joi.object()
+  .keys({
+    id: Joi.string().required(),
+    fileSizes: Joi.array()
+      .items(
+        Joi.object().keys({
+          file: Joi.string().required(),
+          size: Joi.number().required(),
+        }),
+      )
+      .min(1),
+    errorMessage: Joi.string(),
+  })
+  .xor('fileSizes', 'errorMessage')
 
-module.exports = ({ collectionClient }) => async ({ id, errorMessage }) => {
+module.exports = ({ collectionClient }) => async ({
+  id,
+  fileSizes,
+  errorMessage,
+}) => {
   try {
     await validate({
       value: {
         id,
+        fileSizes,
         errorMessage,
       },
       schema,
@@ -34,6 +49,14 @@ module.exports = ({ collectionClient }) => async ({ id, errorMessage }) => {
         $set: {
           ...updateData['$set'],
           errorMessage,
+        },
+      }
+    } else {
+      updateData = {
+        ...updateData,
+        $set: {
+          ...updateData['$set'],
+          fileSizes,
         },
       }
     }
