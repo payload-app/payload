@@ -96,10 +96,6 @@ const main = async () => {
       return
     }
 
-    console.log('headFileSizes', headFileSizes)
-    console.log('baseFileSizes', baseFileSizes)
-    console.log('broadcastCompleteWithDiffs', broadcastCompleteWithDiffs)
-
     // TODO: parse increaseThreshold from package.json
     if (headFileSizes && baseFileSizes) {
       await broadcastCompleteWithDiffs({
