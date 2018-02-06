@@ -22,11 +22,13 @@ const healthHandler = () => ({
   status: 'OK',
 })
 
-const getGithubAccessToken = async ({ owner, repo }) => {
-  const repository = await repoServiceClient.call('getRepo', {
+const getRepository = async ({ owner, repo }) =>
+  await repoServiceClient.call('getRepo', {
     owner,
     repo,
   })
+
+const getGithubAccessToken = async ({ repository }) => {
   if (!repository.active) {
     throw new Error('repository is not active')
   }
@@ -72,11 +74,13 @@ const enqueuePullRequest = async ({ payload }) => {
     branch: pullRequest.head.ref,
   }
 
-  const accessToken = await getGithubAccessToken({ owner, repo })
+  const dbRepository = await getRepository({ owner, repo })
+  const accessToken = await getGithubAccessToken({ repository: dbRepository })
 
   const task = {
     owner,
     repo,
+    repoId: dbRepository._id,
     base,
     head,
     ownerType,

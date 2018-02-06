@@ -138,6 +138,7 @@ services:
      - ./worker:/usr/src/app/
     links:
      - queue-service
+     - run-service
     environment:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-1

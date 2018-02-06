@@ -1,47 +1,93 @@
-const { readFile: readFileAsync, stat: statAsync } = require('fs')
-const { join } = require('path')
-const { promisify } = require('util')
-const { spawn } = require('child-process-promise')
+const RPCClient = require('@hharnisc/micro-rpc-client')
+const parseCommandsAndFiles = require('./parseCommandsAndFiles')
+const runScripts = require('./runScripts')
+const calculateFileSizes = require('./calculateFileSizes')
+const cloneRepo = require('./cloneRepo')
+const cleanup = require('./cleanup')
 
-const readFile = promisify(readFileAsync)
-const stat = promisify(statAsync)
+const runServiceClient = new RPCClient({
+  url: 'http://run-service:3000/rpc',
+})
 
-const getFilesizeInBytes = async filename => {
-  const stats = await stat(filename)
-  const fileSizeInBytes = stats.size
-  return fileSizeInBytes
-}
-
-module.exports = async ({ sha, logger, workingDirBase = '/tmp' }) => {
-  logger.info('Reading package.json file')
-  const fileData = await readFile(join(workingDirBase, sha, 'package.json'))
-  logger.info('Parsing package.json file')
-  const packageData = JSON.parse(fileData)
-
-  console.log('packageData', packageData)
-
-  // TODO: validate package
-  for (let command of packageData.payload.scripts) {
-    const promise = spawn(command, {
-      shell: true,
-      cwd: join(workingDirBase, sha),
+module.exports = async ({
+  owner,
+  repo,
+  repoId,
+  accessToken,
+  sha,
+  branch,
+  logger,
+  workingDirBase = '/tmp',
+}) => {
+  logger.info('Checking for existing run')
+  let run
+  try {
+    run = await runServiceClient.call('getRun', {
+      owner,
+      repo,
+      sha,
     })
-    const { childProcess } = promise
+  } catch (error) {}
 
-    logger.info(`[${command}] pid: `, childProcess.pid)
-    childProcess.stdout.on('data', data => {
-      logger.info(`[${command}] stdout: `, data.toString())
-    })
-    childProcess.stderr.on('data', data => {
-      logger.info(`[${command}] stderr: `, data.toString())
-    })
-    await promise
-    logger.info(`[${command}] complete`)
+  if (run && run.start && !run.stop) {
+    const message = 'Another worker is processing this run'
+    logger.info(message, { run })
+    throw new Error(message)
+  } else if (run) {
+    return run.fileSizes
   }
 
-  logger.info('Calculating File Sizes')
-  for (let file of packageData.payload.files) {
-    const fileSize = await getFilesizeInBytes(join(workingDirBase, sha, file))
-    logger.info(`[${file}]: `, fileSize)
+  const { id } = await runServiceClient.call('createRun', {
+    owner,
+    repo,
+    repoId,
+    branch,
+    sha,
+  })
+  logger.info('Run Starting', { id })
+  await runServiceClient.call('startRun', {
+    id,
+  })
+
+  let error
+  let fileSizes
+  try {
+    await cloneRepo({
+      owner,
+      repo,
+      sha,
+      accessToken,
+      logger,
+    })
+    const { scripts, files } = await parseCommandsAndFiles({
+      sha,
+      logger,
+      workingDirBase,
+    })
+
+    console.log('scripts', scripts)
+    console.log('files', files)
+
+    await runScripts({ scripts, sha, logger, workingDirBase })
+    fileSizes = await calculateFileSizes({ sha, files, logger, workingDirBase })
+    await runServiceClient.call('stopRun', {
+      id,
+      fileSizes,
+    })
+    logger.info('Run Complete', { id })
+  } catch (e) {
+    error = e
+    logger.info('Run Failed', { id, error: error.message })
+    await runServiceClient.call('stopRun', {
+      id,
+      errorMessage: error.message,
+    })
   }
+  await cleanup({
+    sha,
+  })
+  if (error) {
+    throw error
+  }
+  return fileSizes
 }
