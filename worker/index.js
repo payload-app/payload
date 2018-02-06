@@ -2,7 +2,7 @@ const winston = require('winston')
 const { promisify } = require('util')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const doWork = require('./doWork')
-const { broadcastComplete } = require('./broadcast')
+const { broadcastComplete, broadcastCompleteWithDiffs } = require('./broadcast')
 
 const sleep = promisify(setTimeout)
 
@@ -27,10 +27,6 @@ const logger = new winston.Logger({
 
 const queueServiceClient = new RPCClient({
   url: 'http://queue-service:3000/rpc',
-})
-
-const statusBroadcasterClient = new RPCClient({
-  url: 'http://status-broadcaster:3000/rpc',
 })
 
 const main = async () => {
@@ -100,14 +96,30 @@ const main = async () => {
       return
     }
 
-    // TODO: conditionally broadcast base size
-    await broadcastComplete({
-      fileSizes: headFileSizes,
-      accessToken,
-      owner,
-      repo,
-      sha: headSha,
-    })
+    console.log('headFileSizes', headFileSizes)
+    console.log('baseFileSizes', baseFileSizes)
+    console.log('broadcastCompleteWithDiffs', broadcastCompleteWithDiffs)
+
+    // TODO: parse increaseThreshold from package.json
+    if (headFileSizes && baseFileSizes) {
+      await broadcastCompleteWithDiffs({
+        baseFileSizes,
+        headFileSizes,
+        accessToken,
+        owner,
+        repo,
+        sha: headSha,
+        increaseThreshold: 0.05,
+      })
+    } else {
+      await broadcastComplete({
+        fileSizes: headFileSizes,
+        accessToken,
+        owner,
+        repo,
+        sha: headSha,
+      })
+    }
 
     await queueServiceClient.call('completeTask', {
       queue,

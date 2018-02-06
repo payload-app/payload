@@ -65,9 +65,69 @@ const broadcastComplete = async ({
   }
 }
 
+const filesCollectionToObject = ({ collection }) =>
+  collection.reduce((curObj, curItem) => {
+    return {
+      curObj,
+      [curItem.file]: curItem.size,
+    }
+  }, {})
+
+const broadcastCompleteWithDiffs = async ({
+  baseFileSizes,
+  headFileSizes,
+  owner,
+  repo,
+  sha,
+  accessToken,
+  increaseThreshold = 0.05,
+}) => {
+  console.log('headFileSizes', headFileSizes)
+  console.log('baseFileSizes', baseFileSizes)
+  const objBaseFileSizes = filesCollectionToObject({
+    collection: baseFileSizes,
+  })
+  console.log('objBaseFileSizes', objBaseFileSizes)
+  const fileSizesWithDiffs = headFileSizes.map(headFile => {
+    const baseFileSize = objBaseFileSizes[headFile.file]
+    const headFileSize = headFile.size
+    if (baseFileSize) {
+      return {
+        file: headFile.file,
+        size: headFile.size,
+        diff: (headFileSize - baseFileSize) / baseFileSize,
+      }
+    }
+    return {
+      file: headFile.file,
+      size: headFile.size,
+      diff: null,
+    }
+  })
+
+  for (let file of fileSizesWithDiffs) {
+    let description = `${prettyBytes(file.size)}`
+    let state = 'success'
+    if (file.diff) {
+      description = `(${(file.diff * 100).toFixed(2)}%) ${description}`
+      state = file.diff > increaseThreshold ? 'failure' : 'success'
+    }
+    await statusBroadcasterClient.call('broadcastStatus', {
+      accessToken,
+      owner,
+      repo,
+      sha,
+      state,
+      description,
+      context: `Payload - ${file.file}`,
+    })
+  }
+}
+
 module.exports = {
   broadcastStart,
   broadcastFail,
   broadcastComplete,
+  broadcastCompleteWithDiffs,
   broadcastRunError,
 }
