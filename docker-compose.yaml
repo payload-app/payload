@@ -139,6 +139,7 @@ services:
     links:
      - queue-service
      - run-service
+     - status-broadcaster
     environment:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-1

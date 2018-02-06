@@ -1,4 +1,5 @@
 const winston = require('winston')
+const prettyBytes = require('pretty-bytes')
 const { promisify } = require('util')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const doWork = require('./doWork')
@@ -26,6 +27,10 @@ const logger = new winston.Logger({
 
 const queueServiceClient = new RPCClient({
   url: 'http://queue-service:3000/rpc',
+})
+
+const statusBroadcasterClient = new RPCClient({
+  url: 'http://status-broadcaster:3000/rpc',
 })
 
 const main = async () => {
@@ -69,7 +74,6 @@ const main = async () => {
       if (error.message === 'Another worker is processing this run') {
         return
       }
-      console.log(error)
     }
 
     try {
@@ -96,8 +100,19 @@ const main = async () => {
       return
     }
 
-    console.log('baseFileSizes', baseFileSizes)
-    console.log('headFileSizes', headFileSizes)
+    // TODO: broadcast that tests are starting
+    // TODO: conditionally broadcast base size
+    for (let file of headFileSizes) {
+      await statusBroadcasterClient.call('broadcastStatus', {
+        accessToken,
+        owner,
+        repo,
+        sha: headSha,
+        state: 'success',
+        description: prettyBytes(file.size),
+        context: `Payload - ${file.file}`,
+      })
+    }
 
     await queueServiceClient.call('completeTask', {
       queue,

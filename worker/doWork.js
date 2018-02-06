@@ -65,9 +65,6 @@ module.exports = async ({
       workingDirBase,
     })
 
-    console.log('scripts', scripts)
-    console.log('files', files)
-
     await runScripts({ scripts, sha, logger, workingDirBase })
     fileSizes = await calculateFileSizes({ sha, files, logger, workingDirBase })
     await runServiceClient.call('stopRun', {

@@ -14,12 +14,13 @@ const rpcHandler = rpc(
       description,
       targetUrl,
       context,
+      userAgent = 'Payload',
     }) =>
       rp({
         method: 'POST',
         uri: `https://api.github.com/repos/${owner}/${repo}/statuses/${sha}?access_token=${accessToken}`,
         headers: {
-          'User-Agent': context,
+          'User-Agent': userAgent,
         },
         json: true,
         body: {
