@@ -1,8 +1,8 @@
 const winston = require('winston')
-const prettyBytes = require('pretty-bytes')
 const { promisify } = require('util')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const doWork = require('./doWork')
+const { broadcastComplete } = require('./broadcast')
 
 const sleep = promisify(setTimeout)
 
@@ -100,19 +100,14 @@ const main = async () => {
       return
     }
 
-    // TODO: broadcast that tests are starting
     // TODO: conditionally broadcast base size
-    for (let file of headFileSizes) {
-      await statusBroadcasterClient.call('broadcastStatus', {
-        accessToken,
-        owner,
-        repo,
-        sha: headSha,
-        state: 'success',
-        description: prettyBytes(file.size),
-        context: `Payload - ${file.file}`,
-      })
-    }
+    await broadcastComplete({
+      fileSizes: headFileSizes,
+      accessToken,
+      owner,
+      repo,
+      sha: headSha,
+    })
 
     await queueServiceClient.call('completeTask', {
       queue,

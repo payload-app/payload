@@ -1,9 +1,14 @@
 const RPCClient = require('@hharnisc/micro-rpc-client')
-const parseCommandsAndFiles = require('./parseCommandsAndFiles')
+const parseScriptsAndFiles = require('./parseScriptsAndFiles')
 const runScripts = require('./runScripts')
 const calculateFileSizes = require('./calculateFileSizes')
 const cloneRepo = require('./cloneRepo')
 const cleanup = require('./cleanup')
+const {
+  broadcastStart,
+  broadcastFail,
+  broadcastRunError,
+} = require('./broadcast')
 
 const runServiceClient = new RPCClient({
   url: 'http://run-service:3000/rpc',
@@ -51,6 +56,7 @@ module.exports = async ({
 
   let error
   let fileSizes
+  let files
   try {
     await cloneRepo({
       owner,
@@ -59,10 +65,21 @@ module.exports = async ({
       accessToken,
       logger,
     })
-    const { scripts, files } = await parseCommandsAndFiles({
+    const scriptsAndFiles = await parseScriptsAndFiles({
       sha,
       logger,
       workingDirBase,
+    })
+
+    const scripts = scriptsAndFiles.scripts
+    files = scriptsAndFiles.files
+
+    await broadcastStart({
+      files,
+      accessToken,
+      owner,
+      repo,
+      sha,
     })
 
     await runScripts({ scripts, sha, logger, workingDirBase })
@@ -79,6 +96,22 @@ module.exports = async ({
       id,
       errorMessage: error.message,
     })
+    if (files) {
+      await broadcastFail({
+        files,
+        accessToken,
+        owner,
+        repo,
+        sha,
+      })
+    } else {
+      broadcastRunError({
+        accessToken,
+        owner,
+        repo,
+        sha,
+      })
+    }
   }
   await cleanup({
     sha,
