@@ -106,13 +106,9 @@ const broadcastCompleteWithDiffs = async ({
     let description = `${prettyBytes(file.size)}`
     let state = 'success'
     if (file.diff) {
-      let prefix = ''
-      if (file.diff > 0) {
-        prefix = '+'
-      } else if (file.diff < 0) {
-        prefix = '-'
-      }
-      description = `(${prefix}${(file.diff * 100).toFixed(2)}%) ${description}`
+      description = `${description} (${file > 0 ? '+' : ''}${(
+        file.diff * 100
+      ).toFixed(2)}%)`
       state = file.diff > increaseThreshold ? 'failure' : 'success'
     }
     await statusBroadcasterClient.call('broadcastStatus', {

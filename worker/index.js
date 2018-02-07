@@ -48,6 +48,7 @@ const main = async () => {
       repo,
       repoId,
       accessToken,
+      taskType,
       head: { sha: headSha, branch: headBranch },
       base: { sha: baseSha, branch: baseBranch },
     } = task
@@ -99,8 +100,7 @@ const main = async () => {
       return
     }
 
-    // TODO: parse increaseThreshold from package.json
-    if (headFileSizes && baseFileSizes) {
+    if (headFileSizes && baseFileSizes && taskType === 'pullRequest') {
       await broadcastCompleteWithDiffs({
         baseFileSizes,
         headFileSizes,
