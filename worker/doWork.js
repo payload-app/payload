@@ -1,5 +1,5 @@
 const RPCClient = require('@hharnisc/micro-rpc-client')
-const parseScriptsAndFiles = require('./parseScriptsAndFiles')
+const parsePayloadConfig = require('./parsePayloadConfig')
 const runScripts = require('./runScripts')
 const calculateFileSizes = require('./calculateFileSizes')
 const cloneRepo = require('./cloneRepo')
@@ -65,7 +65,7 @@ module.exports = async ({
       accessToken,
       logger,
     })
-    const scriptsAndFiles = await parseScriptsAndFiles({
+    const scriptsAndFiles = await parsePayloadConfig({
       sha,
       logger,
       workingDirBase,
