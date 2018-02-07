@@ -4,8 +4,7 @@
   "description": "Broadcast Playload Status To Commits On Repos",
   "main": "index.js",
   "scripts": {
-    "start": "micro",
-    "start-dev": "micro -p 8082"
+    "start": "micro"
   },
   "author": "hharnisc@gmail.com",
   "license": "MIT",

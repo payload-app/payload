@@ -22,11 +22,13 @@ const healthHandler = () => ({
   status: 'OK',
 })
 
-const getGithubAccessToken = async ({ owner, repo }) => {
-  const repository = await repoServiceClient.call('getRepo', {
+const getRepository = async ({ owner, repo }) =>
+  await repoServiceClient.call('getRepo', {
     owner,
     repo,
   })
+
+const getGithubAccessToken = async ({ repository }) => {
   if (!repository.active) {
     throw new Error('repository is not active')
   }
@@ -72,15 +74,60 @@ const enqueuePullRequest = async ({ payload }) => {
     branch: pullRequest.head.ref,
   }
 
-  const accessToken = await getGithubAccessToken({ owner, repo })
+  const dbRepository = await getRepository({ owner, repo })
+  const accessToken = await getGithubAccessToken({ repository: dbRepository })
 
   const task = {
     owner,
     repo,
+    repoId: dbRepository._id,
     base,
     head,
     ownerType,
     accessToken,
+    taskType: 'pullRequest',
+    type: 'github',
+  }
+  const { taskId } = await queueServiceClient.call('createTask', {
+    queue: process.env.WORKER_QUEUE,
+    task,
+    retries: 0,
+    lease: 60,
+  })
+  console.log(`Enqueued task with id: ${taskId}`)
+}
+
+const enqueuePush = async ({ payload }) => {
+  const defaultBranch = payload.repository['default_branch']
+  // ignore pushes on non default branches
+  if (payload.ref !== `refs/heads/${defaultBranch}`) {
+    return
+  }
+  const repository = payload.repository
+  const owner = repository.owner.login
+  const ownerType = repository.owner.type.toLowerCase()
+  const repo = repository.name
+
+  const base = {
+    sha: payload.before,
+    branch: defaultBranch,
+  }
+  const head = {
+    sha: payload.after,
+    branch: defaultBranch,
+  }
+
+  const dbRepository = await getRepository({ owner, repo })
+  const accessToken = await getGithubAccessToken({ repository: dbRepository })
+  const task = {
+    owner,
+    repo,
+    repoId: dbRepository._id,
+    base,
+    head,
+    ownerType,
+    accessToken,
+    taskType: 'push',
     type: 'github',
   }
   const { taskId } = await queueServiceClient.call('createTask', {
@@ -97,6 +144,8 @@ const webhookHandler = async req => {
   const payload = await json(req)
   if (event === 'pull_request') {
     await enqueuePullRequest({ payload })
+  } else if (event === 'push') {
+    await enqueuePush({ payload })
   }
   return 'OK'
 }

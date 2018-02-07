@@ -29,6 +29,11 @@ module.exports = ({ collectionClient }) => async ({ id }) => {
         $currentDate: {
           start: { $type: 'timestamp' },
         },
+        $unset: {
+          fileSizes: '',
+          errorMessage: '',
+          stop: '',
+        },
       },
     )
     if (result.matchedCount !== 1) {
