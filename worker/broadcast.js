@@ -82,12 +82,9 @@ const broadcastCompleteWithDiffs = async ({
   accessToken,
   increaseThreshold = 0.05,
 }) => {
-  console.log('headFileSizes', headFileSizes)
-  console.log('baseFileSizes', baseFileSizes)
   const objBaseFileSizes = filesCollectionToObject({
     collection: baseFileSizes,
   })
-  console.log('objBaseFileSizes', objBaseFileSizes)
   const fileSizesWithDiffs = headFileSizes.map(headFile => {
     const baseFileSize = objBaseFileSizes[headFile.file]
     const headFileSize = headFile.size
@@ -109,7 +106,13 @@ const broadcastCompleteWithDiffs = async ({
     let description = `${prettyBytes(file.size)}`
     let state = 'success'
     if (file.diff) {
-      description = `(${(file.diff * 100).toFixed(2)}%) ${description}`
+      let prefix = ''
+      if (file.diff > 0) {
+        prefix = '+'
+      } else if (file.diff < 0) {
+        prefix = '-'
+      }
+      description = `(${prefix}${(file.diff * 100).toFixed(2)}%) ${description}`
       state = file.diff > increaseThreshold ? 'failure' : 'success'
     }
     await statusBroadcasterClient.call('broadcastStatus', {

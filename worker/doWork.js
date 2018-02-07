@@ -39,7 +39,9 @@ module.exports = async ({
     logger.info(message, { run })
     throw new Error(message)
   } else if (run) {
-    return run.fileSizes
+    return {
+      fileSizes: run.fileSizes,
+    }
   }
 
   const { id } = await runServiceClient.call('createRun', {
@@ -56,7 +58,8 @@ module.exports = async ({
 
   let error
   let fileSizes
-  let files
+  let fileList
+  let increaseThreshold
   try {
     await cloneRepo({
       owner,
@@ -65,14 +68,18 @@ module.exports = async ({
       accessToken,
       logger,
     })
-    const scriptsAndFiles = await parsePayloadConfig({
+    const {
+      scripts,
+      files,
+      increaseThreshold: threshold,
+    } = await parsePayloadConfig({
       sha,
       logger,
       workingDirBase,
     })
 
-    const scripts = scriptsAndFiles.scripts
-    files = scriptsAndFiles.files
+    increaseThreshold = threshold
+    fileList = files
 
     await broadcastStart({
       files,
@@ -96,7 +103,7 @@ module.exports = async ({
       id,
       errorMessage: error.message,
     })
-    if (files) {
+    if (fileList) {
       await broadcastFail({
         files,
         accessToken,
@@ -119,5 +126,8 @@ module.exports = async ({
   if (error) {
     throw error
   }
-  return fileSizes
+  return {
+    fileSizes,
+    increaseThreshold,
+  }
 }

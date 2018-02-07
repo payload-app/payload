@@ -57,7 +57,7 @@ const main = async () => {
     let headFileSizes
 
     try {
-      baseFileSizes = await doWork({
+      const { fileSizes } = await doWork({
         owner,
         repo,
         repoId,
@@ -66,6 +66,7 @@ const main = async () => {
         branch: baseBranch,
         logger,
       })
+      baseFileSizes = fileSizes
     } catch (error) {
       if (error.message === 'Another worker is processing this run') {
         return
@@ -73,7 +74,7 @@ const main = async () => {
     }
 
     try {
-      headFileSizes = await doWork({
+      const { fileSizes, increaseThreshold: threshold } = await doWork({
         owner,
         repo,
         repoId,
@@ -82,6 +83,8 @@ const main = async () => {
         branch: headBranch,
         logger,
       })
+      headFileSizes = fileSizes
+      increaseThreshold = threshold
     } catch (error) {
       // if this failed and no other working is processing this run
       // mark the task as failed
@@ -105,7 +108,7 @@ const main = async () => {
         owner,
         repo,
         sha: headSha,
-        increaseThreshold: 0.05,
+        increaseThreshold: increaseThreshold || 0.05,
       })
     } else {
       await broadcastComplete({

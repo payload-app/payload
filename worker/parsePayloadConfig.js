@@ -13,5 +13,6 @@ module.exports = async ({ sha, logger, workingDirBase }) => {
   return {
     scripts: packageData.payload.scripts,
     files: packageData.payload.files,
+    increaseThreshold: packageData.payload.increaseThreshold,
   }
 }
