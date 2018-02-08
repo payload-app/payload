@@ -1,3 +1,4 @@
+// TODO: make this use github-service (or delete it)
 const rp = require('request-promise')
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const { router, get, post } = require('microrouter')
