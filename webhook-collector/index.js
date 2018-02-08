@@ -1,4 +1,4 @@
-const { json } = require('micro')
+const { json, send } = require('micro')
 const { router, get, post } = require('microrouter')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 
@@ -28,10 +28,22 @@ const getRepository = async ({ owner, repo }) =>
     repo,
   })
 
-const getGithubAccessToken = async ({ repository }) => {
+const throwHandledError = ({ message }) => {
+  const error = new Error(message)
+  error.handled = true
+  throw error
+}
+
+const validateRepository = async ({ repository, app, token }) => {
   if (!repository.active) {
-    throw new Error('repository is not active')
+    throwHandledError({ message: 'repository is not active' })
   }
+  if (!(repository.webhooks[app] && repository.webhooks[app] === token)) {
+    throwHandledError({ message: 'repository app token does not match' })
+  }
+}
+
+const getGithubAccessToken = async ({ repository }) => {
   let userId = repository.userId
   if (repository.ownerType === 'organization') {
     const organization = await organizationServiceClient.call(
@@ -53,7 +65,7 @@ const getGithubAccessToken = async ({ repository }) => {
   return user.accounts.github.accessToken
 }
 
-const enqueuePullRequest = async ({ payload }) => {
+const enqueuePullRequest = async ({ req, payload }) => {
   const action = payload.action
   // ignore actions that aren't PR synchronize or opened
   if (!['opened', 'synchronize'].includes(action)) {
@@ -75,6 +87,11 @@ const enqueuePullRequest = async ({ payload }) => {
   }
 
   const dbRepository = await getRepository({ owner, repo })
+  await validateRepository({
+    repository: dbRepository,
+    app: req.params.app,
+    token: req.params.token,
+  })
   const accessToken = await getGithubAccessToken({ repository: dbRepository })
 
   const task = {
@@ -97,7 +114,7 @@ const enqueuePullRequest = async ({ payload }) => {
   console.log(`Enqueued task with id: ${taskId}`)
 }
 
-const enqueuePush = async ({ payload }) => {
+const enqueuePush = async ({ req, payload }) => {
   const defaultBranch = payload.repository['default_branch']
   // ignore pushes on non default branches
   if (payload.ref !== `refs/heads/${defaultBranch}`) {
@@ -118,6 +135,11 @@ const enqueuePush = async ({ payload }) => {
   }
 
   const dbRepository = await getRepository({ owner, repo })
+  await validateRepository({
+    repository: dbRepository,
+    app: req.params.app,
+    token: req.params.token,
+  })
   const accessToken = await getGithubAccessToken({ repository: dbRepository })
   const task = {
     owner,
@@ -139,18 +161,26 @@ const enqueuePush = async ({ payload }) => {
   console.log(`Enqueued task with id: ${taskId}`)
 }
 
-const webhookHandler = async req => {
-  const event = req.headers['x-github-event']
-  const payload = await json(req)
-  if (event === 'pull_request') {
-    await enqueuePullRequest({ payload })
-  } else if (event === 'push') {
-    await enqueuePush({ payload })
+const webhookHandler = async (req, res) => {
+  try {
+    const event = req.headers['x-github-event']
+    const payload = await json(req)
+    if (event === 'pull_request') {
+      await enqueuePullRequest({ req, payload })
+    } else if (event === 'push') {
+      await enqueuePush({ req, payload })
+    }
+    return 'OK'
+  } catch (error) {
+    if (error.handled) {
+      send(res, 400, error.message)
+    } else {
+      throw err
+    }
   }
-  return 'OK'
 }
 
 module.exports = router(
   get('/webhook/healthz', healthHandler),
-  post('/webhook', webhookHandler),
+  post('/webhook/:app/:token', webhookHandler),
 )
