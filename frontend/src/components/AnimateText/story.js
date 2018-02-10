@@ -22,3 +22,6 @@ storiesOf('AnimateText', module)
   .add('size = 2', () => (
     <AnimateText size={2}>This is some huge text</AnimateText>
   ))
+  .add('color = red', () => (
+    <AnimateText color={'red'}>This is some red text</AnimateText>
+  ))
