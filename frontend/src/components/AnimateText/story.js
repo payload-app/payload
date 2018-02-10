@@ -1,7 +1,5 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import '@storybook/addon-actions/register'
-import '@storybook/addon-links/register'
 import AnimateText from './index'
 
 storiesOf('AnimateText', module)

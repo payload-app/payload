@@ -1,9 +1,10 @@
 import React from 'react'
 import Typist from 'react-typist'
 import 'react-typist/dist/Typist.css'
+import Text from '../Text'
 
-export default ({ delay = 0, speed = 50, cursor = false, children, style }) => (
-  <span style={style}>
+export default ({ delay = 0, speed = 50, cursor = false, children }) => (
+  <Text>
     <Typist
       startDelay={delay}
       stdTypingDelay={0}
@@ -15,5 +16,5 @@ export default ({ delay = 0, speed = 50, cursor = false, children, style }) => (
     >
       {children}
     </Typist>
-  </span>
+  </Text>
 )
