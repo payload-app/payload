@@ -19,3 +19,6 @@ storiesOf('AnimateText', module)
       <AnimateText delay={1000}>There It Is</AnimateText>
     </div>
   ))
+  .add('size = 2', () => (
+    <AnimateText size={2}>This is some huge text</AnimateText>
+  ))

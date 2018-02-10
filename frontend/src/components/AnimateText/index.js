@@ -3,8 +3,8 @@ import Typist from 'react-typist'
 import 'react-typist/dist/Typist.css'
 import Text from '../Text'
 
-export default ({ delay = 0, speed = 50, cursor = false, children }) => (
-  <Text>
+export default ({ delay = 0, speed = 50, cursor = false, size, children }) => (
+  <Text size={size}>
     <Typist
       startDelay={delay}
       stdTypingDelay={0}
