@@ -9,9 +9,10 @@ export default ({
   cursor = false,
   size,
   color,
+  captilize,
   children,
 }) => (
-  <Text size={size} color={color}>
+  <Text size={size} color={color} captilize={captilize}>
     <Typist
       startDelay={delay}
       stdTypingDelay={0}

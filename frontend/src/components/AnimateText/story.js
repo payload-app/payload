@@ -25,3 +25,6 @@ storiesOf('AnimateText', module)
   .add('color = red', () => (
     <AnimateText color={'red'}>This is some red text</AnimateText>
   ))
+  .add('uppercase = true', () => (
+    <AnimateText captilize={true}>This is some uppercase text</AnimateText>
+  ))
