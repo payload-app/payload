@@ -9,27 +9,24 @@ export class Header extends React.Component {
     const { layout } = this.props
     return (
       <div>
-        <AnimateText
-          speed={30}
-          delay={200}
+        <div
           style={{
-            fontSize: 38,
-            height: 46,
-            display: 'block',
-            textTransform: 'uppercase',
+            marginBottom: '0.5rem',
           }}
         >
-          {layout.headline}
-        </AnimateText>
-        <AnimateText
+          <AnimateText speed={30} delay={200} capitalize={true} size={2}>
+            {layout.headline}
+          </AnimateText>
+        </div>
+        <div
           style={{
-            fontSize: 15,
-            textTransform: 'uppercase',
+            marginBottom: '0.5rem',
           }}
-          cursor={true}
         >
-          {layout.subhead}
-        </AnimateText>
+          <AnimateText capitalize={true} cursor={true}>
+            {layout.subhead}
+          </AnimateText>
+        </div>
       </div>
     )
   }
