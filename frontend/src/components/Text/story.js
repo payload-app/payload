@@ -8,6 +8,6 @@ storiesOf('Text', module)
   .add('size = 0.5', () => <Text size={0.5}>Tiny</Text>)
   .add('color = red', () => <Text color={'red'}>red</Text>)
   .add('color = #ccc', () => <Text color={'#ccc'}>#ccc</Text>)
-  .add('captilize = true', () => (
-    <Text captilize={true}>converted to uppercase</Text>
+  .add('capitalize = true', () => (
+    <Text capitalize={true}>converted to uppercase</Text>
   ))
