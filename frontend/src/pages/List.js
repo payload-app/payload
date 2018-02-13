@@ -27,7 +27,9 @@ export const List = ({ repos = [], fetchRepos }: Props) => {
       {() => (
         <div>
           <Link to="/login">Auth</Link>
-          <RepoSelector />
+          <div>
+            <RepoSelector />
+          </div>
           {repos.map(repo => (
             <div key={repo.repoId}>
               <Text>{repo.name}</Text>
