@@ -8,7 +8,7 @@ export default connect(
     value: state[selector].value,
   }),
   dispatch => ({
-    onChange: ({ value }) => dispatch(actions.onChange({ value })),
+    onChange: ({ value }) => dispatch(actions.setValue({ value })),
   }),
 )(RepoSelector)
 

@@ -3,7 +3,7 @@ import { actionTypes as dataFetchActionTypes } from '@hharnisc/async-data-fetch'
 export const selector = 'RepoSelector'
 
 export const actionTypes = {
-  ON_CHANGE: `${selector}/ON_CHANGE`,
+  SET_VALUE: `${selector}/SET_VALUE`,
 }
 
 const initialState = {
@@ -13,7 +13,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.ON_CHANGE:
+    case actionTypes.SET_VALUE:
       return {
         ...state,
         value: action.value,
@@ -21,10 +21,6 @@ export default (state = initialState, action) => {
     case `repoOwners_${dataFetchActionTypes.FETCH_SUCCESS}`:
       return {
         ...state,
-        value:
-          action.result && action.result.length > 0
-            ? action.result[0]
-            : undefined,
         repoOwners: action.result,
       }
     default:
@@ -33,8 +29,8 @@ export default (state = initialState, action) => {
 }
 
 export const actions = {
-  onChange: ({ value }) => ({
-    type: actionTypes.ON_CHANGE,
+  setValue: ({ value }) => ({
+    type: actionTypes.SET_VALUE,
     value,
   }),
 }
