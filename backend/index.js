@@ -6,9 +6,14 @@ const RPCClient = require('@hharnisc/micro-rpc-client')
 const setSession = require('./setSession')
 const listReposFixture = require('./fixtures/listRepos')
 const listGithubRepos = require('./listGithubRepos')
+const repoOwners = require('./repoOwners')
 
 const githubServiceClient = new RPCClient({
   url: 'http://github-service:3000/rpc',
+})
+
+const organizationServiceClient = new RPCClient({
+  url: 'http://organization-service:3000/rpc',
 })
 
 const rpcHandler = setSession(
@@ -17,6 +22,7 @@ const rpcHandler = setSession(
     method('listGithubRepos', listGithubRepos({ githubServiceClient })),
     method('activateRepo', () => 'OK'),
     method('deactivateRepo', () => 'OK'),
+    method('repoOwners', repoOwners({ organizationServiceClient })),
   ),
 )
 

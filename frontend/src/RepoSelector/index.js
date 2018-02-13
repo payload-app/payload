@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
 import RepoSelector from './components/RepoSelector'
-import { selector } from './reducer'
+import { selector, actions } from './reducer'
 
 export default connect(
   state => ({
-    repoOwners: state[selector].repoOwners || [],
+    repoOwners: state[selector].repoOwners,
     value: state[selector].value,
   }),
   dispatch => ({
-    onChange: value => console.log('value', value),
+    onChange: ({ value }) => dispatch(actions.onChange({ value })),
   }),
 )(RepoSelector)
 

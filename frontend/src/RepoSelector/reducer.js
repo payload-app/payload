@@ -1,3 +1,5 @@
+import { actionTypes as dataFetchActionTypes } from '@hharnisc/async-data-fetch'
+
 export const selector = 'RepoSelector'
 
 export const actionTypes = {
@@ -5,6 +7,7 @@ export const actionTypes = {
 }
 
 const initialState = {
+  repoOwners: [],
   value: undefined,
 }
 
@@ -14,6 +17,15 @@ export default (state = initialState, action) => {
       return {
         ...state,
         value: action.value,
+      }
+    case `repoOwners_${dataFetchActionTypes.FETCH_SUCCESS}`:
+      return {
+        ...state,
+        value:
+          action.result && action.result.length > 0
+            ? action.result[0]
+            : undefined,
+        repoOwners: action.result,
       }
     default:
       return state

@@ -1,7 +1,4 @@
-import {
-  actionTypes as dataFetchActionTypes,
-  actions as dataFetchActions,
-} from '@hharnisc/async-data-fetch'
+import { actions as dataFetchActions } from '@hharnisc/async-data-fetch'
 
 export default ({ dispatch }) => next => action => {
   next(action)
@@ -12,9 +9,6 @@ export default ({ dispatch }) => next => action => {
           name: 'repoOwners',
         }),
       )
-    case `repoOwners_${dataFetchActionTypes.FETCH_SUCCESS}`:
-      console.log('action', action)
-      break
     default:
       break
   }
