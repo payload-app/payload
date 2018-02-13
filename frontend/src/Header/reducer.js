@@ -1,6 +1,8 @@
+export const selector = 'Header'
+
 export const actionTypes = {
-  SET_TITLE: 'SET_TITLE',
-  SET_SUBTITLE: 'SET_SUBTITLE',
+  SET_TITLE: `${selector}/SET_TITLE`,
+  SET_SUBTITLE: `${selector}/SET_SUBTITLE`,
 }
 
 const initialState = {

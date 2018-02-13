@@ -1,11 +1,8 @@
 import { connect } from 'react-redux'
 import Header from './components/Header'
 
-export const storeKey = 'Header'
-
+export reducer, { actions, actionTypes, selector } from './reducer'
 export default connect(state => ({
-  title: state[storeKey].title,
-  subtitle: state[storeKey].subtitle,
+  title: state[selector].title,
+  subtitle: state[selector].subtitle,
 }))(Header)
-
-export reducer, { actions, actionTypes } from './reducer'

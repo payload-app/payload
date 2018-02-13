@@ -15,6 +15,11 @@ import {
   storeKey as layoutStoreKey,
   // middleware as layoutMiddleware,
 } from '../layout'
+import {
+  reducer as repoSelectorReducer,
+  selector as repoSelectorSelector,
+  middleware as repoSelectorMiddleware,
+} from '../RepoSelector'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -27,6 +32,7 @@ export default createStore(
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
     [repoStoreKey]: repoReducer,
     [layoutStoreKey]: layoutReducer,
+    [repoSelectorSelector]: repoSelectorReducer,
   }),
   {},
   composeEnhancers(
@@ -38,6 +44,7 @@ export default createStore(
         },
       }),
       repoMiddleware,
+      repoSelectorMiddleware,
       logger,
     ),
   ),

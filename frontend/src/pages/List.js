@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { selectors as repoSelectors, actions as repoActions } from '../repos'
 
 import { Page } from '../layout'
+import RepoSelector from '../RepoSelector'
 import { Text } from '../components'
 import { Link } from 'react-router-dom'
 
@@ -26,6 +27,7 @@ export const List = ({ repos = [], fetchRepos }: Props) => {
       {() => (
         <div>
           <Link to="/login">Auth</Link>
+          <RepoSelector />
           {repos.map(repo => (
             <div key={repo.repoId}>
               <Text>{repo.name}</Text>

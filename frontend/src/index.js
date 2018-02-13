@@ -9,6 +9,8 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import Pages from './pages'
 
+store.dispatch({ type: 'APP_INIT' })
+
 ReactDOM.render(
   <Provider store={store}>
     <Layout>
