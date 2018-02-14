@@ -1,18 +1,18 @@
 // @flow
-import type { RepoList } from 'api-types'
+// import type { RepoList } from 'api-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { selectors as repoSelectors, actions as repoActions } from '../repos'
 
 import { Page } from '../layout'
 import RepoSelector from '../RepoSelector'
-import { Text } from '../components'
+import RepoList from '../RepoList'
 import { Link } from 'react-router-dom'
 
-type Props = {
-  fetchRepos: () => void,
-  repos: RepoList,
-}
+// type Props = {
+//   fetchRepos: () => void,
+//   repos: RepoList,
+// }
 
 export const List = ({ repos = [], fetchRepos }: Props) => {
   return (
@@ -20,8 +20,8 @@ export const List = ({ repos = [], fetchRepos }: Props) => {
       headline="Mission Dashboard"
       subhead={`Tracking ${repos.length} Repositories...`}
       fetch={({ done }) => {
-        fetchRepos()
-        setTimeout(done, 3000)
+        // fetchRepos()
+        // setTimeout(done, 3000)
       }}
     >
       {() => (
@@ -30,11 +30,9 @@ export const List = ({ repos = [], fetchRepos }: Props) => {
           <div>
             <RepoSelector />
           </div>
-          {repos.map(repo => (
-            <div key={repo.repoId}>
-              <Text>{repo.name}</Text>
-            </div>
-          ))}
+          <div>
+            <RepoList />
+          </div>
         </div>
       )}
     </Page>

@@ -7,6 +7,7 @@ const setSession = require('./setSession')
 const listReposFixture = require('./fixtures/listRepos')
 const listGithubRepos = require('./listGithubRepos')
 const repoOwners = require('./repoOwners')
+const repos = require('./repos')
 
 const githubServiceClient = new RPCClient({
   url: 'http://github-service:3000/rpc',
@@ -23,6 +24,7 @@ const rpcHandler = setSession(
     method('activateRepo', () => 'OK'),
     method('deactivateRepo', () => 'OK'),
     method('repoOwners', repoOwners({ organizationServiceClient })),
+    method('repos', repos({ githubServiceClient })),
   ),
 )
 
