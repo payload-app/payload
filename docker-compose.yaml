@@ -73,6 +73,7 @@ services:
       - user-service
       - session-service
       - github-service
+      - repo-service
     networks:
      - main
   queue-service:

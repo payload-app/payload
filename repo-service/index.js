@@ -9,6 +9,7 @@ const activateRepo = require('./activateRepo')
 const deactivateRepo = require('./deactivateRepo')
 const getRepo = require('./getRepo')
 const getOwnerRepos = require('./getOwnerRepos')
+const createRepos = require('./createRepos')
 const generateWebhookToken = require('./generateWebhookToken')
 
 const promisifiedMongoClient = promisify(MongoClient)
@@ -43,6 +44,14 @@ const rpcHandler = ({
         collectionClient,
         organizationServiceClient,
         userServiceClient,
+      }),
+    ),
+    method(
+      'createRepos',
+      createRepos({
+        organizationServiceClient,
+        userServiceClient,
+        collectionClient,
       }),
     ),
     method('activateRepo', activateRepo({ collectionClient })),

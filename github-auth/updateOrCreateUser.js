@@ -36,5 +36,6 @@ module.exports = async ({
   return {
     userId,
     created,
+    user,
   }
 }

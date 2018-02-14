@@ -23,6 +23,9 @@ const organizationServiceClient = new RPCClient({
 const sessionServiceClient = new RPCClient({
   url: 'http://session-service:3000/rpc',
 })
+const repoServiceClient = new RPCClient({
+  url: 'http://repo-service:3000/rpc',
+})
 
 const redirectWithQueryString = (res, data) => {
   const location = `${process.env.REDIRECT_URL}?${querystring.stringify(data)}`
@@ -74,6 +77,7 @@ const callback = async (req, res) => {
             userServiceClient,
             organizationServiceClient,
             sessionServiceClient,
+            repoServiceClient,
             githubServiceClient,
             accessToken: qs.access_token,
             res,
