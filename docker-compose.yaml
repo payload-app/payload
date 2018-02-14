@@ -37,6 +37,7 @@ services:
     links:
      - github-service
      - organization-service
+     - repo-service
     networks:
       - main
   status-broadcaster:
