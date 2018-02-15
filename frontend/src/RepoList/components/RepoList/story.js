@@ -7,11 +7,13 @@ const repos = [
     owner: 'payload-app',
     repo: 'org-webhook-tester',
     _id: 'abc123',
+    active: true,
   },
   {
     owner: 'payload-app',
     repo: 'payload',
     _id: 'abc124',
+    active: false,
   },
 ]
 

@@ -1,14 +1,11 @@
 import React from 'react'
-import { List, Text } from '../../../components'
+import { List } from '../../../components'
+import RepoListItem from '../RepoListItem'
 
 export default ({ repos }) => (
   <List
     items={repos.map(repo => ({
-      component: (
-        <Text>
-          {repo.owner}/{repo.repo}
-        </Text>
-      ),
+      component: <RepoListItem repo={repo} />,
       id: repo._id,
     }))}
   />
