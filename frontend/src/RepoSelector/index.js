@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import RepoSelector from './components/RepoSelector'
 import { selector, actions } from './reducer'
 
