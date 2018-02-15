@@ -1,11 +1,11 @@
 // @flow
 import React from 'react'
 import ReactDOM from 'react-dom'
-import store from './store'
+import store, { history } from './store'
 import { getElementById } from './helpers/guards'
 
 import { Layout } from './layout'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { ConnectedRouter as Router } from 'react-router-redux'
 import { Provider } from 'react-redux'
 import Pages from './pages'
 
@@ -14,7 +14,7 @@ store.dispatch({ type: 'APP_INIT' })
 ReactDOM.render(
   <Provider store={store}>
     <Layout>
-      <Router>
+      <Router history={history}>
         <Pages />
       </Router>
     </Layout>

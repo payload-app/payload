@@ -1,5 +1,7 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { createLogger } from 'redux-logger'
+import createHistory from 'history/createBrowserHistory'
+import { routerReducer, routerMiddleware } from 'react-router-redux'
 import {
   reducer as asyncDataFetchReducer,
   storeKey as asyncDataFetchStoreKey,
@@ -32,6 +34,8 @@ const composeEnhancers =
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
     : compose
 
+export const history = createHistory()
+
 export default createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
@@ -39,10 +43,12 @@ export default createStore(
     [layoutStoreKey]: layoutReducer,
     [repoSelectorSelector]: repoSelectorReducer,
     [repoListSelector]: repoListReducer,
+    router: routerReducer,
   }),
   {},
   composeEnhancers(
     applyMiddleware(
+      routerMiddleware(history),
       asyncDataFetchMiddleware({
         rpcClientOptions: {
           url: '/api/rpc',

@@ -7,7 +7,6 @@ import { selectors as repoSelectors, actions as repoActions } from '../repos'
 import { Page } from '../layout'
 import RepoSelector from '../RepoSelector'
 import RepoList from '../RepoList'
-import { Link } from 'react-router-dom'
 
 // type Props = {
 //   fetchRepos: () => void,
@@ -26,7 +25,7 @@ export const List = ({ repos = [], fetchRepos }: Props) => {
     >
       {() => (
         <div>
-          <Link to="/login">Auth</Link>
+          <a href="/login">Auth</a>
           <div>
             <RepoSelector />
           </div>
