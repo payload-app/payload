@@ -1,6 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import AnimateText from './index'
+import Text from '../Text'
 
 storiesOf('AnimateText', module)
   .add('default', () => <AnimateText>oh hey!</AnimateText>)
@@ -15,7 +16,7 @@ storiesOf('AnimateText', module)
   ))
   .add('delay = 1000', () => (
     <div>
-      <span>Wait for it</span>
+      <Text color={'red'}>Wait for it</Text>
       <AnimateText delay={1000}>There It Is</AnimateText>
     </div>
   ))
