@@ -43,8 +43,8 @@ module.exports = async ({
   })
   res.setHeader(
     'Set-Cookie',
+    // TODO: detect env for local vs prod cookies -- env var
     cookie.serialize('local_payload_session', token, {
-      httpOnly: true,
       maxAge: ms('30 days') / 1000,
       domain: '.local.payloadapp.com',
     }),

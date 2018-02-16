@@ -8,16 +8,6 @@ import {
   middleware as asyncDataFetchMiddleware,
 } from '@hharnisc/async-data-fetch'
 import {
-  reducer as repoReducer,
-  storeKey as repoStoreKey,
-  middleware as repoMiddleware,
-} from '../repos'
-import {
-  reducer as layoutReducer,
-  storeKey as layoutStoreKey,
-  // middleware as layoutMiddleware,
-} from '../layout'
-import {
   reducer as repoSelectorReducer,
   selector as repoSelectorSelector,
   middleware as repoSelectorMiddleware,
@@ -44,8 +34,6 @@ export const history = createHistory()
 export default createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
-    [repoStoreKey]: repoReducer,
-    [layoutStoreKey]: layoutReducer,
     [repoSelectorSelector]: repoSelectorReducer,
     [repoListSelector]: repoListReducer,
     [headerSelector]: headerReducer,
@@ -61,7 +49,6 @@ export default createStore(
           sendCredentials: 'same-origin',
         },
       }),
-      repoMiddleware,
       repoSelectorMiddleware,
       repoListMiddleware,
       headerMiddleware,
