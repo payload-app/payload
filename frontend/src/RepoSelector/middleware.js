@@ -4,8 +4,7 @@ import {
   actionTypes as dataFetchActionTypes,
 } from '@hharnisc/async-data-fetch'
 import { actions, actionTypes } from './reducer'
-
-const ownerUrlRegex = /^\/repos\/ownertype\/(\w+)\/ownerid\/(\w+)/
+import { listRouteRegex } from '../helpers/routing'
 
 export default ({ dispatch, getState }) => next => action => {
   next(action)
@@ -20,7 +19,7 @@ export default ({ dispatch, getState }) => next => action => {
     case `repoOwners_${dataFetchActionTypes.FETCH_SUCCESS}`:
       if (action.result && action.result.length > 0) {
         const routerPath = getState().router.location.pathname
-        const match = ownerUrlRegex.exec(routerPath)
+        const match = listRouteRegex.exec(routerPath)
         let owner = action.result[0]
         if (match) {
           const ownerType = match[1]

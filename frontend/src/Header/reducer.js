@@ -12,12 +12,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case SET_TITLE:
+    case actionTypes.SET_TITLE:
       return {
         ...state,
         title: action.title,
       }
-    case SET_SUBTITLE:
+    case actionTypes.SET_SUBTITLE:
       return {
         ...state,
         subtitle: action.subtitle,

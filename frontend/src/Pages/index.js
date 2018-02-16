@@ -5,7 +5,7 @@ import Auth from './Auth'
 import List from './List'
 import Loading from './Loading'
 
-export const Routes = () => (
+export default () => (
   <Switch>
     <Route exact path="/" component={Loading} />
     <Route
@@ -15,5 +15,3 @@ export const Routes = () => (
     <Route path="/auth" component={Auth} />
   </Switch>
 )
-
-export default Routes

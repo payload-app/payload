@@ -27,6 +27,11 @@ import {
   selector as repoListSelector,
   middleware as repoListMiddleware,
 } from '../RepoList'
+import {
+  reducer as headerReducer,
+  selector as headerSelector,
+  middleware as headerMiddleware,
+} from '../Header'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -43,6 +48,7 @@ export default createStore(
     [layoutStoreKey]: layoutReducer,
     [repoSelectorSelector]: repoSelectorReducer,
     [repoListSelector]: repoListReducer,
+    [headerSelector]: headerReducer,
     router: routerReducer,
   }),
   {},
@@ -58,6 +64,7 @@ export default createStore(
       repoMiddleware,
       repoSelectorMiddleware,
       repoListMiddleware,
+      headerMiddleware,
       logger,
     ),
   ),
