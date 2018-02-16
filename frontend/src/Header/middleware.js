@@ -8,7 +8,7 @@ export default ({ dispatch }) => next => action => {
     case '@@router/LOCATION_CHANGE':
       //  ListRoute
       if (listRouteRegex.exec(action.payload.pathname)) {
-        dispatch(headerActions.setTitle({ title: 'Mission Dashboard' }))
+        dispatch(headerActions.setTitle({ title: 'Payload Dashboard' }))
         dispatch(headerActions.setSubtitle({ subtitle: 'Loading...' }))
       }
       break
