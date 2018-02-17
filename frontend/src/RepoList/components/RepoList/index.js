@@ -8,7 +8,7 @@ export default ({ repos, onActivateClick }) => (
       component: (
         <RepoListItem
           repo={repo}
-          onActivateClick={() => onActivateClick(repo)}
+          onActivateClick={() => onActivateClick({ repo })}
         />
       ),
       id: repo._id,
