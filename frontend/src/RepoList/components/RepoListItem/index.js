@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text } from '../../../components'
+import { Text, Button } from '../../../components'
 import { red } from '../../../components/style/color'
 
 const ActiveText = () => (
@@ -8,11 +8,33 @@ const ActiveText = () => (
   </Text>
 )
 
-export default ({ repo }) => (
+export default ({ repo, onActivateClick }) => (
   <div>
     <Text size={1.5}>
       {repo.owner}/{repo.repo}
     </Text>
-    <div>{repo.active ? null : <ActiveText active={repo.active} />}</div>
+    <div
+      style={{
+        display: 'flex',
+        margin: '1rem 0',
+      }}
+    >
+      <div
+        style={{
+          flexGrow: 1,
+        }}
+      >
+        {repo.active ? (
+          <Text>Repo Is Active</Text>
+        ) : (
+          <ActiveText active={repo.active} />
+        )}
+      </div>
+      <div>
+        {repo.active ? null : (
+          <Button onClick={onActivateClick}>Activate?</Button>
+        )}
+      </div>
+    </div>
   </div>
 )

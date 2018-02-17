@@ -1,5 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import RepoListItem from './index'
 
 const repo = {
@@ -15,5 +16,12 @@ const inactiveRepo = {
 }
 
 storiesOf('RepoListItem', module)
-  .add('default', () => <RepoListItem repo={repo} />)
-  .add('inactive', () => <RepoListItem repo={inactiveRepo} />)
+  .add('default', () => (
+    <RepoListItem repo={repo} onActivateClick={action('Activate Clicked')} />
+  ))
+  .add('inactive', () => (
+    <RepoListItem
+      repo={inactiveRepo}
+      onActivateClick={action('Activate Clicked')}
+    />
+  ))
