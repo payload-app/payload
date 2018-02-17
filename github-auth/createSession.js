@@ -20,24 +20,24 @@ module.exports = async ({
   })
   // TODO only updates and creates organizations when a user is created
   // we'll need to add some sort of resync
-  if (created) {
-    const { organizations } = await updateOrCreateOrganizations({
-      userServiceClient,
-      organizationServiceClient,
-      githubServiceClient,
-      userId,
-      accessToken,
-    })
+  // if (created) {
+  const { organizations } = await updateOrCreateOrganizations({
+    userServiceClient,
+    organizationServiceClient,
+    githubServiceClient,
+    userId,
+    accessToken,
+  })
 
-    await updateOrCreateRepos({
-      githubServiceClient,
-      repoServiceClient,
-      user,
-      userId,
-      organizations,
-      accessToken,
-    })
-  }
+  await updateOrCreateRepos({
+    githubServiceClient,
+    repoServiceClient,
+    user,
+    userId,
+    organizations,
+    accessToken,
+  })
+  // }
   const token = await sessionServiceClient.call('createSession', {
     userId,
   })

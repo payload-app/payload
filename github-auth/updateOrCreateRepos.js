@@ -71,13 +71,15 @@ module.exports = async ({
       githubServiceClient,
       accessToken,
     })
-    await createRepos({
-      repoServiceClient,
-      owner: org.name,
-      repos,
-      ownerType: 'organization',
-      type: 'github',
-      userId,
-    })
+    if (repos.length) {
+      await createRepos({
+        repoServiceClient,
+        owner: org.name,
+        repos,
+        ownerType: 'organization',
+        type: 'github',
+        userId,
+      })
+    }
   }
 }
