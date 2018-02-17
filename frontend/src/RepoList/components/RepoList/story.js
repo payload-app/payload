@@ -1,5 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import RepoList from './index'
 
 const repos = [
@@ -17,4 +18,6 @@ const repos = [
   },
 ]
 
-storiesOf('RepoList', module).add('default', () => <RepoList repos={repos} />)
+storiesOf('RepoList', module).add('default', () => (
+  <RepoList repos={repos} onActivateClick={action('Activate Clicked')} />
+))
