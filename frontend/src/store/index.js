@@ -22,6 +22,7 @@ import {
   selector as headerSelector,
   middleware as headerMiddleware,
 } from '../Header'
+import { middleware as unauthorizedRedirectMiddleware } from '../UnauthorizedRedirect'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -52,6 +53,7 @@ export default createStore(
       repoSelectorMiddleware,
       repoListMiddleware,
       headerMiddleware,
+      unauthorizedRedirectMiddleware,
       logger,
     ),
   ),
