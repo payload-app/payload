@@ -36,6 +36,8 @@ services:
      - ./backend:/usr/src/app/
     links:
      - github-service
+     - organization-service
+     - repo-service
     networks:
       - main
   status-broadcaster:
@@ -71,6 +73,7 @@ services:
       - user-service
       - session-service
       - github-service
+      - repo-service
     networks:
      - main
   queue-service:

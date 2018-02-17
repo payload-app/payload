@@ -1,4 +1,5 @@
 const { parseGithubTokenFromSession } = require('./utils')
+const { createError } = require('@hharnisc/micro-rpc')
 
 module.exports = ({ githubServiceClient }) => async (_, { session }) => {
   // this is the singular version of this request

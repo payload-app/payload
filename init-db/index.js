@@ -27,6 +27,10 @@ const initRepositoriesCollection = async ({ dbClient }) => {
     .collection('repositories')
     .createIndex({ owner: 1, repo: 1, type: 1 }, { unique: 1 })
   await dbClient.collection('repositories').createIndex({ userId: 1 })
+  await dbClient.collection('repositories').createIndex({ userId: 1 })
+  await dbClient
+    .collection('repositories')
+    .createIndex({ owner: 1, ownerType: 1, active: 1 })
   console.log('Init Repositories Collection...Done')
 }
 

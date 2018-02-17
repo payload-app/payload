@@ -24,6 +24,7 @@ module.exports = async ({
     return [...pageArgs, ...onePageArgs]
   }, [])
   const organizationIds = []
+  const organizations = []
   for (let orgArgs of pageOrgArgs) {
     let organizationId
     try {
@@ -47,10 +48,14 @@ module.exports = async ({
       organizationId = id
     }
     organizationIds.push(organizationId)
+    organizations.push(orgArgs)
   }
   await userServiceClient.call('addOrganizations', {
     id: userId,
     organizationIds,
   })
-  return organizationIds
+  return {
+    organizationIds,
+    organizations,
+  }
 }
