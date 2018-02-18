@@ -15,6 +15,11 @@ const inactiveRepo = {
   active: false,
 }
 
+const activatingRepo = {
+  ...inactiveRepo,
+  activating: true,
+}
+
 storiesOf('RepoListItem', module)
   .add('default', () => (
     <RepoListItem repo={repo} onActivateClick={action('Activate Clicked')} />
@@ -22,6 +27,12 @@ storiesOf('RepoListItem', module)
   .add('inactive', () => (
     <RepoListItem
       repo={inactiveRepo}
+      onActivateClick={action('Activate Clicked')}
+    />
+  ))
+  .add('activating', () => (
+    <RepoListItem
+      repo={activatingRepo}
       onActivateClick={action('Activate Clicked')}
     />
   ))

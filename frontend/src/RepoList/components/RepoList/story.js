@@ -16,6 +16,13 @@ const repos = [
     _id: 'abc124',
     active: false,
   },
+  {
+    owner: 'payload-app',
+    repo: 'payload',
+    _id: 'abc124',
+    active: false,
+    activating: true,
+  },
 ]
 
 storiesOf('RepoList', module).add('default', () => (

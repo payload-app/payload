@@ -32,7 +32,9 @@ export default ({ repo, onActivateClick }) => (
       </div>
       <div>
         {repo.active ? null : (
-          <Button onClick={onActivateClick}>Activate?</Button>
+          <Button onClick={onActivateClick} disabled={repo.activating}>
+            {repo.activating ? 'Activating...' : 'Activate?'}
+          </Button>
         )}
       </div>
     </div>
