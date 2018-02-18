@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const { router, get, post } = require('microrouter')
 const RPCClient = require('@hharnisc/micro-rpc-client')
@@ -18,7 +19,7 @@ const repoServiceClient = new RPCClient({
   url: 'http://repo-service:3000/rpc',
 })
 
-const webhookBaseUrl = 'http://c2d68d93.ngrok.io/webhook'
+const webhookBaseUrl = process.env.WEBHOOK_BASE_URL
 
 const rpcHandler = setSession(
   rpc(
