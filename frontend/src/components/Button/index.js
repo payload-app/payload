@@ -2,8 +2,9 @@ import React from 'react'
 import { text, background as backgroundColor } from '../style/color'
 import { fontFamily } from '../style/font'
 
-export default ({ children, onClick, fontSize = 1 }) => (
+export default ({ children, onClick, fontSize = 1, disabled }) => (
   <button
+    disabled={disabled}
     onClick={onClick}
     style={{
       background: text,
@@ -16,7 +17,8 @@ export default ({ children, onClick, fontSize = 1 }) => (
       border: '1px solid transparent',
       // HACK: attempt to put text in middle
       paddingBottom: `${0.15 * fontSize}rem`,
-      cursor: 'pointer',
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      opacity: disabled ? 0.5 : undefined,
     }}
   >
     {children}
