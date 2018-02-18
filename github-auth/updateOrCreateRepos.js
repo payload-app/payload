@@ -19,6 +19,7 @@ const getRepos = async ({
   return pages.reduce((pageArgs, page) => {
     const onePageArgs = page.data.map(data => ({
       repo: data.name,
+      defaultBranch: data.default_branch,
       active: false,
     }))
     return [...pageArgs, ...onePageArgs]

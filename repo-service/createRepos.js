@@ -7,6 +7,7 @@ const schema = Joi.object().keys({
     Joi.object().keys({
       repo: Joi.string().required(),
       active: Joi.boolean().required(),
+      defaultBranch: Joi.string().required(),
     }),
   ),
   owner: Joi.string().required(),
