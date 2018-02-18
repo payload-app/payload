@@ -27,7 +27,9 @@ export default ({ dispatch, getState }) => next => action => {
       }, 0)
       dispatch(
         headerActions.setSubtitle({
-          subtitle: `Tracking ${count} Repositories...`,
+          subtitle: `Tracking ${count} Repositor${
+            count === 1 ? 'y' : 'ies'
+          }...`,
         }),
       )
       break
