@@ -17,13 +17,15 @@ const schema = Joi.object().keys({
   method: Joi.string()
     .valid(['get', 'delete', 'head', 'options', 'post', 'put', 'patch'])
     .required(),
+  params: Joi.object(),
   data: Joi.object(),
 })
 
 module.exports = ({ githubApiUrl }) => async ({
   path,
   accessToken,
-  data,
+  params = {},
+  data = {},
   pageSize = 30,
   userAgent = 'Payload',
   method = 'get',
@@ -33,6 +35,7 @@ module.exports = ({ githubApiUrl }) => async ({
       value: {
         path,
         accessToken,
+        params,
         data,
         pageSize,
         userAgent,
@@ -54,6 +57,7 @@ module.exports = ({ githubApiUrl }) => async ({
     method,
     page: 1,
     pageSize,
+    params,
     data,
   }
   const response = await ghRequest(githubArgs)

@@ -12,13 +12,15 @@ const schema = Joi.object().keys({
   method: Joi.string()
     .valid(['get', 'delete', 'head', 'options', 'post', 'put', 'patch'])
     .required(),
+  params: Joi.object(),
   data: Joi.object(),
 })
 
 module.exports = ({ githubApiUrl }) => async ({
   path,
   accessToken,
-  data,
+  params = {},
+  data = {},
   page = 1,
   pageSize = 30,
   userAgent = 'Payload',
@@ -33,6 +35,7 @@ module.exports = ({ githubApiUrl }) => async ({
         pageSize,
         userAgent,
         method,
+        params,
         data,
       },
       schema,
@@ -54,8 +57,10 @@ module.exports = ({ githubApiUrl }) => async ({
     params: {
       page,
       per_page: pageSize,
+      ...params,
     },
     data,
+    validateStatus: status => status < 500,
   })
   return {
     status,
