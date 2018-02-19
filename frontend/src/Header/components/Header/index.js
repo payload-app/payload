@@ -1,7 +1,8 @@
 import React from 'react'
 import { AnimateText, Pulse } from '../../../components'
+import LoadingBar from '../LoadingBar'
 
-export default ({ title, subtitle, warning }) => (
+export default ({ title, subtitle, warning, mounted, loading }) => (
   <div>
     <div
       style={{
@@ -13,6 +14,8 @@ export default ({ title, subtitle, warning }) => (
         {title} {warning ? <Pulse>{warning}</Pulse> : ''}
       </AnimateText>
     </div>
+
+    <LoadingBar mounted={mounted} loading={loading} />
 
     <div
       style={{
