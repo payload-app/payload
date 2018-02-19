@@ -7,8 +7,10 @@ import List from '../PageList'
 import Loading from '../PageLoading'
 import Run from '../PageRun'
 
-// TODO: think a bit more about routing scheme
-
+// TODO: impelement routing scheme
+// :type/:ownerType/:ownerName/:repoName/:sha
+// github/organization/payload-app/org-webhook-tester/D5293EF1B027E68B60
+//                     ^selector  ^ repo run details ^ one run
 export default () => (
   <Switch>
     <ProtectedRoute exact path={baseRoute()} component={Loading} />
