@@ -1,3 +1,5 @@
-export const text = '#F2F2F2'
+export const text = '#fff'
 export const background = '#1C1C1C'
 export const red = '#712729'
+export const white = '#fff'
+export const mutedWhite = '#666'

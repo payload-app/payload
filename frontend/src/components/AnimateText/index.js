@@ -11,8 +11,16 @@ export default ({
   color,
   capitalize,
   children,
+  weight,
+  antialiased,
 }) => (
-  <Text size={size} color={color} capitalize={capitalize}>
+  <Text
+    size={size}
+    color={color}
+    capitalize={capitalize}
+    weight={weight}
+    antialiased={antialiased}
+  >
     <Typist
       startDelay={delay}
       stdTypingDelay={0}
