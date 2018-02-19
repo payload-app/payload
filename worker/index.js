@@ -133,9 +133,7 @@ const main = async () => {
   await sleep(10000)
 }
 
-try {
-  main()
-} catch (error) {
+main().catch(error => {
   console.log('error', error)
   logger.info('Caught Unhandled Error In Main', error)
-}
+})

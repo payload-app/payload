@@ -1,4 +1,3 @@
-const { Timestamp } = require('mongodb')
 const Joi = require('joi')
 const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
@@ -50,7 +49,7 @@ module.exports = ({ collectionClient, repoServiceClient }) => async ({
       branch,
       sha,
       type,
-      created: new Timestamp(new Date()),
+      created: new Date(),
     })
     return {
       id: insertedId,

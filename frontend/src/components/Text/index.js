@@ -5,6 +5,7 @@ import { text } from '../style/color'
 export default ({
   size = 1.5,
   color = text,
+  weight = 400,
   background,
   capitalize,
   children,
@@ -14,6 +15,7 @@ export default ({
   <span
     style={{
       fontFamily,
+      fontWeight: weight,
       fontSize: `${size}rem`,
       color,
       background,
