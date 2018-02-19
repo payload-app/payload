@@ -7,4 +7,11 @@ storiesOf('Header', module)
   .add('other text', () => (
     <Header title={'Mission Dashboard'} subtitle={'Authenticating...'} />
   ))
+  .add('title warning', () => (
+    <Header
+      title={'Source Code'}
+      warning={'Located'}
+      subtitle={'Unpacking JAR Files...'}
+    />
+  ))
   .add('no subtitle', () => <Header title={'No Subtitle'} />)
