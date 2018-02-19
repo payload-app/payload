@@ -23,6 +23,12 @@ import {
   middleware as headerMiddleware,
 } from '../Header'
 import { middleware as unauthorizedRedirectMiddleware } from '../UnauthorizedRedirect'
+import { middleware as routingMiddleware } from '../Routing'
+import {
+  middleware as runMiddleware,
+  selector as pageRunSelector,
+  reducer as pageRunReducer,
+} from '../PageRun'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -38,6 +44,7 @@ export default createStore(
     [repoSelectorSelector]: repoSelectorReducer,
     [repoListSelector]: repoListReducer,
     [headerSelector]: headerReducer,
+    [pageRunSelector]: pageRunReducer,
     router: routerReducer,
   }),
   {},
@@ -54,6 +61,8 @@ export default createStore(
       repoListMiddleware,
       headerMiddleware,
       unauthorizedRedirectMiddleware,
+      routingMiddleware,
+      runMiddleware,
       logger,
     ),
   ),

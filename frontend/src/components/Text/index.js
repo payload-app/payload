@@ -14,6 +14,7 @@ export default ({
   <span
     style={{
       fontFamily,
+      fontWeight: weight,
       fontSize: `${size}rem`,
       color,
       background,

@@ -43,7 +43,7 @@ export const actions = {
     type: actionTypes.SET_SUBTITLE,
     subtitle,
   }),
-  setSubtitle: ({ warning }) => ({
+  setWarning: ({ warning }) => ({
     type: actionTypes.SET_WARNING,
     warning,
   }),
