@@ -1,3 +1,4 @@
+require('dotenv').config()
 const winston = require('winston')
 const { promisify } = require('util')
 const RPCClient = require('@hharnisc/micro-rpc-client')
@@ -58,7 +59,7 @@ const main = async () => {
     let headFileSizes
 
     try {
-      const { fileSizes } = await doWork({
+      const { fileSizes, runId } = await doWork({
         owner,
         repo,
         repoId,
@@ -68,6 +69,7 @@ const main = async () => {
         logger,
       })
       baseFileSizes = fileSizes
+      baseRunId = runId
     } catch (error) {
       if (error.message === 'Another worker is processing this run') {
         return
@@ -75,7 +77,7 @@ const main = async () => {
     }
 
     try {
-      const { fileSizes, increaseThreshold: threshold } = await doWork({
+      const { fileSizes, increaseThreshold: threshold, runId } = await doWork({
         owner,
         repo,
         repoId,
@@ -84,6 +86,7 @@ const main = async () => {
         branch: headBranch,
         logger,
       })
+      headRunId = runId
       headFileSizes = fileSizes
       increaseThreshold = threshold
     } catch (error) {
@@ -104,6 +107,7 @@ const main = async () => {
       await broadcastCompleteWithDiffs({
         baseFileSizes,
         headFileSizes,
+        runId: headRunId,
         accessToken,
         owner,
         repo,
@@ -113,6 +117,7 @@ const main = async () => {
     } else {
       await broadcastComplete({
         fileSizes: headFileSizes,
+        runId: headRunId,
         accessToken,
         owner,
         repo,

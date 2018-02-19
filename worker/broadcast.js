@@ -6,7 +6,17 @@ const statusBroadcasterClient = new RPCClient({
 
 // TODO: add targetUrl to each of these
 
-const broadcastStart = async ({ files, accessToken, owner, repo, sha }) => {
+const baseRunUrl = process.env.BASE_RUN_URL
+const generateTargetUrl = ({ runId }) => `${baseRunUrl}/runs/${runId}/`
+
+const broadcastStart = async ({
+  files,
+  accessToken,
+  owner,
+  repo,
+  sha,
+  runId,
+}) => {
   for (let file of files) {
     await statusBroadcasterClient.call('broadcastStatus', {
       accessToken,
@@ -16,11 +26,19 @@ const broadcastStart = async ({ files, accessToken, owner, repo, sha }) => {
       state: 'pending',
       description: 'Pending...',
       context: `Payload - ${file}`,
+      targetUrl: generateTargetUrl({ runId }),
     })
   }
 }
 
-const broadcastFail = async ({ files, accessToken, owner, repo, sha }) => {
+const broadcastFail = async ({
+  files,
+  accessToken,
+  owner,
+  repo,
+  sha,
+  runId,
+}) => {
   for (let file of files) {
     await statusBroadcasterClient.call('broadcastStatus', {
       accessToken,
@@ -30,11 +48,12 @@ const broadcastFail = async ({ files, accessToken, owner, repo, sha }) => {
       state: 'failure',
       description: 'Run Failed',
       context: `Payload - ${file}`,
+      targetUrl: generateTargetUrl({ runId }),
     })
   }
 }
 
-const broadcastRunError = async ({ accessToken, owner, repo, sha }) =>
+const broadcastRunError = async ({ accessToken, owner, repo, sha, runId }) =>
   await statusBroadcasterClient.call('broadcastStatus', {
     accessToken,
     owner,
@@ -43,6 +62,7 @@ const broadcastRunError = async ({ accessToken, owner, repo, sha }) =>
     state: 'failure',
     description: 'Payload Run Error',
     context: 'Payload',
+    targetUrl: generateTargetUrl({ runId }),
   })
 
 const broadcastComplete = async ({
@@ -51,6 +71,7 @@ const broadcastComplete = async ({
   owner,
   repo,
   sha,
+  runId,
 }) => {
   for (let file of fileSizes) {
     await statusBroadcasterClient.call('broadcastStatus', {
@@ -61,6 +82,7 @@ const broadcastComplete = async ({
       state: 'success',
       description: prettyBytes(file.size),
       context: `Payload - ${file.file}`,
+      targetUrl: generateTargetUrl({ runId }),
     })
   }
 }
@@ -81,6 +103,7 @@ const broadcastCompleteWithDiffs = async ({
   sha,
   accessToken,
   increaseThreshold = 0.05,
+  runId,
 }) => {
   const objBaseFileSizes = filesCollectionToObject({
     collection: baseFileSizes,
@@ -119,6 +142,7 @@ const broadcastCompleteWithDiffs = async ({
       state,
       description,
       context: `Payload - ${file.file}`,
+      targetUrl: generateTargetUrl({ runId }),
     })
   }
 }

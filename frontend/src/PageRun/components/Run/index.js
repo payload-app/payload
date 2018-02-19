@@ -4,6 +4,7 @@ import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import Header from '../../../Header'
 import { Text } from '../../../components'
+import { red } from '../../../components/style/color'
 
 const FileSizes = ({ fileSizes }) => (
   <div>
@@ -80,16 +81,37 @@ const RunComponent = ({ fileSizes, start, stop, created }) => (
   </div>
 )
 
-export default ({ loading, run: { fileSizes, start, stop, created } }) => (
+const ErrorDisplay = ({ errorMessage }) => (
+  <div
+    style={{
+      display: 'flex',
+    }}
+  >
+    <div style={{ marginRight: '0.5rem' }}>
+      <Text background={red}>Error</Text>
+    </div>
+    <div>
+      <Text>{errorMessage}</Text>
+    </div>
+  </div>
+)
+
+export default ({
+  loading,
+  run: { fileSizes, start, stop, created, errorMessage },
+}) => (
   <div>
     <Header />
-    {loading ? null : (
+    {loading || errorMessage ? null : (
       <RunComponent
         fileSizes={fileSizes}
         start={start}
         stop={stop}
         created={created}
       />
+    )}
+    {loading || !errorMessage ? null : (
+      <ErrorDisplay errorMessage={errorMessage} />
     )}
   </div>
 )

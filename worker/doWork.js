@@ -40,6 +40,7 @@ module.exports = async ({
     throw new Error(message)
   } else if (run) {
     return {
+      runId: run._id,
       fileSizes: run.fileSizes,
     }
   }
@@ -87,6 +88,7 @@ module.exports = async ({
       owner,
       repo,
       sha,
+      runId: id,
     })
 
     await runScripts({ scripts, sha, logger, workingDirBase })
@@ -110,6 +112,7 @@ module.exports = async ({
         owner,
         repo,
         sha,
+        runId: id,
       })
     } else {
       broadcastRunError({
@@ -117,6 +120,7 @@ module.exports = async ({
         owner,
         repo,
         sha,
+        runId: id,
       })
     }
   }
@@ -127,6 +131,7 @@ module.exports = async ({
     throw error
   }
   return {
+    runId: id,
     fileSizes,
     increaseThreshold,
   }
