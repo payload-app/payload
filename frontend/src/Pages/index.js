@@ -7,7 +7,6 @@ import List from '../PageList'
 import Loading from '../PageLoading'
 import Run from '../PageRun'
 
-// TODO: move List and Loading into own components
 // TODO: think a bit more about routing scheme
 
 export default () => (
