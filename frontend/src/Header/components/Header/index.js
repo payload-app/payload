@@ -1,5 +1,5 @@
 import React from 'react'
-import { AnimateText } from '../../../components'
+import { AnimateText, Pulse } from '../../../components'
 
 const Subtitle = ({ subtitle }) => (
   <div
@@ -14,7 +14,7 @@ const Subtitle = ({ subtitle }) => (
   </div>
 )
 
-export default ({ title, subtitle }) => (
+export default ({ title, subtitle, warning }) => (
   <div>
     <div
       style={{
@@ -23,7 +23,7 @@ export default ({ title, subtitle }) => (
       }}
     >
       <AnimateText speed={30} delay={200} capitalize={true} size={2}>
-        {title}
+        {title} {warning ? <Pulse>{warning}</Pulse> : ''}
       </AnimateText>
     </div>
     {subtitle ? <Subtitle subtitle={subtitle} /> : null}

@@ -3,11 +3,13 @@ export const selector = 'Header'
 export const actionTypes = {
   SET_TITLE: `${selector}/SET_TITLE`,
   SET_SUBTITLE: `${selector}/SET_SUBTITLE`,
+  SET_WARNING: `${selector}/SET_WARNING`,
 }
 
 const initialState = {
   title: undefined,
   subtitle: undefined,
+  warning: undefined,
 }
 
 export default (state = initialState, action) => {
@@ -18,6 +20,11 @@ export default (state = initialState, action) => {
         title: action.title,
       }
     case actionTypes.SET_SUBTITLE:
+      return {
+        ...state,
+        subtitle: action.subtitle,
+      }
+    case actionTypes.SET_WARNING:
       return {
         ...state,
         subtitle: action.subtitle,
@@ -35,5 +42,9 @@ export const actions = {
   setSubtitle: ({ subtitle }) => ({
     type: actionTypes.SET_SUBTITLE,
     subtitle,
+  }),
+  setSubtitle: ({ warning }) => ({
+    type: actionTypes.SET_WARNING,
+    warning,
   }),
 }
