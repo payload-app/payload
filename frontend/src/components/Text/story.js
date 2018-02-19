@@ -11,3 +11,4 @@ storiesOf('Text', module)
   .add('capitalize = true', () => (
     <Text capitalize={true}>converted to uppercase</Text>
   ))
+  .add('weight = 600', () => <Text weight={600}>Bold</Text>)

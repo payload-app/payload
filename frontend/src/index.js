@@ -8,8 +8,6 @@ import { ConnectedRouter as Router } from 'react-router-redux'
 import { Provider } from 'react-redux'
 import Pages from './Pages'
 
-store.dispatch({ type: 'APP_INIT' })
-
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>

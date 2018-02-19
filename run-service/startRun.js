@@ -26,8 +26,8 @@ module.exports = ({ collectionClient }) => async ({ id }) => {
         _id: ObjectID(id),
       },
       {
-        $currentDate: {
-          start: { $type: 'timestamp' },
+        $set: {
+          start: new Date(),
         },
         $unset: {
           fileSizes: '',

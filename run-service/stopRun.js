@@ -39,8 +39,8 @@ module.exports = ({ collectionClient }) => async ({
   }
   try {
     let updateData = {
-      $currentDate: {
-        stop: { $type: 'timestamp' },
+      $set: {
+        stop: new Date(),
       },
     }
     if (errorMessage) {
