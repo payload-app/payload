@@ -1,14 +1,13 @@
 import { actions as headerActions } from '../Header'
 import { selector as repoListSelector } from '../RepoList'
-import { listRouteRegex } from '../helpers/routing'
+import { actionTypes as routingActionTypes, routes } from '../Routing'
 import { actionTypes as dataFetchActionTypes } from '@hharnisc/async-data-fetch'
 
 export default ({ dispatch, getState }) => next => action => {
   next(action)
   switch (action.type) {
-    case '@@router/LOCATION_CHANGE':
-      //  ListRoute
-      if (listRouteRegex.exec(action.payload.pathname)) {
+    case routingActionTypes.EMIT:
+      if (action.route === routes.REPO_LIST) {
         dispatch(headerActions.setTitle({ title: 'Payload Dashboard' }))
         dispatch(headerActions.setSubtitle({ subtitle: 'Loading...' }))
       }

@@ -2,6 +2,7 @@ import React from 'react'
 import Cookies from 'js-cookie'
 import { Route } from 'react-router'
 import { Redirect } from 'react-router-dom'
+import { authRoute } from '../Routing'
 
 export default ({ component: Component, ...rest }) => (
   <Route
@@ -13,7 +14,7 @@ export default ({ component: Component, ...rest }) => (
       if (sessionCookie) {
         return <Component {...props} />
       }
-      return <Redirect to="/auth" />
+      return <Redirect to={authRoute()} />
     }}
   />
 )

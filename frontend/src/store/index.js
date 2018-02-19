@@ -23,6 +23,7 @@ import {
   middleware as headerMiddleware,
 } from '../Header'
 import { middleware as unauthorizedRedirectMiddleware } from '../UnauthorizedRedirect'
+import { middleware as routingMiddleware } from '../Routing'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -54,6 +55,7 @@ export default createStore(
       repoListMiddleware,
       headerMiddleware,
       unauthorizedRedirectMiddleware,
+      routingMiddleware,
       logger,
     ),
   ),
