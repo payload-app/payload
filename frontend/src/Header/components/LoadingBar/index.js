@@ -1,5 +1,7 @@
 import React from 'react'
 import { white, mutedWhite } from '../../../components/style/color'
+import injectStyle from '../../../components/utils/injectStyle'
+
 import Transition from 'react-transition-group/Transition'
 
 const bigWhiteBarStyle = {
@@ -50,50 +52,72 @@ const thinBarStyle = {
   },
 }
 
-export default ({ mounted = false, loading = false }) => (
-  <Transition in={mounted} timeout={0}>
-    {state => (
-      <div>
-        <div style={{ display: 'flex', overflow: 'hidden' }}>
-          <div
-            style={{
-              ...bigWhiteBarStyle.default,
-              ...bigWhiteBarStyle[state],
-            }}
-          />
-          <div
-            style={{
-              ...smallMutedBarStyle.default,
-              ...smallMutedBarStyle[state],
-            }}
-          />
-        </div>
+export default ({ mounted = false, loading = false }) => {
+  injectStyle(`
+    @keyframes slide-loading {
+      0% { transform: translateX(-30px) }
+    	99% { transform: translateX(0) }
+      100% { transform: translateX(-30px) }
+    }
+  `)
 
-        <div
-          style={{
-            ...thinBarStyle.default,
-            ...thinBarStyle[state],
-          }}
-        >
-          <div style={{ position: 'absolute', right: 0 }}>
+  return (
+    <Transition in={mounted} timeout={0}>
+      {state => (
+        <div>
+          <div style={{ display: 'flex', overflow: 'hidden' }}>
             <div
               style={{
-                width: 4,
-                height: 4,
-                marginBottom: 4,
-                background: white,
+                ...bigWhiteBarStyle.default,
+                ...bigWhiteBarStyle[state],
               }}
             />
             <div
               style={{
-                width: 4,
-                height: 20,
-                background: mutedWhite,
+                ...smallMutedBarStyle.default,
+                ...smallMutedBarStyle[state],
               }}
             />
           </div>
+
+          <div
+            style={{
+              ...thinBarStyle.default,
+              ...thinBarStyle[state],
+            }}
+          >
+            <div style={{ position: 'absolute', right: 0 }}>
+              {loading ? (
+                <div
+                  style={{
+                    position: 'absolute',
+                    width: 4,
+                    height: 4,
+                    marginBottom: 4,
+                    background: white,
+                    animation: `slide-loading 400ms ease-in-out infinite`,
+                  }}
+                />
+              ) : null}
+              <div
+                style={{
+                  width: 4,
+                  height: 4,
+                  marginBottom: 4,
+                  background: white,
+                }}
+              />
+              <div
+                style={{
+                  width: 4,
+                  height: 20,
+                  background: mutedWhite,
+                }}
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    )}
-  </Transition>
-)
+      )}
+    </Transition>
+  )
+}

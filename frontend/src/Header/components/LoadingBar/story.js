@@ -1,22 +1,16 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import MountAndLoadWrapper from '../../../../.storybook/MountAndLoadWrapper'
 import LoadingBar from './index'
 
 storiesOf('LoadingBar', module)
   .add('default', () => <LoadingBar />)
+  .add('animate on mount', () => (
+    <MountAndLoadWrapper
+      render={({ mounted, loading }) => (
+        <LoadingBar mounted={mounted} loading={loading} />
+      )}
+    />
+  ))
   .add('mounted = true', () => <LoadingBar mounted={true} />)
-  .add('animate on mount', () => {
-    class Loading extends React.Component {
-      state = {
-        mounted: false,
-      }
-      componentDidMount() {
-        this.setState({ mounted: true })
-      }
-      render() {
-        return <LoadingBar mounted={this.state.mounted} />
-      }
-    }
-
-    return <Loading />
-  })
+  .add('loading = true', () => <LoadingBar mounted={true} loading={true} />)
