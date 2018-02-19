@@ -2,10 +2,10 @@ import React from 'react'
 import { Switch, Route } from 'react-router'
 import { listRoute, runRoute, baseRoute, authRoute } from '../Routing'
 import ProtectedRoute from './ProtectedRoute'
-import Auth from './Auth'
+import Auth from '../Auth'
 import List from './List'
 import Loading from './Loading'
-import Run from './Run'
+import Run from '../Run'
 
 export default () => (
   <Switch>

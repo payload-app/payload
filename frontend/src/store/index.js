@@ -24,6 +24,7 @@ import {
 } from '../Header'
 import { middleware as unauthorizedRedirectMiddleware } from '../UnauthorizedRedirect'
 import { middleware as routingMiddleware } from '../Routing'
+import { middleware as runMiddleware } from '../Run'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -56,6 +57,7 @@ export default createStore(
       headerMiddleware,
       unauthorizedRedirectMiddleware,
       routingMiddleware,
+      runMiddleware,
       logger,
     ),
   ),

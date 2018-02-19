@@ -41,11 +41,11 @@ export const runRoute = () =>
 
 export const baseRoute = () => '/'
 
-export const authRoute = () => '/auth'
+export const authRoute = () => '/auth/'
 
 export const routes = {
   BASE: 'BASE',
-  BASE: 'AUTH',
+  AUTH: 'AUTH',
   RUNS: 'RUNS',
   REPO_LIST: 'REPO_LIST',
 }
