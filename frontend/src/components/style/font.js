@@ -2,7 +2,7 @@ import WebFont from 'webfontloader'
 
 WebFont.load({
   google: {
-    families: ['Exo 2:400,600'],
+    families: ['Exo 2:200,400,600'],
   },
 })
 
