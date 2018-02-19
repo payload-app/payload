@@ -4,8 +4,11 @@ import { listRoute, runRoute, baseRoute, authRoute } from '../Routing'
 import ProtectedRoute from './ProtectedRoute'
 import Auth from '../Auth'
 import List from './List'
-import Loading from './Loading'
+import Loading from '../Loading'
 import Run from '../Run'
+
+// TODO: move List and Loading into own components
+// TODO: think a bit more about routing scheme
 
 export default () => (
   <Switch>
