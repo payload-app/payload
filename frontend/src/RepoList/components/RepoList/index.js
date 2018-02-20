@@ -6,10 +6,12 @@ export default ({ repos, onActivateClick }) => (
   <List
     items={repos.map(repo => ({
       component: (
-        <RepoListItem
-          repo={repo}
-          onActivateClick={() => onActivateClick({ repo })}
-        />
+        <div style={{ paddingBottom: 14 }}>
+          <RepoListItem
+            repo={repo}
+            onActivateClick={() => onActivateClick({ repo })}
+          />
+        </div>
       ),
       id: repo._id,
     }))}
