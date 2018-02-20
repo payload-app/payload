@@ -41,7 +41,7 @@ export const getRunRouteParams = ({ path }) => {
 }
 
 export const generateRunRoute = ({ type, ownerType, owner, repo, sha }) =>
-  `/type/${type}/ownertype/${ownerType}/owner/${owner}/repo/${repo}/sha/${sha}`
+  `/type/${type}/ownertype/${ownerType}/owner/${owner}/repo/${repo}/sha/${sha}/`
 
 export const runRoute = () =>
   generateRunRoute({
