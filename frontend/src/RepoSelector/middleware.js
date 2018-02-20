@@ -35,7 +35,7 @@ export default ({ dispatch, getState }) => next => action => {
           const { owner, ownerType, type } = match
           newValue = action.result.find(
             item =>
-              item.owner === owner &&
+              item.name === owner &&
               item.ownerType === ownerType &&
               item.type === type,
           )
