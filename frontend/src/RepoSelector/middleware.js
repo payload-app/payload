@@ -32,9 +32,12 @@ export default ({ dispatch, getState }) => next => action => {
         const match = getListRouteParams({ path })
         let newValue = action.result[0]
         if (match) {
-          const { ownerType, ownerId } = match
+          const { owner, ownerType, type } = match
           newValue = action.result.find(
-            item => item.ownerType === ownerType && item.id === ownerId,
+            item =>
+              item.name === owner &&
+              item.ownerType === ownerType &&
+              item.type === type,
           )
         }
         if (JSON.stringify(newValue) !== JSON.stringify(curValue)) {
@@ -43,12 +46,13 @@ export default ({ dispatch, getState }) => next => action => {
       }
       break
     case actionTypes.SET_VALUE:
-      const { ownerType, id: ownerId } = action.value
+      const { type, ownerType, name } = action.value
       dispatch(
         push(
           generateListRoute({
+            type,
             ownerType,
-            ownerId,
+            owner: name,
           }),
         ),
       )

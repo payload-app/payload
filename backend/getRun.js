@@ -3,14 +3,27 @@ const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
 
 const schema = Joi.object().keys({
-  id: Joi.string().required(),
+  owner: Joi.string().required(),
+  repo: Joi.string().required(),
+  sha: Joi.string().required(),
+  type: Joi.string()
+    .valid(['github'])
+    .required(),
 })
 
-module.exports = ({ runServiceClient }) => async ({ id }) => {
+module.exports = ({ runServiceClient }) => async ({
+  owner,
+  repo,
+  sha,
+  type,
+}) => {
   try {
     await validate({
       value: {
-        id,
+        owner,
+        repo,
+        sha,
+        type,
       },
       schema,
     })
@@ -19,5 +32,5 @@ module.exports = ({ runServiceClient }) => async ({ id }) => {
       message: parseValidationErrorMessage({ error }),
     })
   }
-  return await runServiceClient.call('getRun', { id })
+  return await runServiceClient.call('getRun', { owner, repo, sha, type })
 }

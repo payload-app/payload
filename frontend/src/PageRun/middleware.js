@@ -14,7 +14,10 @@ export default ({ dispatch }) => next => action => {
           dataFetchActions.fetch({
             name: 'getRun',
             args: {
-              id: action.params.runId,
+              type: action.params.type,
+              owner: action.params.owner,
+              repo: action.params.repo,
+              sha: action.params.sha,
             },
           }),
         )

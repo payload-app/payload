@@ -46,6 +46,8 @@ const main = async () => {
 
     const {
       owner,
+      ownerType,
+      type,
       repo,
       repoId,
       accessToken,
@@ -59,8 +61,10 @@ const main = async () => {
     let headFileSizes
 
     try {
-      const { fileSizes, runId } = await doWork({
+      const { fileSizes } = await doWork({
         owner,
+        ownerType,
+        type,
         repo,
         repoId,
         accessToken,
@@ -69,7 +73,6 @@ const main = async () => {
         logger,
       })
       baseFileSizes = fileSizes
-      baseRunId = runId
     } catch (error) {
       if (error.message === 'Another worker is processing this run') {
         return
@@ -77,8 +80,10 @@ const main = async () => {
     }
 
     try {
-      const { fileSizes, increaseThreshold: threshold, runId } = await doWork({
+      const { fileSizes, increaseThreshold: threshold } = await doWork({
         owner,
+        ownerType,
+        type,
         repo,
         repoId,
         accessToken,
@@ -86,7 +91,6 @@ const main = async () => {
         branch: headBranch,
         logger,
       })
-      headRunId = runId
       headFileSizes = fileSizes
       increaseThreshold = threshold
     } catch (error) {
@@ -107,7 +111,8 @@ const main = async () => {
       await broadcastCompleteWithDiffs({
         baseFileSizes,
         headFileSizes,
-        runId: headRunId,
+        ownerType,
+        type,
         accessToken,
         owner,
         repo,
@@ -117,7 +122,8 @@ const main = async () => {
     } else {
       await broadcastComplete({
         fileSizes: headFileSizes,
-        runId: headRunId,
+        ownerType,
+        type,
         accessToken,
         owner,
         repo,
