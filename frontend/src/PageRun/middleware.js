@@ -10,7 +10,6 @@ export default ({ dispatch }) => next => action => {
   switch (action.type) {
     case routingActionTypes.EMIT:
       if (action.route === routes.RUNS) {
-        console.log('action.params', action.params)
         dispatch(
           dataFetchActions.fetch({
             name: 'getRun',
