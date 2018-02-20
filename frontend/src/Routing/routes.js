@@ -1,23 +1,26 @@
-const listRouteRegex = /^\/repos\/ownertype\/(\w+)\/ownerid\/(\w+)\//
+// const listRouteRegex = /^\/repos\/ownertype\/(\w+)\/ownerid\/(\w+)\//
+const listRouteRegex = /^\/type\/(\w+)\/ownertype\/(\w+)\/owner\/(\w+)/
 
 export const getListRouteParams = ({ path }) => {
   const match = listRouteRegex.exec(path)
   if (match) {
     return {
-      ownerType: match[1],
-      ownerId: match[2],
+      type: match[1],
+      ownerType: match[2],
+      owner: match[3],
     }
   }
   return null
 }
 
-export const generateListRoute = ({ ownerType, ownerId }) =>
-  `/repos/ownertype/${ownerType}/ownerid/${ownerId}/`
+export const generateListRoute = ({ type, ownerType, owner }) =>
+  `/type/${type}/ownertype/${ownerType}/owner/${owner}/`
 
 export const listRoute = () =>
   generateListRoute({
+    type: ':type',
     ownerType: ':ownerType',
-    ownerId: ':ownerId',
+    owner: ':owner',
   })
 
 const runRouteRegex = /^\/runs\/(\w+)\//
