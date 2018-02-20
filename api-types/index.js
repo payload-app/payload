@@ -2,12 +2,12 @@
 
 declare module 'api-types' {
   declare export type Repo = {
-    name: string,
-    repoId: number,
+    activating?: boolean,
     active: boolean,
+    owner: number,
+    repo: boolean,
+    _id: boolean,
   }
 
   declare export type RepoList = Array<Repo>
-
-  declare export type ListGithubRepoArgs = { token: string }
 }

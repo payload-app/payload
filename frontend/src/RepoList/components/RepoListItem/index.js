@@ -1,42 +1,80 @@
+// @flow
+import type { Repo } from 'api-types'
 import React from 'react'
 import { Text, Button } from '../../../components'
-import { red } from '../../../components/style/color'
+import { red, mutedWhite } from '../../../components/style/color'
 
-const ActiveText = () => (
-  <Text capitalize={true} background={red}>
-    Not Active
-  </Text>
-)
+type Props = {
+  repo: Repo,
+  onActivateClick: () => {},
+}
 
-export default ({ repo, onActivateClick }) => (
-  <div>
-    <Text size={1.5}>
-      {repo.owner}/{repo.repo}
-    </Text>
-    <div
-      style={{
-        display: 'flex',
-        margin: '1rem 0',
-      }}
-    >
+export default ({ repo, onActivateClick }: Props) => {
+  return (
+    <div style={{ display: 'flex' }}>
       <div
         style={{
-          flexGrow: 1,
+          borderTop: `1px solid ${mutedWhite}`,
+          borderLeft: `1px solid ${mutedWhite}`,
+          borderBottom: `1px solid ${mutedWhite}`,
+          width: 9,
+          marginTop: '1.5em',
+          marginRight: 8,
         }}
-      >
-        {repo.active ? (
-          <Text>Repo Is Active</Text>
-        ) : (
-          <ActiveText active={repo.active} />
-        )}
+      />
+      <div style={{ flex: 1 }}>
+        <div style={{ display: 'flex' }}>
+          <Text size={2.4} capitalize={true}>
+            {repo.owner}/{repo.repo}
+          </Text>
+
+          <div
+            style={{
+              flex: 1,
+              borderTop: `1px solid ${mutedWhite}`,
+              marginTop: '1.5em',
+              marginLeft: 8,
+            }}
+          />
+        </div>
+
+        <div style={{ paddingTop: 10, paddingBottom: 20 }}>
+          {repo.active ? (
+            <div style={{ paddingTop: 1, paddingBottom: 2 }}>
+              <Text capitalize={true}>Active</Text>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Text capitalize={true} background={red}>
+                <span
+                  style={{
+                    display: 'inline-block', // HACK: Add Padding to Inline El
+                    paddingTop: 1,
+                    paddingLeft: 3,
+                    paddingRight: 3,
+                  }}
+                >
+                  Not Active
+                </span>
+              </Text>
+
+              <Button onClick={onActivateClick} disabled={repo.activating}>
+                {repo.activating ? 'Activating...' : 'Activate?'}
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
-      <div>
-        {repo.active ? null : (
-          <Button onClick={onActivateClick} disabled={repo.activating}>
-            {repo.activating ? 'Activating...' : 'Activate?'}
-          </Button>
-        )}
-      </div>
+      <div
+        style={{
+          borderTop: `1px solid ${mutedWhite}`,
+          borderRight: `1px solid ${mutedWhite}`,
+          width: 9,
+          height: 9,
+          marginTop: '1.5em',
+          marginRight: 8,
+        }}
+      />
     </div>
-  </div>
-)
+  )
+}
