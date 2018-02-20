@@ -14,8 +14,8 @@ import Run from '../PageRun'
 export default () => (
   <Switch>
     <ProtectedRoute exact path={baseRoute()} component={Loading} />
-    <ProtectedRoute path={listRoute()} component={List} />
     <Route path={runRoute()} component={Run} />
+    <ProtectedRoute path={listRoute()} component={List} />
     <Route path={authRoute()} component={Auth} />
   </Switch>
 )
