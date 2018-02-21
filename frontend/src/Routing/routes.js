@@ -23,7 +23,7 @@ export const listRoute = () =>
     owner: ':owner',
   })
 
-const runRoutePattern = `${listRoutePattern}repo/([\\w-]+)/sha/([\\w-]+)/`
+const runRoutePattern = `${listRoutePattern}repo/([\\w-]+)/branch/([\\w-]+)/sha/([\\w-]+)/`
 const runRouteRegex = new RegExp(runRoutePattern)
 
 export const getRunRouteParams = ({ path }) => {
@@ -34,14 +34,26 @@ export const getRunRouteParams = ({ path }) => {
       ownerType: match[2],
       owner: match[3],
       repo: match[4],
-      sha: match[5],
+      branch: match[5],
+      sha: match[6],
     }
   }
   return null
 }
 
-export const generateRunRoute = ({ type, ownerType, owner, repo, sha }) =>
-  `/type/${type}/ownertype/${ownerType}/owner/${owner}/repo/${repo}/sha/${sha}/`
+export const generateRunRoute = ({
+  type,
+  ownerType,
+  owner,
+  repo,
+  branch,
+  sha,
+}) =>
+  `${generateListRoute({
+    type,
+    ownerType,
+    owner,
+  })}/repo/${repo}/branch/${branch}/sha/${sha}/`
 
 export const runRoute = () =>
   generateRunRoute({
@@ -49,6 +61,7 @@ export const runRoute = () =>
     ownerType: ':ownerType',
     owner: ':owner',
     repo: ':repo',
+    branch: ':branch',
     sha: ':sha',
   })
 
