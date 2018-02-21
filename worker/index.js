@@ -116,6 +116,7 @@ const main = async () => {
         accessToken,
         owner,
         repo,
+        branch: headBranch,
         sha: headSha,
         increaseThreshold: increaseThreshold || 0.05,
       })
@@ -127,6 +128,7 @@ const main = async () => {
         accessToken,
         owner,
         repo,
+        branch: headBranch,
         sha: headSha,
       })
     }
