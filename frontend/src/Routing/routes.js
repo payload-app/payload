@@ -53,7 +53,7 @@ export const generateRunRoute = ({
     type,
     ownerType,
     owner,
-  })}/repo/${repo}/branch/${branch}/sha/${sha}/`
+  })}repo/${repo}/branch/${branch}/sha/${sha}/`
 
 export const runRoute = () =>
   generateRunRoute({
