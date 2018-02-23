@@ -43,8 +43,8 @@ const Duration = ({ start, stop }) => (
       <Text weight={600}>
         {ms(
           Math.floor(
-            datetimeToMS({ datetime: stop }) / 1000 -
-              datetimeToMS({ datetime: start }) / 1000,
+            datetimeToMS({ datetime: stop }) -
+              datetimeToMS({ datetime: start }),
           ),
           {
             long: true,
