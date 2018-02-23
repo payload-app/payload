@@ -42,7 +42,7 @@ const initRunsCollection = async ({ dbClient }) => {
     .createIndex({ owner: 1, repo: 1, type: 1, sha: 1 }, { unique: 1 })
   await dbClient
     .collection('runs')
-    .createIndex({ owner: 1, repo: 1, branch: 1, type: 1, created: 1 })
+    .createIndex({ owner: 1, repo: 1, branch: 1, type: 1, created: -1 })
   console.log('Init Runs Collection...Done')
 }
 
