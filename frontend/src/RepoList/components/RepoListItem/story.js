@@ -53,3 +53,9 @@ storiesOf('RepoListItem', module)
       onActivateClick={action('Activate Clicked')}
     />
   ))
+  .add('activeRepoWithLastRunError', () => (
+    <RepoListItem
+      repo={activeRepoWithLastRunError}
+      onActivateClick={action('Activate Clicked')}
+    />
+  ))

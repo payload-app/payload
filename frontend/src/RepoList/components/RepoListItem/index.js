@@ -5,6 +5,8 @@ import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import { Text, Button } from '../../../components'
 import { red, mutedWhite } from '../../../components/style/color'
+import { generateRunRoute } from '../../../Routing'
+import { Link } from 'react-router-dom'
 
 type Props = {
   repo: Repo,
@@ -14,34 +16,59 @@ type Props = {
 const datetimeToMS = ({ datetime }) => new Date(datetime).getTime()
 
 const Duration = ({ start, stop }) => (
-  <Text>
-    Duration:{ms(
-      Math.floor(
-        datetimeToMS({ datetime: stop }) - datetimeToMS({ datetime: start }),
-      ),
-      {
-        long: true,
-      },
-    )}
-  </Text>
+  <div style={{ flex: 1, textAlign: 'right' }}>
+    <Text>
+      Duration:{' '}
+      {ms(
+        Math.floor(
+          datetimeToMS({ datetime: stop }) - datetimeToMS({ datetime: start }),
+        ),
+        {
+          long: true,
+        },
+      )}
+    </Text>
+  </div>
 )
 
 const CreateTime = ({ created }) => (
-  <Text>Last Ran: {<TimeAgo date={created} />}</Text>
+  <div style={{ flex: 1, textAlign: 'right' }}>
+    <Text>Last Ran: {<TimeAgo date={created} />}</Text>
+  </div>
 )
 
-const SHA = ({ sha, branch }) => (
-  <Text>
-    SHA: {sha} Branch: {branch}
-  </Text>
+const SHA = ({ type, ownerType, owner, repo, branch, sha }) => (
+  // TODO: replace this with a Link from react-router-dom
+  // it should only wrap the SHA (so the branch could go to a differnt place)
+  <div style={{ flex: 2 }}>
+    <a
+      href={generateRunRoute({
+        type,
+        ownerType,
+        owner,
+        repo,
+        branch,
+        sha,
+      })}
+    >
+      <Text>{`${branch} » ${sha}`}</Text>
+    </a>
+  </div>
 )
 
 const ActiveContents = ({ repo }) => {
   if (repo.lastDefaultRun) {
-    const { start, stop, created, sha, branch } = repo.lastDefaultRun
+    const { start, stop, created, branch, sha } = repo.lastDefaultRun
     return (
-      <div>
-        <SHA sha={sha} branch={branch} />
+      <div style={{ display: 'flex' }}>
+        <SHA
+          sha={sha}
+          branch={branch}
+          repo={repo.repo}
+          type={repo.type}
+          ownerType={repo.ownerType}
+          owner={repo.owner}
+        />
         <CreateTime created={created} />
         <Duration start={start} stop={stop} />
       </div>
