@@ -11,7 +11,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.EMIT:
-      console.log('action', action)
       return {
         ...state,
         route: action.route,
