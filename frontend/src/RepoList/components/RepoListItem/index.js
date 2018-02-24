@@ -3,10 +3,8 @@ import type { Repo } from 'api-types'
 import React from 'react'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
-import { Text, Button } from '../../../components'
+import { Text, Button, Link } from '../../../components'
 import { red, mutedWhite } from '../../../components/style/color'
-import { generateRunRoute } from '../../../Routing'
-import { Link } from 'react-router-dom'
 
 type Props = {
   repo: Repo,
@@ -37,38 +35,24 @@ const CreateTime = ({ created }) => (
   </div>
 )
 
-const SHA = ({ type, ownerType, owner, repo, branch, sha }) => (
-  // TODO: replace this with a Link from react-router-dom
-  // it should only wrap the SHA (so the branch could go to a differnt place)
+const SHA = ({ branch, sha, onRunClick }) => (
   <div style={{ flex: 2 }}>
-    <a
-      href={generateRunRoute({
-        type,
-        ownerType,
-        owner,
-        repo,
-        branch,
-        sha,
-      })}
-    >
-      <Text>{`${branch} » ${sha}`}</Text>
-    </a>
+    <Text>{`${branch} » `}</Text>
+    <Link
+      onClick={e => {
+        e.preventDefault()
+        onRunClick()
+      }}
+    >{`${sha}`}</Link>
   </div>
 )
 
-const ActiveContents = ({ repo }) => {
+const ActiveContents = ({ repo, onRunClick }) => {
   if (repo.lastDefaultRun) {
     const { start, stop, created, branch, sha } = repo.lastDefaultRun
     return (
       <div style={{ display: 'flex' }}>
-        <SHA
-          sha={sha}
-          branch={branch}
-          repo={repo.repo}
-          type={repo.type}
-          ownerType={repo.ownerType}
-          owner={repo.owner}
-        />
+        <SHA sha={sha} branch={branch} onRunClick={onRunClick} />
         <CreateTime created={created} />
         <Duration start={start} stop={stop} />
       </div>
@@ -78,7 +62,7 @@ const ActiveContents = ({ repo }) => {
   }
 }
 
-export default ({ repo, onActivateClick }: Props) => {
+export default ({ repo, onActivateClick, onRunClick }: Props) => {
   return (
     <div style={{ display: 'flex' }}>
       <div
@@ -110,7 +94,7 @@ export default ({ repo, onActivateClick }: Props) => {
         <div style={{ paddingTop: 10, paddingBottom: 20 }}>
           {repo.active ? (
             <div style={{ paddingTop: 1, paddingBottom: 2 }}>
-              <ActiveContents repo={repo} />
+              <ActiveContents repo={repo} onRunClick={onRunClick} />
             </div>
           ) : (
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
