@@ -1,7 +1,4 @@
-import {
-  actions as dataFetchActions,
-  actionTypes as dataFetchActionTypes,
-} from '@hharnisc/async-data-fetch'
+import { actions as dataFetchActions } from '@hharnisc/async-data-fetch'
 import { actionTypes as routingActionTypes, routes } from '../Routing'
 
 export default ({ dispatch }) => next => action => {
