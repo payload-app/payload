@@ -1,6 +1,7 @@
 const { stat: statAsync } = require('fs')
 const { join } = require('path')
 const { promisify } = require('util')
+const { throwDisplayableError } = require('./utils')
 
 const stat = promisify(statAsync)
 
@@ -13,7 +14,15 @@ const getFilesizeInBytes = async filename => {
 module.exports = async ({ sha, files, logger, workingDirBase }) => {
   const fileSizes = []
   for (let file of files) {
-    const size = await getFilesizeInBytes(join(workingDirBase, sha, file))
+    let size
+    try {
+      size = await getFilesizeInBytes(join(workingDirBase, sha, file))
+    } catch (err) {
+      throwDisplayableError({
+        message: `Could not calulate size of file: ${file}`,
+      })
+    }
+
     logger.info('calculated file size', {
       file,
       size,
