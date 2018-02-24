@@ -56,11 +56,13 @@ services:
      - ./webhook-collector:/usr/src/app/
     environment:
      - WORKER_QUEUE=payload-worker
+     - BASE_RUN_URL=http://local.payloadapp.com
     links:
      - queue-service
      - repo-service
      - user-service
      - organization-service
+     - status-broadcaster
     networks:
      - main
   github-auth:
@@ -146,6 +148,7 @@ services:
     environment:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-1
+     - BASE_RUN_URL=http://local.payloadapp.com
     restart: always
     networks:
      - main

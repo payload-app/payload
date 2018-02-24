@@ -1,4 +1,3 @@
-require('dotenv').config()
 const winston = require('winston')
 const { promisify } = require('util')
 const RPCClient = require('@hharnisc/micro-rpc-client')

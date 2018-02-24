@@ -19,6 +19,23 @@ const broadcastStart = async ({
   branch,
   sha,
 }) => {
+  await statusBroadcasterClient.call('broadcastStatus', {
+    accessToken,
+    owner,
+    repo,
+    sha,
+    state: 'pending',
+    description: 'Worker Calculating Payload...',
+    context: `Payload`,
+    targetUrl: generateTargetUrl({
+      type,
+      ownerType,
+      owner,
+      repo,
+      branch,
+      sha,
+    }),
+  })
   for (let file of files) {
     await statusBroadcasterClient.call('broadcastStatus', {
       accessToken,
@@ -50,6 +67,23 @@ const broadcastFail = async ({
   branch,
   sha,
 }) => {
+  await statusBroadcasterClient.call('broadcastStatus', {
+    accessToken,
+    owner,
+    repo,
+    sha,
+    state: 'failure',
+    description: 'Run Failed',
+    context: `Payload`,
+    targetUrl: generateTargetUrl({
+      type,
+      ownerType,
+      owner,
+      repo,
+      branch,
+      sha,
+    }),
+  })
   for (let file of files) {
     await statusBroadcasterClient.call('broadcastStatus', {
       accessToken,
@@ -101,6 +135,23 @@ const broadcastComplete = async ({
   branch,
   sha,
 }) => {
+  await statusBroadcasterClient.call('broadcastStatus', {
+    accessToken,
+    owner,
+    repo,
+    sha,
+    state: 'success',
+    description: 'Complete',
+    context: 'Payload',
+    targetUrl: generateTargetUrl({
+      type,
+      ownerType,
+      owner,
+      repo,
+      branch,
+      sha,
+    }),
+  })
   for (let file of fileSizes) {
     await statusBroadcasterClient.call('broadcastStatus', {
       accessToken,
@@ -125,7 +176,7 @@ const broadcastComplete = async ({
 const filesCollectionToObject = ({ collection }) =>
   collection.reduce((curObj, curItem) => {
     return {
-      curObj,
+      ...curObj,
       [curItem.file]: curItem.size,
     }
   }, {})
@@ -162,14 +213,24 @@ const broadcastCompleteWithDiffs = async ({
     }
   })
 
+  let topLevelState = 'success'
   for (let file of fileSizesWithDiffs) {
     let description = `${prettyBytes(file.size)}`
     let state = 'success'
     if (file.diff) {
-      description = `${description} (${file > 0 ? '+' : ''}${(
-        file.diff * 100
-      ).toFixed(2)}%)`
+      let diffArrow = ''
+      if (file.diff > 0) {
+        diffArrow = '↑ +'
+      } else if (file.diff < 0) {
+        diffArrow = '↓ '
+      }
+      description = `${description} (${diffArrow}${(file.diff * 100).toFixed(
+        2,
+      )}%)`
       state = file.diff > increaseThreshold ? 'failure' : 'success'
+    }
+    if (state === 'failure') {
+      topLevelState = 'failure'
     }
     await statusBroadcasterClient.call('broadcastStatus', {
       accessToken,
@@ -189,6 +250,23 @@ const broadcastCompleteWithDiffs = async ({
       }),
     })
   }
+  await statusBroadcasterClient.call('broadcastStatus', {
+    accessToken,
+    owner,
+    repo,
+    sha,
+    state: topLevelState,
+    description: topLevelState === 'failure' ? 'Failed' : 'Complete',
+    context: 'Payload',
+    targetUrl: generateTargetUrl({
+      type,
+      ownerType,
+      owner,
+      repo,
+      branch,
+      sha,
+    }),
+  })
 }
 
 module.exports = {
