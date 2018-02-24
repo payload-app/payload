@@ -5,25 +5,25 @@ const { createError } = require('@hharnisc/micro-rpc')
 const schema = Joi.object().keys({
   owner: Joi.string().required(),
   repo: Joi.string().required(),
-  sha: Joi.string().required(),
+  branch: Joi.string().required(),
   type: Joi.string()
     .valid(['github'])
     .required(),
 })
 
-module.exports = ({ runServiceClient, repoServiceClient }) => async ({
+module.exports = ({ collectionClient }) => async ({
   owner,
   repo,
-  sha,
   type,
+  branch,
 }) => {
   try {
     await validate({
       value: {
         owner,
         repo,
-        sha,
         type,
+        branch,
       },
       schema,
     })
@@ -32,19 +32,18 @@ module.exports = ({ runServiceClient, repoServiceClient }) => async ({
       message: parseValidationErrorMessage({ error }),
     })
   }
-
-  const run = await runServiceClient.call('getRun', { owner, repo, sha, type })
-  const repository = await repoServiceClient.call('getRepo', { id: run.repoId })
-  const recentDefaultBranchRuns = await runServiceClient.call(
-    'getLatestBranchRuns',
-    {
-      owner,
-      repo,
-      type,
-      branch: repository.defaultBranch,
-    },
-  )
-  return Object.assign({}, run, {
-    recentDefaultBranchRuns,
-  })
+  try {
+    return await collectionClient
+      .find({
+        owner,
+        repo,
+        type,
+        branch,
+      })
+      .toArray()
+  } catch (error) {
+    throw createError({
+      message: `${error.message}`,
+    })
+  }
 }

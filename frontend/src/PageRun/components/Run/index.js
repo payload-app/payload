@@ -96,9 +96,20 @@ const ErrorDisplay = ({ errorMessage }) => (
   </div>
 )
 
+const RecentRuns = ({ recentDefaultBranchRuns }) => (
+  <Text>{JSON.stringify(recentDefaultBranchRuns)}</Text>
+)
+
 export default ({
   loading,
-  run: { fileSizes, start, stop, created, errorMessage },
+  run: {
+    fileSizes,
+    start,
+    stop,
+    created,
+    errorMessage,
+    recentDefaultBranchRuns,
+  },
 }) => (
   <div>
     <Header />
@@ -112,6 +123,9 @@ export default ({
     )}
     {loading || !errorMessage ? null : (
       <ErrorDisplay errorMessage={errorMessage} />
+    )}
+    {loading || errorMessage ? null : (
+      <RecentRuns recentDefaultBranchRuns={recentDefaultBranchRuns} />
     )}
   </div>
 )

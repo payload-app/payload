@@ -35,7 +35,7 @@ const rpcHandler = setSession(
     method('deactivateRepo', () => 'OK'),
     method('repoOwners', repoOwners({ organizationServiceClient })),
     method('repos', repos({ repoServiceClient, runServiceClient })),
-    method('getRun', getRun({ runServiceClient })),
+    method('getRun', getRun({ runServiceClient, repoServiceClient })),
   ),
 )
 
