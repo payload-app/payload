@@ -1,7 +1,9 @@
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import { actions as dataFetchActions } from '@hharnisc/async-data-fetch'
 import RepoList from './components/RepoList'
 import { selector } from './reducer'
+import { generateRunRoute } from '../Routing'
 
 export default connect(
   state => ({
@@ -18,6 +20,19 @@ export default connect(
             type: repo.type,
           },
         }),
+      ),
+    onRunClick: ({ repo }) =>
+      dispatch(
+        push(
+          generateRunRoute({
+            type: repo.type,
+            ownerType: repo.ownerType,
+            owner: repo.owner,
+            repo: repo.repo,
+            branch: repo.lastDefaultRun.branch,
+            sha: repo.lastDefaultRun.sha,
+          }),
+        ),
       ),
   }),
 )(RepoList)

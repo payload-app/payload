@@ -20,6 +20,17 @@ const activatingRepo = {
   activating: true,
 }
 
+const activeRepoWithLastRun = {
+  ...repo,
+  lastDefaultRun: {
+    branch: 'master',
+    sha: 'bcefa91c942d700f387156e8ee2615ae05d67f7a',
+    created: new Date('December 3, 1992 00:24:00'),
+    start: new Date('December 3, 1992 00:25:00'),
+    stop: new Date('December 3, 1992 00:26:00'),
+  },
+}
+
 storiesOf('RepoListItem', module)
   .add('default', () => (
     <RepoListItem repo={repo} onActivateClick={action('Activate Clicked')} />
@@ -33,6 +44,18 @@ storiesOf('RepoListItem', module)
   .add('activating', () => (
     <RepoListItem
       repo={activatingRepo}
+      onActivateClick={action('Activate Clicked')}
+    />
+  ))
+  .add('activeRepoWithLastRun', () => (
+    <RepoListItem
+      repo={activeRepoWithLastRun}
+      onActivateClick={action('Activate Clicked')}
+    />
+  ))
+  .add('activeRepoWithLastRunError', () => (
+    <RepoListItem
+      repo={activeRepoWithLastRunError}
       onActivateClick={action('Activate Clicked')}
     />
   ))

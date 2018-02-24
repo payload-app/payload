@@ -3,26 +3,27 @@ import { fontFamily } from '../style/font'
 import { text } from '../style/color'
 
 export default ({
+  href = '#',
+  onClick,
   size = 1.5,
   color = text,
-  background,
-  capitalize,
   children,
-  weight = 200,
+  capitalize,
+  weight = 400,
   antialiased = true,
 }) => (
-  <span
+  <a
     style={{
-      fontFamily,
-      fontWeight: weight,
       fontSize: `${size}rem`,
+      fontFamily,
       color,
-      background,
-      fontWeight: weight,
       textTransform: capitalize ? 'uppercase' : undefined,
       WebkitFontSmoothing: antialiased ? 'antialiased' : undefined,
+      fontWeight: weight,
     }}
+    href={href}
+    onClick={onClick}
   >
     {children}
-  </span>
+  </a>
 )

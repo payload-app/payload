@@ -12,3 +12,6 @@ storiesOf('Text', module)
     <Text capitalize={true}>converted to uppercase</Text>
   ))
   .add('weight = 600', () => <Text weight={600}>Bold</Text>)
+  .add('antialiased = false', () => (
+    <Text antialiased={false}>antialiased = false</Text>
+  ))

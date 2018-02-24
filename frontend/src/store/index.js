@@ -23,7 +23,11 @@ import {
   middleware as headerMiddleware,
 } from '../Header'
 import { middleware as unauthorizedRedirectMiddleware } from '../UnauthorizedRedirect'
-import { middleware as routingMiddleware } from '../Routing'
+import {
+  middleware as routingMiddleware,
+  selector as routingSelector,
+  reducer as routingReducer,
+} from '../Routing'
 import {
   middleware as runMiddleware,
   selector as pageRunSelector,
@@ -45,6 +49,7 @@ export default createStore(
     [repoListSelector]: repoListReducer,
     [headerSelector]: headerReducer,
     [pageRunSelector]: pageRunReducer,
+    [routingSelector]: routingReducer,
     router: routerReducer,
   }),
   {},
