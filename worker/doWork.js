@@ -120,7 +120,7 @@ module.exports = async ({
     })
     if (fileList) {
       await broadcastFail({
-        files,
+        files: fileList,
         accessToken,
         owner,
         repo,
@@ -131,7 +131,7 @@ module.exports = async ({
         errorMessage: displayable ? errorMessage : defaultErrorMessage,
       })
     } else {
-      broadcastRunError({
+      await broadcastRunError({
         accessToken,
         owner,
         repo,
@@ -139,9 +139,7 @@ module.exports = async ({
         sha,
         ownerType,
         type,
-        errorMessage: displayable
-          ? errorMessage
-          : 'An Unexpected Error Occured',
+        errorMessage: displayable ? errorMessage : defaultErrorMessage,
       })
     }
   }
