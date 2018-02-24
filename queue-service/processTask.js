@@ -33,7 +33,7 @@ module.exports = ({ redisClient }) => async ({ queue, workerName }) => {
       lease,
       JSON.stringify({ workerName, item, queue }),
     )
-    return { taskId, task }
+    return { taskId, task, lease }
   }
   return null
 }

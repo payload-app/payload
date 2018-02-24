@@ -97,6 +97,17 @@ const getGithubAccessToken = async ({ repository }) => {
   return user.accounts.github.accessToken
 }
 
+const createTask = async ({ task }) =>
+  await queueServiceClient.call('createTask', {
+    queue: process.env.WORKER_QUEUE,
+    task: {
+      ...task,
+      maxLease: process.env.MAX_LEASE_SECONDS,
+    },
+    retries: process.env.RETRIES,
+    lease: process.env.LEASE_SECONDS,
+  })
+
 const enqueuePullRequest = async ({ req, payload }) => {
   const action = payload.action
   // ignore actions that aren't PR synchronize or opened
@@ -137,11 +148,15 @@ const enqueuePullRequest = async ({ req, payload }) => {
     taskType: 'pullRequest',
     type: 'github',
   }
-  const { taskId } = await queueServiceClient.call('createTask', {
-    queue: process.env.WORKER_QUEUE,
-    task,
-    retries: 0,
-    lease: 60,
+  const { taskId } = await createTask({ task })
+  await broadcastStart({
+    accessToken,
+    type: 'github',
+    ownerType,
+    owner,
+    repo,
+    branch: head.branch,
+    sha: head.sha,
   })
   try {
     await broadcastStart({
@@ -199,11 +214,15 @@ const enqueuePush = async ({ req, payload }) => {
     taskType: 'push',
     type: 'github',
   }
-  const { taskId } = await queueServiceClient.call('createTask', {
-    queue: process.env.WORKER_QUEUE,
-    task,
-    retries: 0,
-    lease: 60,
+  const { taskId } = await createTask({ task })
+  await broadcastStart({
+    accessToken,
+    type: 'github',
+    ownerType,
+    owner,
+    repo,
+    branch: head.branch,
+    sha: head.sha,
   })
   await broadcastStart({
     accessToken,

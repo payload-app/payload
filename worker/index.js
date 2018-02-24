@@ -40,8 +40,34 @@ const main = async () => {
   })
 
   if (work) {
-    const { task, taskId } = work
-    logger.info('Found Task', { taskId, task })
+    const { task, taskId, lease } = work
+    logger.info('Found Task', { taskId, task, lease })
+
+    const leaseExtendId = setInterval(async () => {
+      logger.info('Extending Lease', { taskId, task })
+      try {
+        await queueServiceClient.call('extendLease', {
+          queue,
+          workerName,
+          taskId,
+        })
+      } catch (err) {
+        // if the lease was lost, exit the process
+        if (err.message === 'could not find existing lease') {
+          process.exit(2)
+        }
+      }
+    }, lease * 1000 / 2)
+
+    const timeoutId = setTimeout(async () => {
+      logger.info('Worker Max Lease Expired', { taskId, task })
+      await queueServiceClient.call('failTask', {
+        queue,
+        workerName,
+        taskId,
+      })
+      process.exit(1)
+    }, task.maxLease * 1000)
 
     const {
       owner,
@@ -74,7 +100,7 @@ const main = async () => {
       baseFileSizes = fileSizes
     } catch (error) {
       if (error.message === 'Another worker is processing this run') {
-        return
+        process.exit(0)
       }
     }
 
@@ -103,7 +129,7 @@ const main = async () => {
         })
       }
       // let the task expire since another worker is processing this run
-      return
+      process.exit(0)
     }
 
     if (headFileSizes && baseFileSizes && taskType === 'pullRequest') {
@@ -137,6 +163,8 @@ const main = async () => {
       workerName,
       taskId,
     })
+    clearInterval(leaseExtendId)
+    clearTimeout(timeoutId)
   } else {
     logger.info('No Task Found', { queue })
   }

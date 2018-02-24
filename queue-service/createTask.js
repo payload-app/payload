@@ -12,7 +12,7 @@ const schema = Joi.object().keys({
     .min(0)
     .max(10),
   lease: Joi.number()
-    .min(60)
+    .min(30)
     .max(6000),
 })
 
