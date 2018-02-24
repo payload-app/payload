@@ -110,15 +110,17 @@ module.exports = async ({
     })
     logger.info('Run Complete', { id })
   } catch (e) {
+    const { displayable, message: errorMessage } = e
+    const defaultErrorMessage = 'An Unexpected Error Occured'
     error = e
-    logger.info('Run Failed', { id, error: error.message })
+    logger.info('Run Failed', { id, error: errorMessage })
     await runServiceClient.call('stopRun', {
       id,
-      errorMessage: error.message,
+      errorMessage: displayable ? errorMessage : defaultErrorMessage,
     })
     if (fileList) {
       await broadcastFail({
-        files,
+        files: fileList,
         accessToken,
         owner,
         repo,
@@ -126,9 +128,10 @@ module.exports = async ({
         sha,
         ownerType,
         type,
+        errorMessage: displayable ? errorMessage : defaultErrorMessage,
       })
     } else {
-      broadcastRunError({
+      await broadcastRunError({
         accessToken,
         owner,
         repo,
@@ -136,6 +139,7 @@ module.exports = async ({
         sha,
         ownerType,
         type,
+        errorMessage: displayable ? errorMessage : defaultErrorMessage,
       })
     }
   }

@@ -1,5 +1,6 @@
 const { join } = require('path')
 const { spawn } = require('child-process-promise')
+const { throwDisplayableError } = require('./utils')
 
 module.exports = async ({ scripts, sha, logger, workingDirBase }) => {
   for (let script of scripts) {
@@ -27,7 +28,14 @@ module.exports = async ({ scripts, sha, logger, workingDirBase }) => {
         data: data.toString(),
       })
     })
-    await promise
+    try {
+      await promise
+    } catch (err) {
+      throwDisplayableError({
+        message: `Script Error: ${script} - ${err.message}`,
+      })
+    }
+
     logger.info('Script complete', {
       pid: childProcess.pid,
       script,
