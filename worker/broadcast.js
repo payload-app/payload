@@ -66,6 +66,7 @@ const broadcastFail = async ({
   repo,
   branch,
   sha,
+  errorMessage,
 }) => {
   await statusBroadcasterClient.call('broadcastStatus', {
     accessToken,
@@ -73,7 +74,7 @@ const broadcastFail = async ({
     repo,
     sha,
     state: 'failure',
-    description: 'Run Failed',
+    description: errorMessage,
     context: `Payload`,
     targetUrl: generateTargetUrl({
       type,
@@ -113,6 +114,7 @@ const broadcastRunError = async ({
   repo,
   branch,
   sha,
+  errorMessage,
 }) =>
   await statusBroadcasterClient.call('broadcastStatus', {
     accessToken,
@@ -120,7 +122,7 @@ const broadcastRunError = async ({
     repo,
     sha,
     state: 'failure',
-    description: 'Payload Run Error',
+    description: errorMessage,
     context: 'Payload',
     targetUrl: generateTargetUrl({ type, ownerType, owner, repo, branch, sha }),
   })
