@@ -16,7 +16,6 @@
     "@hharnisc/micro-rpc": "^0.1.0",
     "@hharnisc/micro-rpc-client": "^0.1.2",
     "cookie": "^0.3.1",
-    "dotenv": "^5.0.0",
     "joi": "^13.1.2",
     "micro": "^9.0.2",
     "microrouter": "^3.0.0",

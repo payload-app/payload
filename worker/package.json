@@ -11,7 +11,6 @@
   "dependencies": {
     "@hharnisc/micro-rpc-client": "^0.1.2",
     "child-process-promise": "^2.2.1",
-    "dotenv": "^5.0.0",
     "pretty-bytes": "^4.0.2",
     "rimraf": "^2.6.2",
     "simple-git": "^1.89.0",

@@ -18,9 +18,41 @@ const repoServiceClient = new RPCClient({
   url: 'http://repo-service:3000/rpc',
 })
 
-const healthHandler = () => ({
-  status: 'OK',
+const statusBroadcasterClient = new RPCClient({
+  url: 'http://status-broadcaster:3000/rpc',
 })
+
+const baseRunUrl = process.env.BASE_RUN_URL
+
+const generateTargetUrl = ({ type, ownerType, owner, repo, branch, sha }) =>
+  `${baseRunUrl}/type/${type}/ownertype/${ownerType}/owner/${owner}/repo/${repo}/branch/${branch}/sha/${sha}/`
+
+const broadcastStart = async ({
+  accessToken,
+  type,
+  ownerType,
+  owner,
+  repo,
+  branch,
+  sha,
+}) =>
+  await statusBroadcasterClient.call('broadcastStatus', {
+    accessToken,
+    owner,
+    repo,
+    sha,
+    state: 'pending',
+    description: 'Waiting For Available Worker...',
+    context: 'Payload',
+    targetUrl: generateTargetUrl({
+      type,
+      ownerType,
+      owner,
+      repo,
+      branch,
+      sha,
+    }),
+  })
 
 const getRepository = async ({ owner, repo }) =>
   await repoServiceClient.call('getRepo', {
@@ -111,6 +143,21 @@ const enqueuePullRequest = async ({ req, payload }) => {
     retries: 0,
     lease: 60,
   })
+  try {
+    await broadcastStart({
+      accessToken,
+      type: 'github',
+      ownerType,
+      owner,
+      repo,
+      branch: head.branch,
+      sha: head.sha,
+    })
+  } catch (err) {
+    console.log('err', err)
+    throw err
+  }
+
   console.log(`Enqueued task with id: ${taskId}`)
 }
 
@@ -158,6 +205,15 @@ const enqueuePush = async ({ req, payload }) => {
     retries: 0,
     lease: 60,
   })
+  await broadcastStart({
+    accessToken,
+    type: 'github',
+    ownerType,
+    owner,
+    repo,
+    branch: head.branch,
+    sha: head.sha,
+  })
   console.log(`Enqueued task with id: ${taskId}`)
 }
 
@@ -175,10 +231,14 @@ const webhookHandler = async (req, res) => {
     if (error.handled) {
       send(res, 400, error.message)
     } else {
-      throw err
+      throw error
     }
   }
 }
+
+const healthHandler = () => ({
+  status: 'OK',
+})
 
 module.exports = router(
   get('/webhook/healthz', healthHandler),
