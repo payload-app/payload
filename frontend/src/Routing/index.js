@@ -1,6 +1,6 @@
 export { default as middleware } from './middleware'
 
-export { actionTypes, actions, selector } from './reducer'
+export { default as reducer, actionTypes, actions, selector } from './reducer'
 
 export {
   getListRouteParams,
