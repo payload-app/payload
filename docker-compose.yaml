@@ -57,6 +57,9 @@ services:
     environment:
      - WORKER_QUEUE=payload-worker
      - BASE_RUN_URL=http://local.payloadapp.com
+     - RETRIES=3
+     - LEASE_SECONDS=30
+     - MAX_LEASE_SECONDS=600 # 10 minutes
     links:
      - queue-service
      - repo-service

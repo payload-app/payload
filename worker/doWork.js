@@ -40,19 +40,27 @@ module.exports = async ({
     const message = 'Another worker is processing this run'
     logger.info(message, { run })
     throw new Error(message)
-  } else if (run) {
+    // allow failed runs to be tried again
+  } else if (run && !run.errorMessage) {
     return {
       fileSizes: run.fileSizes,
     }
   }
 
-  const { id } = await runServiceClient.call('createRun', {
-    owner,
-    repo,
-    repoId,
-    branch,
-    sha,
-  })
+  let id
+  if (!run) {
+    const { id: runId } = await runServiceClient.call('createRun', {
+      owner,
+      repo,
+      repoId,
+      branch,
+      sha,
+    })
+    id = runId
+  } else {
+    id = run._id
+  }
+
   logger.info('Run Starting', { id })
   await runServiceClient.call('startRun', {
     id,
