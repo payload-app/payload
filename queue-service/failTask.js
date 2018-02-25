@@ -1,26 +1,37 @@
 const Joi = require('joi')
-const { deleteProcessingTask } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
 const {
+  deleteProcessingTask,
   validate,
   parseValidationErrorMessage,
   getItemFromTaskId,
   requeueTask,
+  deadLetterTask,
 } = require('./utils')
 
 const schema = Joi.object().keys({
   queue: Joi.string().required(),
   workerName: Joi.string().required(),
   taskId: Joi.string().required(),
+  errorMessage: Joi.string().required(),
+  handled: Joi.boolean().required(),
 })
 
-module.exports = ({ redisClient }) => async ({ queue, workerName, taskId }) => {
+module.exports = ({ redisClient }) => async ({
+  queue,
+  workerName,
+  taskId,
+  errorMessage,
+  handled,
+}) => {
   try {
     await validate({
       value: {
         queue,
         workerName,
         taskId,
+        errorMessage,
+        handled,
       },
       schema,
     })
@@ -50,6 +61,13 @@ module.exports = ({ redisClient }) => async ({ queue, workerName, taskId }) => {
       newTaskId,
       requeued: true,
     }
+  } else if (!handled) {
+    await deadLetterTask({
+      queue,
+      item,
+      errorMessage,
+      redisClient,
+    })
   }
   const { leaseRemove, remove } = await deleteProcessingTask({
     queue,

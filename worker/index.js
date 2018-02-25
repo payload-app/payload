@@ -65,6 +65,8 @@ const main = async () => {
         queue,
         workerName,
         taskId,
+        handled: true,
+        errorMessage: `Worker lease expired - ${task.maxLease}`,
       })
       process.exit(1)
     }, task.maxLease * 1000)
@@ -126,6 +128,10 @@ const main = async () => {
           queue,
           workerName,
           taskId,
+          // if there is an error that can't be displayed
+          // it should be dumped into the dead letter queue
+          handled: error.displayable || false,
+          errorMessage: error.displayable ? error.message : error.stack,
         })
       }
       // let the task expire since another worker is processing this run
