@@ -23,9 +23,12 @@ module.exports = async ({ sha, files, logger, workingDirBase }) => {
       })
     }
 
-    logger.info('calculated file size', {
-      file,
-      size,
+    logger.info({
+      message: 'calculated file size',
+      data: {
+        file,
+        size,
+      },
     })
     fileSizes.push({ file, size })
   }

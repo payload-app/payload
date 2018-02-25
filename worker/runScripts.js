@@ -9,23 +9,32 @@ module.exports = async ({ scripts, sha, logger, workingDirBase }) => {
       cwd: join(workingDirBase, sha),
     })
     const { childProcess } = promise
-    logger.info('Script starting', {
-      pid: childProcess.pid,
-      script,
+    logger.info({
+      message: 'script starting',
+      data: {
+        pid: childProcess.pid,
+        script,
+      },
     })
 
     childProcess.stdout.on('data', data => {
-      logger.info('Script stdout', {
-        pid: childProcess.pid,
-        script,
-        data: data.toString(),
+      logger.info({
+        message: 'script stdout',
+        data: {
+          pid: childProcess.pid,
+          script,
+          data: data.toString(),
+        },
       })
     })
     childProcess.stderr.on('data', data => {
-      logger.info('Script stderr', {
-        pid: childProcess.pid,
-        script,
-        data: data.toString(),
+      logger.info({
+        message: 'script stderr',
+        data: {
+          pid: childProcess.pid,
+          script,
+          data: data.toString(),
+        },
       })
     })
     try {
@@ -36,9 +45,12 @@ module.exports = async ({ scripts, sha, logger, workingDirBase }) => {
       })
     }
 
-    logger.info('Script complete', {
-      pid: childProcess.pid,
-      script,
+    logger.info({
+      message: 'script complete',
+      data: {
+        pid: childProcess.pid,
+        script,
+      },
     })
   }
 }
