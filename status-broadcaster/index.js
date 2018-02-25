@@ -26,7 +26,7 @@ const rpcHandler = rpc(
         json: true,
         body: {
           state,
-          description,
+          description: description.substring(0, 140),
           target_url: targetUrl,
           context,
         },
