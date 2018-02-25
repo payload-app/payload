@@ -155,6 +155,23 @@ services:
     restart: always
     networks:
      - main
+  worker-clone:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile.development
+    volumes:
+     - ./worker:/usr/src/app/
+    links:
+     - queue-service
+     - run-service
+     - status-broadcaster
+    environment:
+     - WORKER_QUEUE=payload-worker
+     - WORKER_NAME=worker-2
+     - BASE_RUN_URL=http://local.payloadapp.com
+    restart: always
+    networks:
+     - main
   queue-garbage-collector:
     build:
       context: ./queue-garbage-collector
