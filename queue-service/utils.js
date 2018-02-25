@@ -7,6 +7,17 @@ const validateWithPromise = promisify(Joi.validate)
 
 const processingQueue = ({ queue }) => `${queue}:processing`
 
+const failedQueue = ({ queue }) => `${queue}:failed`
+
+const deadLetterTask = async ({ queue, item, errorMessage, redisClient }) =>
+  await redisClient.lpush(
+    failedQueue({ queue }),
+    JSON.stringify({
+      ...item,
+      errorMessage,
+    }),
+  )
+
 const deleteProcessingTask = async ({ queue, item, redisClient }) => {
   const remove = await redisClient.lrem(
     processingQueue({ queue }),
@@ -85,4 +96,5 @@ module.exports = {
   parseValidationErrorMessage,
   getItemFromTaskId,
   requeueTask,
+  deadLetterTask,
 }
