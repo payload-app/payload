@@ -26,7 +26,7 @@ module.exports = async ({
   logger,
   workingDirBase = '/tmp',
 }) => {
-  logger.info('Checking for existing run')
+  logger.info({ message: 'checking for existing run' })
   let run
   try {
     run = await runServiceClient.call('getRun', {
@@ -34,14 +34,21 @@ module.exports = async ({
       repo,
       sha,
     })
-  } catch (error) {}
+  } catch (error) {
+    logger.info({ message: 'no existing run found' })
+  }
 
   if (run && run.start && !run.stop) {
     const message = 'Another worker is processing this run'
-    logger.info(message, { run })
+    logger.mergeLoggerMetadata({ metadata: { runId: run._id } })
+    logger.info({ message: message.toLowerCase() })
     throw new Error(message)
     // allow failed runs to be tried again
   } else if (run && !run.errorMessage) {
+    logger.mergeLoggerMetadata({ metadata: { runId: run._id } })
+    logger.info({
+      message: 'returning existing run data',
+    })
     return {
       fileSizes: run.fileSizes,
     }
@@ -61,7 +68,8 @@ module.exports = async ({
     id = run._id
   }
 
-  logger.info('Run Starting', { id })
+  logger.mergeLoggerMetadata({ metadata: { runId: id } })
+  logger.info({ message: 'run starting' })
   await runServiceClient.call('startRun', {
     id,
   })
@@ -108,12 +116,11 @@ module.exports = async ({
       id,
       fileSizes,
     })
-    logger.info('Run Complete', { id })
+    logger.info({ message: 'run complete' })
   } catch (e) {
     const { displayable, message: errorMessage } = e
     const defaultErrorMessage = 'An Unexpected Error Occured'
     error = e
-    logger.info('Run Failed', { id, error: errorMessage })
     await runServiceClient.call('stopRun', {
       id,
       errorMessage: displayable ? errorMessage : defaultErrorMessage,

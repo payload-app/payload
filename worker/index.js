@@ -1,29 +1,10 @@
-const winston = require('winston')
 const { promisify } = require('util')
 const RPCClient = require('@hharnisc/micro-rpc-client')
+const { logger } = require('./logger')
 const doWork = require('./doWork')
 const { broadcastComplete, broadcastCompleteWithDiffs } = require('./broadcast')
 
 const sleep = promisify(setTimeout)
-
-const logger = new winston.Logger({
-  transports: [
-    new winston.transports.File({
-      level: 'info',
-      filename: './worker.log',
-      json: true,
-      maxsize: 5242880, //5MB
-      maxFiles: 5,
-      colorize: false,
-    }),
-    new winston.transports.Console({
-      level: 'debug',
-      json: false,
-      colorize: true,
-    }),
-  ],
-  exitOnError: false,
-})
 
 const queueServiceClient = new RPCClient({
   url: 'http://queue-service:3000/rpc',
@@ -32,7 +13,8 @@ const queueServiceClient = new RPCClient({
 const main = async () => {
   const queue = process.env.WORKER_QUEUE
   const workerName = process.env.WORKER_NAME
-  logger.info(`Worker ${workerName} Checking Queue ${queue}`)
+  logger.mergeLoggerMetadata({ metadata: { workerName, queue } })
+  logger.info({ message: 'worker checking queue' })
 
   const work = await queueServiceClient.call('processTask', {
     queue,
@@ -41,36 +23,6 @@ const main = async () => {
 
   if (work) {
     const { task, taskId, lease } = work
-    logger.info('Found Task', { taskId, task, lease })
-
-    const leaseExtendId = setInterval(async () => {
-      logger.info('Extending Lease', { taskId, task })
-      try {
-        await queueServiceClient.call('extendLease', {
-          queue,
-          workerName,
-          taskId,
-        })
-      } catch (err) {
-        // if the lease was lost, exit the process
-        if (err.message === 'could not find existing lease') {
-          process.exit(2)
-        }
-      }
-    }, lease * 1000 / 2)
-
-    const timeoutId = setTimeout(async () => {
-      logger.info('Worker Max Lease Expired', { taskId, task })
-      await queueServiceClient.call('failTask', {
-        queue,
-        workerName,
-        taskId,
-        handled: true,
-        errorMessage: `Worker lease expired - ${task.maxLease}`,
-      })
-      process.exit(1)
-    }, task.maxLease * 1000)
-
     const {
       owner,
       ownerType,
@@ -82,6 +34,67 @@ const main = async () => {
       head: { sha: headSha, branch: headBranch },
       base: { sha: baseSha, branch: baseBranch },
     } = task
+    logger.mergeLoggerMetadata({
+      metadata: {
+        taskId,
+        owner,
+        ownerType,
+        repo,
+        repoId,
+        taskType,
+        headSha,
+        baseSha,
+        headBranch,
+        baseBranch,
+        lease,
+      },
+    })
+    logger.info({ message: 'found task' })
+
+    const leaseExtendId = setInterval(async () => {
+      logger.info({ message: 'extending lease' })
+      try {
+        await queueServiceClient.call('extendLease', {
+          queue,
+          workerName,
+          taskId,
+        })
+      } catch (error) {
+        logger.error({
+          message: 'error extending lease',
+          data: {
+            error: error.message,
+            stack: error.stack,
+          },
+        })
+        // if the lease was lost, exit the process
+        if (error.message === 'could not find existing lease') {
+          process.exit(2)
+        }
+      }
+    }, lease * 1000 / 2)
+
+    const timeoutId = setTimeout(async () => {
+      logger.error({ message: 'worker max lease expired' })
+      try {
+        await queueServiceClient.call('failTask', {
+          queue,
+          workerName,
+          taskId,
+          handled: true,
+          errorMessage: `Worker lease expired - ${task.maxLease}`,
+        })
+      } catch (error) {
+        logger.error({
+          message: 'error failing timed out task',
+          data: {
+            error: error.message,
+            stack: error.stack,
+          },
+        })
+      }
+      process.exit(1)
+    }, task.maxLease * 1000)
 
     // use these to calculate github status
     let baseFileSizes
@@ -101,6 +114,13 @@ const main = async () => {
       })
       baseFileSizes = fileSizes
     } catch (error) {
+      logger.warn({
+        message: 'error while processing base',
+        data: {
+          error: error.message,
+          stack: error.stack,
+        },
+      })
       if (error.message === 'Another worker is processing this run') {
         process.exit(0)
       }
@@ -121,9 +141,18 @@ const main = async () => {
       headFileSizes = fileSizes
       increaseThreshold = threshold
     } catch (error) {
-      // if this failed and no other working is processing this run
-      // mark the task as failed
-      if (error.message !== 'Another worker is processing this run') {
+      if (error.message === 'Another worker is processing this run') {
+        logger.warn({ message: 'another worker is processing this run' })
+      } else {
+        logger.error({
+          message: 'error while processing head',
+          data: {
+            error: error.message,
+            stack: error.stack,
+          },
+        })
+        // if this failed and no other working is processing this run
+        // mark the task as failed
         await queueServiceClient.call('failTask', {
           queue,
           workerName,
@@ -172,14 +201,19 @@ const main = async () => {
     clearInterval(leaseExtendId)
     clearTimeout(timeoutId)
   } else {
-    logger.info('No Task Found', { queue })
+    logger.info({ message: 'No Task Found' })
   }
 
-  logger.info('Sleeping 10 Seconds')
+  logger.info({ message: 'Sleeping 10 Seconds' })
   await sleep(10000)
 }
 
 main().catch(error => {
-  console.log('error', error)
-  logger.info('Caught Unhandled Error In Main', error)
+  logger.error({
+    message: 'Uncaught Error In Main',
+    data: {
+      stack: error.stack,
+      error: error.message,
+    },
+  })
 })

@@ -6,7 +6,7 @@ const { throwDisplayableError } = require('./utils')
 const readFile = promisify(readFileAsync)
 
 module.exports = async ({ sha, logger, workingDirBase }) => {
-  logger.info('Reading package.json file')
+  logger.info({ message: 'reading package.json file' })
   let fileData
   try {
     fileData = await readFile(join(workingDirBase, sha, 'package.json'))
@@ -14,7 +14,7 @@ module.exports = async ({ sha, logger, workingDirBase }) => {
     throwDisplayableError({ message: 'Could not find package.json' })
   }
 
-  logger.info('Parsing package.json file')
+  logger.info({ message: 'parsing package.json file' })
   let packageData
   try {
     packageData = JSON.parse(fileData)

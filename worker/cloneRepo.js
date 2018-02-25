@@ -10,7 +10,7 @@ module.exports = async ({
   logger,
   workingDirBase = '/tmp',
 }) => {
-  logger.info(`Cloning Repo ${owner}/${repo}`)
+  logger.info({ message: 'cloning repo' })
   try {
     await git(workingDirBase).clone(
       `https://${accessToken}@github.com/${owner}/${repo}.git`,
@@ -21,8 +21,8 @@ module.exports = async ({
       message: err.message,
     })
   }
-  logger.info(`Completed Cloning Repo`)
-  logger.info(`Checking Out Sha: ${sha}`)
+  logger.info({ message: 'completed cloning repo' })
+  logger.info({ message: 'checking out repo', data: { sha } })
   try {
     await git(join(workingDirBase, sha)).checkout(sha)
   } catch (err) {
@@ -30,5 +30,5 @@ module.exports = async ({
       message: err.message,
     })
   }
-  logger.info(`Completed Checking Out Sha: ${sha}`)
+  logger.info({ message: 'completed checking out repo', data: { sha } })
 }
