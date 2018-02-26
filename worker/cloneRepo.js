@@ -1,5 +1,6 @@
 const { join } = require('path')
 const git = require('simple-git/promise')
+const { exec } = require('child-process-promise')
 const { throwDisplayableError } = require('./utils')
 
 module.exports = async ({
@@ -8,7 +9,8 @@ module.exports = async ({
   repo,
   sha,
   logger,
-  workingDirBase = '/tmp',
+  workingDirBase,
+  username,
 }) => {
   logger.info({ message: 'cloning repo' })
   try {
@@ -31,4 +33,9 @@ module.exports = async ({
     })
   }
   logger.info({ message: 'completed checking out repo', data: { sha } })
+  logger.info({ message: 'changing repo permission to "sandbox" user' })
+  await exec(`chown ${username} ${join(workingDirBase, sha)}`)
+  logger.info({
+    message: 'completed changing repo permission to "sandbox" user',
+  })
 }
