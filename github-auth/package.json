@@ -24,7 +24,6 @@
     "micro": "^6.2.1",
     "micro-redirect": "^1.0.0",
     "microrouter": "^2.0.1",
-    "ms": "^2.1.1",
-    "uid-promise": "^0.1.0"
+    "ms": "^2.1.1"
   }
 }
