@@ -24,7 +24,8 @@ module.exports = async ({
   sha,
   branch,
   logger,
-  workingDirBase = '/tmp',
+  workingDirBase = '/home/sandbox',
+  username = 'sandbox',
 }) => {
   logger.info({ message: 'checking for existing run' })
   let run
@@ -85,6 +86,8 @@ module.exports = async ({
       sha,
       accessToken,
       logger,
+      workingDirBase,
+      username,
     })
     const {
       scripts,
@@ -110,7 +113,7 @@ module.exports = async ({
       type,
     })
 
-    await runScripts({ scripts, sha, logger, workingDirBase })
+    await runScripts({ scripts, sha, logger, workingDirBase, username })
     fileSizes = await calculateFileSizes({ sha, files, logger, workingDirBase })
     await runServiceClient.call('stopRun', {
       id,
@@ -152,6 +155,7 @@ module.exports = async ({
   }
   await cleanup({
     sha,
+    workingDirBase,
   })
   if (error) {
     throw error

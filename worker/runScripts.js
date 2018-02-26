@@ -1,12 +1,20 @@
 const { join } = require('path')
-const { spawn } = require('child-process-promise')
+const { spawn, exec } = require('child-process-promise')
 const { throwDisplayableError } = require('./utils')
 
-module.exports = async ({ scripts, sha, logger, workingDirBase }) => {
+const userId = async ({ username }) => {
+  const { stdout } = await exec(`id -u ${username}`)
+  return parseInt(stdout)
+}
+
+module.exports = async ({ scripts, sha, logger, workingDirBase, username }) => {
   for (let script of scripts) {
+    const uid = await userId({ username })
     const promise = spawn(script, {
-      shell: true,
+      shell: '/bin/bash',
       cwd: join(workingDirBase, sha),
+      env: {},
+      uid,
     })
     const { childProcess } = promise
     logger.info({
