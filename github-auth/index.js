@@ -3,13 +3,10 @@ const querystring = require('querystring')
 const axios = require('axios')
 const { router, get } = require('microrouter')
 const redirect = require('micro-redirect')
-const uid = require('uid-promise')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const createSession = require('./createSession')
 
 const githubUrl = process.env.GH_HOST || 'github.com'
-
-const states = [] // TODO: Move to data somewhere
 
 const githubServiceClient = new RPCClient({
   url: 'http://github-service:3000/rpc',
@@ -27,14 +24,17 @@ const repoServiceClient = new RPCClient({
   url: 'http://repo-service:3000/rpc',
 })
 
+const randomStateServiceClient = new RPCClient({
+  url: 'http://random-state-service:3000/rpc',
+})
+
 const redirectWithQueryString = (res, data) => {
   const location = `${process.env.REDIRECT_URL}?${querystring.stringify(data)}`
   redirect(res, 302, location)
 }
 
 const login = async (req, res) => {
-  const state = await uid(20)
-  states.push(state)
+  const { state } = await randomStateServiceClient.call('createState')
   redirect(
     res,
     302,
@@ -52,10 +52,16 @@ const callback = async (req, res) => {
     redirectWithQueryString(res, {
       error: 'Provide code and state query param',
     })
-  } else if (!states.includes(state)) {
-    redirectWithQueryString(res, { error: 'Unknown state' })
   } else {
-    states.splice(states.indexOf(state), 1)
+    const { valid } = await randomStateServiceClient.call('validateState', {
+      state,
+    })
+    if (!valid) {
+      return redirectWithQueryString(res, { error: 'Unknown state' })
+    }
+    await randomStateServiceClient.call('deleteState', {
+      state,
+    })
     try {
       const { status, data } = await axios({
         method: 'POST',
