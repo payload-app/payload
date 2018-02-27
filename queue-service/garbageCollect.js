@@ -6,6 +6,7 @@ const {
   processingQueue,
   requeueTask,
   deleteProcessingTask,
+  processingTask,
 } = require('./utils')
 
 const schema = Joi.object().keys({
@@ -23,7 +24,14 @@ const cleanBatch = async ({
     .lrange(processingQueue({ queue }), startIdx, startIdx + batchSize)
     .map(item => JSON.parse(item))
   if (items.length) {
-    const leases = await redisClient.mget(items.map(item => item.taskId))
+    const leases = await redisClient.mget(
+      items.map(item =>
+        processingTask({
+          taskId: item.taskId,
+          queue,
+        }),
+      ),
+    )
     await Promise.all(
       leases.map(async (lease, idx) => {
         if (!lease) {
