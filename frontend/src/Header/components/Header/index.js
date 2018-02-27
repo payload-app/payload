@@ -1,8 +1,14 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { AnimateText, Pulse } from '../../../components'
 import LoadingBar from '../LoadingBar'
 
-export default ({ title, subtitle, warning, mounted, loading }) => (
+const StatelessFunctionalHeader = ({
+  title,
+  subtitle,
+  warning,
+  mounted,
+  loading,
+}) => (
   <div>
     <div
       style={{
@@ -30,3 +36,24 @@ export default ({ title, subtitle, warning, mounted, loading }) => (
     </div>
   </div>
 )
+
+export default class Header extends Component {
+  state = {
+    mounted: false,
+  }
+  componentDidMount() {
+    this.setState({ mounted: true })
+  }
+
+  componentWillUnmount() {
+    this.setState({ mounted: true })
+  }
+
+  render() {
+    const props = {
+      ...this.state,
+      ...this.props,
+    }
+    return <StatelessFunctionalHeader {...props} />
+  }
+}

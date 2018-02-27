@@ -1,9 +1,10 @@
 import React from 'react'
-import { Text } from '../../../components'
+import { Link } from '../../../components'
+import Header from '../../../Header'
 
 export default () => (
   <div>
-    <Text>Auth</Text>
-    <a href="/login"> Login With Github </a>
+    <Header />
+    <Link href="/login">Login With Github</Link>
   </div>
 )

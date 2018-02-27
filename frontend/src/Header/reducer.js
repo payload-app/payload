@@ -4,12 +4,14 @@ export const actionTypes = {
   SET_TITLE: `${selector}/SET_TITLE`,
   SET_SUBTITLE: `${selector}/SET_SUBTITLE`,
   SET_WARNING: `${selector}/SET_WARNING`,
+  SET_LOADING: `${selector}/SET_LOADING`,
 }
 
 const initialState = {
   title: undefined,
   subtitle: undefined,
   warning: undefined,
+  loading: false,
 }
 
 export default (state = initialState, action) => {
@@ -27,7 +29,12 @@ export default (state = initialState, action) => {
     case actionTypes.SET_WARNING:
       return {
         ...state,
-        subtitle: action.subtitle,
+        warning: action.warning,
+      }
+    case actionTypes.SET_LOADING:
+      return {
+        ...state,
+        loading: action.loading,
       }
     default:
       return state
@@ -46,5 +53,9 @@ export const actions = {
   setWarning: ({ warning }) => ({
     type: actionTypes.SET_WARNING,
     warning,
+  }),
+  setLoading: ({ loading }) => ({
+    type: actionTypes.SET_LOADING,
+    loading,
   }),
 }
