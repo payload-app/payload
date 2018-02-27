@@ -4,6 +4,7 @@ const {
   validate,
   parseValidationErrorMessage,
   getItemFromTaskId,
+  processingTask,
 } = require('./utils')
 
 const schema = Joi.object().keys({
@@ -36,7 +37,7 @@ module.exports = ({ redisClient }) => async ({ workerName, taskId, queue }) => {
   })
 
   await redisClient.setex(
-    taskId,
+    processingTask({ taskId, queue }),
     item.lease,
     JSON.stringify({ workerName, item: JSON.stringify(item), queue }),
   )

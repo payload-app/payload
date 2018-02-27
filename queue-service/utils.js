@@ -7,6 +7,9 @@ const validateWithPromise = promisify(Joi.validate)
 
 const processingQueue = ({ queue }) => `${queue}:processing`
 
+const processingTask = ({ queue, taskId }) =>
+  `${processingQueue({ queue })}:${taskId}`
+
 const failedQueue = ({ queue }) => `${queue}:failed`
 
 const deadLetterTask = async ({ queue, item, errorMessage, redisClient }) =>
@@ -25,7 +28,7 @@ const deleteProcessingTask = async ({ queue, item, redisClient }) => {
     JSON.stringify(item),
   )
   const { taskId } = item
-  const leaseRemove = await redisClient.del(taskId)
+  const leaseRemove = await redisClient.del(processingTask({ taskId, queue }))
   return {
     remove,
     leaseRemove,
@@ -49,7 +52,7 @@ const getItemFromTaskId = async ({
   workerName,
   queue,
 }) => {
-  const leaseItem = await redisClient.get(taskId)
+  const leaseItem = await redisClient.get(processingTask({ queue, taskId }))
   if (!leaseItem) {
     throw createError({
       message: 'could not find existing lease',
@@ -97,4 +100,5 @@ module.exports = {
   getItemFromTaskId,
   requeueTask,
   deadLetterTask,
+  processingTask,
 }
