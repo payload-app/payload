@@ -51,7 +51,6 @@ export default ({ dispatch, getState }) => next => action => {
     case `activateRepo_${dataFetchActionTypes.FETCH_SUCCESS}`:
     case `activateRepo_${dataFetchActionTypes.FETCH_FAIL}`:
     case `repos_${dataFetchActionTypes.FETCH_SUCCESS}`:
-    case `repos_${dataFetchActionTypes.FETCH_FAIL}`:
       setSubtitleTrackingCount({
         dispatch,
         getState,
