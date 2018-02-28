@@ -1,10 +1,16 @@
 import React from 'react'
-import { Link } from '../../../components'
+import { Link, IconGithub, Button } from '../../../components'
 import Header from '../../../Header'
 
 export default () => (
   <div>
     <Header />
-    <Link href="/login">Login With Github</Link>
+    <div style={{ marginTop: '6rem' }}>
+      <Link href="/login">
+        <Button Icon={IconGithub} fontSize={2}>
+          Authenticate With Github
+        </Button>
+      </Link>
+    </div>
   </div>
 )
