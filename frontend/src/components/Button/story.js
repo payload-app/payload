@@ -2,6 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import Button from './index'
+import { IconGithub } from '../Icons'
 
 storiesOf('Button', module)
   .add('default', () => (
@@ -15,5 +16,13 @@ storiesOf('Button', module)
   .add('fontSize=2', () => (
     <Button fontSize={2} onClick={action('Button Click')}>
       Activate?
+    </Button>
+  ))
+  .add('withIcon', () => (
+    <Button Icon={IconGithub}>Authenticate With Github</Button>
+  ))
+  .add('withIcon fontSize=2', () => (
+    <Button Icon={IconGithub} fontSize={2}>
+      Authenticate With Github
     </Button>
   ))

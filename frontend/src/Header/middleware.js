@@ -32,9 +32,21 @@ export default ({ dispatch, getState }) => next => action => {
           dispatch(headerActions.setSubtitle({ subtitle: 'Loading...' }))
         }
       }
+      if (action.route === routes.AUTH) {
+        dispatch(headerActions.setTitle({ title: 'Authentication' }))
+        dispatch(headerActions.setWarning({ warning: 'Required' }))
+        dispatch(
+          headerActions.setSubtitle({ subtitle: 'Locating Source Code...' }),
+        )
+        dispatch(headerActions.setLoading({ loading: true }))
+        setTimeout(() => {
+          dispatch(headerActions.setLoading({ loading: false }))
+        }, 4000)
+      }
       break
     case `repos_${dataFetchActionTypes.FETCH_START}`:
       dispatch(headerActions.setSubtitle({ subtitle: 'Loading...' }))
+      dispatch(headerActions.setLoading({ loading: true }))
       break
     case `activateRepo_${dataFetchActionTypes.FETCH_SUCCESS}`:
     case `activateRepo_${dataFetchActionTypes.FETCH_FAIL}`:
@@ -43,16 +55,19 @@ export default ({ dispatch, getState }) => next => action => {
         dispatch,
         getState,
       })
+      dispatch(headerActions.setLoading({ loading: false }))
       break
     case `activateRepo_${dataFetchActionTypes.FETCH_START}`:
       dispatch(
         headerActions.setSubtitle({ subtitle: 'Activating Repository...' }),
       )
+      dispatch(headerActions.setLoading({ loading: true }))
       break
     case `getRun_${dataFetchActionTypes.FETCH_SUCCESS}`:
       const { owner, repo, branch, sha } = action.result
       dispatch(headerActions.setTitle({ title: `${owner}/${repo}` }))
       dispatch(headerActions.setSubtitle({ subtitle: `${branch} » ${sha}` }))
+      dispatch(headerActions.setLoading({ loading: false }))
       break
     case `getRun_${dataFetchActionTypes.FETCH_START}`:
       dispatch(headerActions.setTitle({ title: 'Loading Run...' }))
@@ -61,6 +76,7 @@ export default ({ dispatch, getState }) => next => action => {
           subtitle: 'Data Collection In Progress',
         }),
       )
+      dispatch(headerActions.setLoading({ loading: true }))
       break
     default:
       break
