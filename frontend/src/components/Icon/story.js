@@ -19,3 +19,8 @@ storiesOf('Icon', module)
       <circle cx="8" cy="8" r="8" />
     </Icon>
   ))
+  .add('viewbox = 0 0 100 100', () => (
+    <Icon viewBox={'0 0 100 100'}>
+      <circle cx="50" cy="50" r="25" />
+    </Icon>
+  ))
