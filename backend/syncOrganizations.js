@@ -1,10 +1,12 @@
-module.exports = async ({
+const { parseGithubTokenFromSession } = require('./utils')
+
+module.exports = ({
   userServiceClient,
   organizationServiceClient,
   githubServiceClient,
-  userId,
-  accessToken,
-}) => {
+}) => async (_, { session }) => {
+  const accessToken = parseGithubTokenFromSession({ session })
+  const userId = session.user._id
   const pages = await githubServiceClient.call('allPagesGithubRequest', {
     path: '/user/orgs',
     accessToken,
@@ -55,7 +57,6 @@ module.exports = async ({
     organizationIds,
   })
   return {
-    organizationIds,
     organizations,
   }
 }

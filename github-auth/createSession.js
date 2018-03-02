@@ -1,43 +1,19 @@
 const cookie = require('cookie')
 const ms = require('ms')
 const updateOrCreateUser = require('./updateOrCreateUser')
-const updateOrCreateOrganizations = require('./updateOrCreateOrganizations')
-const updateOrCreateRepos = require('./updateOrCreateRepos')
 
 module.exports = async ({
   userServiceClient,
-  organizationServiceClient,
   sessionServiceClient,
-  repoServiceClient,
   githubServiceClient,
   accessToken,
   res,
 }) => {
-  const { userId, created, user } = await updateOrCreateUser({
+  const { userId, created } = await updateOrCreateUser({
     userServiceClient,
     githubServiceClient,
     accessToken,
   })
-  // TODO only updates and creates organizations when a user is created
-  // we'll need to add some sort of resync
-  // if (created) {
-  const { organizations } = await updateOrCreateOrganizations({
-    userServiceClient,
-    organizationServiceClient,
-    githubServiceClient,
-    userId,
-    accessToken,
-  })
-
-  await updateOrCreateRepos({
-    githubServiceClient,
-    repoServiceClient,
-    user,
-    userId,
-    organizations,
-    accessToken,
-  })
-  // }
   const token = await sessionServiceClient.call('createSession', {
     userId,
   })
@@ -49,4 +25,7 @@ module.exports = async ({
       domain: '.local.payloadapp.com',
     }),
   )
+  return {
+    created,
+  }
 }

@@ -20,8 +20,15 @@ const parseGithubTokenFromSession = ({ session }) => {
   }
 }
 
+const parseGithubUsernameFromSession = ({ session }) => {
+  if (session) {
+    return session.user.accounts.github.username
+  }
+}
+
 module.exports = {
   parseGithubTokenFromSession,
   validate,
   parseValidationErrorMessage,
+  parseGithubUsernameFromSession,
 }

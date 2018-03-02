@@ -1,3 +1,8 @@
+const {
+  parseGithubTokenFromSession,
+  parseGithubUsernameFromSession,
+} = require('./utils')
+
 const getRepos = async ({
   name,
   ownerType,
@@ -43,16 +48,14 @@ const createRepos = async ({
   })
 }
 
-module.exports = async ({
-  githubServiceClient,
-  repoServiceClient,
-  accessToken,
-  organizations,
-  user,
-  userId,
-}) => {
+module.exports = ({ githubServiceClient, repoServiceClient }) => async (
+  { organizations },
+  { session },
+) => {
+  const accessToken = parseGithubTokenFromSession({ session })
+  const username = parseGithubUsernameFromSession({ session })
   const repos = await getRepos({
-    name: user.username,
+    name: username,
     ownerType: 'user',
     githubServiceClient,
     accessToken,
@@ -60,10 +63,10 @@ module.exports = async ({
   await createRepos({
     repoServiceClient,
     repos,
-    owner: user.username,
+    owner: username,
     ownerType: 'user',
     type: 'github',
-    userId,
+    userId: session.user._id,
   })
   for (let org of organizations) {
     const repos = await getRepos({
@@ -79,7 +82,7 @@ module.exports = async ({
         repos,
         ownerType: 'organization',
         type: 'github',
-        userId,
+        userId: session.user._id,
       })
     }
   }

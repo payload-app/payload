@@ -12,5 +12,6 @@ export {
   baseRoute,
   authRoute,
   matchRoute,
+  initRoute,
   routes,
 } from './routes'

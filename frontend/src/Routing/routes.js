@@ -66,14 +66,15 @@ export const runRoute = () =>
   })
 
 export const baseRoute = () => '/'
-
 export const authRoute = () => '/auth/'
+export const initRoute = () => '/init/'
 
 export const routes = {
   BASE: 'BASE',
   AUTH: 'AUTH',
   RUNS: 'RUNS',
   REPO_LIST: 'REPO_LIST',
+  INIT: 'INIT',
 }
 
 export const matchRoute = ({ path }) => {
@@ -86,6 +87,12 @@ export const matchRoute = ({ path }) => {
   if (path === authRoute()) {
     return {
       route: routes.AUTH,
+      params: {},
+    }
+  }
+  if (path === initRoute()) {
+    return {
+      route: routes.INIT,
       params: {},
     }
   }

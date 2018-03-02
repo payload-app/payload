@@ -38,6 +38,8 @@ services:
      - github-service
      - organization-service
      - repo-service
+     - run-service
+     - user-service
     networks:
       - main
   status-broadcaster:
@@ -78,7 +80,6 @@ services:
       - user-service
       - session-service
       - github-service
-      - repo-service
       - random-state-service
     networks:
      - main

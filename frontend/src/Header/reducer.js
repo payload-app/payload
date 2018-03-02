@@ -8,9 +8,9 @@ export const actionTypes = {
 }
 
 const initialState = {
-  title: undefined,
-  subtitle: undefined,
-  warning: undefined,
+  title: '',
+  subtitle: '',
+  warning: '',
   loading: false,
 }
 
