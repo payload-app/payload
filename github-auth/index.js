@@ -14,16 +14,9 @@ const githubServiceClient = new RPCClient({
 const userServiceClient = new RPCClient({
   url: 'http://user-service:3000/rpc',
 })
-const organizationServiceClient = new RPCClient({
-  url: 'http://organization-service:3000/rpc',
-})
 const sessionServiceClient = new RPCClient({
   url: 'http://session-service:3000/rpc',
 })
-const repoServiceClient = new RPCClient({
-  url: 'http://repo-service:3000/rpc',
-})
-
 const randomStateServiceClient = new RPCClient({
   url: 'http://random-state-service:3000/rpc',
 })
@@ -79,16 +72,18 @@ const callback = async (req, res) => {
         if (qs.error) {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
-          await createSession({
+          const { created } = await createSession({
             userServiceClient,
-            organizationServiceClient,
             sessionServiceClient,
-            repoServiceClient,
             githubServiceClient,
             accessToken: qs.access_token,
             res,
           })
-          redirect(res, 302, process.env.REDIRECT_URL)
+          redirect(
+            res,
+            302,
+            `${process.env.REDIRECT_URL}${created ? '/init/' : ''}`,
+          )
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })

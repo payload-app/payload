@@ -80,7 +80,6 @@ services:
       - user-service
       - session-service
       - github-service
-      - repo-service
       - random-state-service
     networks:
      - main
