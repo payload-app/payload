@@ -33,6 +33,7 @@ import {
   selector as pageRunSelector,
   reducer as pageRunReducer,
 } from '../PageRun'
+import { middleware as loadingMiddleware } from '../PageLoading'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -68,6 +69,7 @@ export default createStore(
       unauthorizedRedirectMiddleware,
       routingMiddleware,
       runMiddleware,
+      loadingMiddleware,
       logger,
     ),
   ),

@@ -21,27 +21,36 @@ export default ({ dispatch, getState }) => next => action => {
   next(action)
   switch (action.type) {
     case routingActionTypes.EMIT:
-      if (action.route === routes.REPO_LIST) {
-        if (getState()[repoListSelector].repos.length) {
-          setSubtitleTrackingCount({
-            dispatch,
-            getState,
-          })
-        } else {
+      switch (action.route) {
+        case routes.REPO_LIST:
+          if (getState()[repoListSelector].repos.length) {
+            setSubtitleTrackingCount({
+              dispatch,
+              getState,
+            })
+          } else {
+            dispatch(headerActions.setTitle({ title: 'Payload Dashboard' }))
+            dispatch(headerActions.setSubtitle({ subtitle: 'Loading...' }))
+          }
+          break
+        case routes.AUTH:
+          dispatch(headerActions.setTitle({ title: 'Authentication' }))
+          dispatch(headerActions.setWarning({ warning: 'Required' }))
+          dispatch(
+            headerActions.setSubtitle({ subtitle: 'Locating Source Code...' }),
+          )
+          dispatch(headerActions.setLoading({ loading: true }))
+          setTimeout(() => {
+            dispatch(headerActions.setLoading({ loading: false }))
+          }, 4000)
+          break
+        case routes.INIT:
+        case routes.BASE:
           dispatch(headerActions.setTitle({ title: 'Payload Dashboard' }))
           dispatch(headerActions.setSubtitle({ subtitle: 'Loading...' }))
-        }
-      }
-      if (action.route === routes.AUTH) {
-        dispatch(headerActions.setTitle({ title: 'Authentication' }))
-        dispatch(headerActions.setWarning({ warning: 'Required' }))
-        dispatch(
-          headerActions.setSubtitle({ subtitle: 'Locating Source Code...' }),
-        )
-        dispatch(headerActions.setLoading({ loading: true }))
-        setTimeout(() => {
-          dispatch(headerActions.setLoading({ loading: false }))
-        }, 4000)
+          break
+        default:
+          break
       }
       break
     case `repos_${dataFetchActionTypes.FETCH_START}`:
@@ -77,6 +86,66 @@ export default ({ dispatch, getState }) => next => action => {
         }),
       )
       dispatch(headerActions.setLoading({ loading: true }))
+      break
+    case `syncRepos_${dataFetchActionTypes.FETCH_START}`:
+      dispatch(headerActions.setTitle({ title: 'Syncing Repositories' }))
+      dispatch(
+        headerActions.setSubtitle({
+          subtitle: 'Data Collection In Progress...',
+        }),
+      )
+      dispatch(headerActions.setLoading({ loading: true }))
+      break
+    case `syncRepos_${dataFetchActionTypes.FETCH_SUCCESS}`:
+      dispatch(
+        headerActions.setTitle({ title: 'Syncing Repositories Complete' }),
+      )
+      dispatch(
+        headerActions.setSubtitle({
+          subtitle: 'Data Collection Complete',
+        }),
+      )
+      dispatch(headerActions.setLoading({ loading: false }))
+      break
+    case `syncRepos_${dataFetchActionTypes.FETCH_FAIL}`:
+      dispatch(headerActions.setTitle({ title: 'Syncing Repositories' }))
+      dispatch(headerActions.setWarning({ warning: 'Failed' }))
+      dispatch(
+        headerActions.setSubtitle({
+          subtitle: 'Data Collection Failed',
+        }),
+      )
+      dispatch(headerActions.setLoading({ loading: false }))
+      break
+    case `syncOrganizations_${dataFetchActionTypes.FETCH_START}`:
+      dispatch(headerActions.setTitle({ title: 'Syncing Organizations' }))
+      dispatch(
+        headerActions.setSubtitle({
+          subtitle: 'Data Collection In Progress...',
+        }),
+      )
+      dispatch(headerActions.setLoading({ loading: true }))
+      break
+    case `syncOrganizations_${dataFetchActionTypes.FETCH_SUCCESS}`:
+      dispatch(
+        headerActions.setTitle({ title: 'Syncing Organizations Complete' }),
+      )
+      dispatch(
+        headerActions.setSubtitle({
+          subtitle: 'Data Collection Complete',
+        }),
+      )
+      dispatch(headerActions.setLoading({ loading: false }))
+      break
+    case `syncOrganizations_${dataFetchActionTypes.FETCH_FAIL}`:
+      dispatch(headerActions.setTitle({ title: 'Syncing Organizations' }))
+      dispatch(headerActions.setWarning({ warning: 'Failed' }))
+      dispatch(
+        headerActions.setSubtitle({
+          subtitle: 'Data Collection Failed',
+        }),
+      )
+      dispatch(headerActions.setLoading({ loading: false }))
       break
     default:
       break

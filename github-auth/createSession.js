@@ -1,14 +1,14 @@
 const cookie = require('cookie')
 const ms = require('ms')
 const updateOrCreateUser = require('./updateOrCreateUser')
-const updateOrCreateOrganizations = require('./updateOrCreateOrganizations')
-const updateOrCreateRepos = require('./updateOrCreateRepos')
+// const updateOrCreateOrganizations = require('./updateOrCreateOrganizations')
+// const updateOrCreateRepos = require('./updateOrCreateRepos')
 
 module.exports = async ({
   userServiceClient,
-  organizationServiceClient,
+  // organizationServiceClient,
   sessionServiceClient,
-  repoServiceClient,
+  // repoServiceClient,
   githubServiceClient,
   accessToken,
   res,
@@ -21,22 +21,22 @@ module.exports = async ({
   // TODO only updates and creates organizations when a user is created
   // we'll need to add some sort of resync
   // if (created) {
-  const { organizations } = await updateOrCreateOrganizations({
-    userServiceClient,
-    organizationServiceClient,
-    githubServiceClient,
-    userId,
-    accessToken,
-  })
-
-  await updateOrCreateRepos({
-    githubServiceClient,
-    repoServiceClient,
-    user,
-    userId,
-    organizations,
-    accessToken,
-  })
+  // const { organizations } = await updateOrCreateOrganizations({
+  //   userServiceClient,
+  //   organizationServiceClient,
+  //   githubServiceClient,
+  //   userId,
+  //   accessToken,
+  // })
+  //
+  // await updateOrCreateRepos({
+  //   githubServiceClient,
+  //   repoServiceClient,
+  //   user,
+  //   userId,
+  //   organizations,
+  //   accessToken,
+  // })
   // }
   const token = await sessionServiceClient.call('createSession', {
     userId,

@@ -38,6 +38,8 @@ services:
      - github-service
      - organization-service
      - repo-service
+     - run-service
+     - user-service
     networks:
       - main
   status-broadcaster:
