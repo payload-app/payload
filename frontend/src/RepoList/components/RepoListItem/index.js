@@ -3,7 +3,7 @@ import type { Repo } from 'api-types'
 import React from 'react'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
-import { Text, Button, Link } from '../../../components'
+import { Pulse, Text, Button, Link } from '../../../components'
 import { red, mutedWhite } from '../../../components/style/color'
 
 type Props = {
@@ -35,7 +35,7 @@ const CreateTime = ({ created }) => (
   </div>
 )
 
-const SHA = ({ branch, sha, onRunClick }) => (
+const SHA = ({ branch, sha, errorMessage, onRunClick }) => (
   <div style={{ flex: 2 }}>
     <Text>{`${branch} » `}</Text>
     <Link
@@ -43,16 +43,37 @@ const SHA = ({ branch, sha, onRunClick }) => (
         e.preventDefault()
         onRunClick()
       }}
-    >{`${sha}`}</Link>
+    >
+      {sha}
+    </Link>
+    {errorMessage ? (
+      <div style={{ marginLeft: '0.5rem', display: 'inline-flex' }}>
+        <Pulse>
+          <Text>{`Error: ${errorMessage}`}</Text>
+        </Pulse>
+      </div>
+    ) : null}
   </div>
 )
 
 const ActiveContents = ({ repo, onRunClick }) => {
   if (repo.lastDefaultRun) {
-    const { start, stop, created, branch, sha } = repo.lastDefaultRun
+    const {
+      start,
+      stop,
+      created,
+      branch,
+      sha,
+      errorMessage,
+    } = repo.lastDefaultRun
     return (
       <div style={{ display: 'flex' }}>
-        <SHA sha={sha} branch={branch} onRunClick={onRunClick} />
+        <SHA
+          sha={sha}
+          branch={branch}
+          errorMessage={errorMessage}
+          onRunClick={onRunClick}
+        />
         <CreateTime created={created} />
         <Duration start={start} stop={stop} />
       </div>
