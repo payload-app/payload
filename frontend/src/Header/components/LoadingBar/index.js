@@ -6,7 +6,7 @@ import Transition from 'react-transition-group/Transition'
 
 const bigWhiteBarStyle = {
   default: {
-    width: 280,
+    width: '74%',
     height: 4,
     background: white,
     marginRight: 5,
@@ -21,7 +21,7 @@ const bigWhiteBarStyle = {
 
 const smallMutedBarStyle = {
   default: {
-    width: 40,
+    width: '11%',
     height: 4,
     background: mutedWhite,
     transition: `transform 600ms ease-in-out`,
@@ -39,7 +39,7 @@ const smallMutedBarStyle = {
 const thinBarStyle = {
   default: {
     marginTop: 4,
-    width: 380,
+    width: '100%',
     position: 'realtive',
     boxShadow: `inset 0 1px ${mutedWhite}`,
     height: 1,
@@ -56,7 +56,7 @@ export default ({ mounted = false, loading = false }) => {
   injectStyle(`
     @keyframes slide-loading {
       0% { transform: translateX(-30px) }
-    	99% { transform: translateX(0) }
+      99% { transform: translateX(0) }
       100% { transform: translateX(-30px) }
     }
   `)
