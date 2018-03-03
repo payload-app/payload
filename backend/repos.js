@@ -50,14 +50,16 @@ module.exports = ({ repoServiceClient, runServiceClient }) => async ({
         type: repo.type,
       })),
     })
+
     // convert array to hash to lookup in constant time
-    const keyedRuns = runs.reduce(
-      (keyedRuns, run) =>
-        Object.assign({}, keyedRuns, {
+    const keyedRuns = runs.reduce((keyedRuns, run) => {
+      if (run) {
+        return Object.assign({}, keyedRuns, {
           [runKey({ run })]: run,
-        }),
-      {},
-    )
+        })
+      }
+      return keyedRuns
+    }, {})
 
     // merge the run into the repo object
     return repos.map(repo => {
