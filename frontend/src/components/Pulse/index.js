@@ -6,7 +6,7 @@ export default ({ backgroundColor = red, speed = 600, children }) => {
   const keyframesStyle = `
     @keyframes pulse {
       0% { background-color: transparent }
-    	50% { background-color: ${backgroundColor} }
+      50% { background-color: ${backgroundColor} }
       100% { background-color: transparent }
     }
   `
