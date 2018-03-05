@@ -58,10 +58,7 @@ export default (state = initialState, action) => {
     case `syncRepos_${dataFetchActionTypes.FETCH_START}`:
       return {
         ...state,
-        [action.args.page]: settingsPageReducer(
-          state[action.args.page],
-          action,
-        ),
+        sync: settingsPageReducer(state.sync, action),
       }
     default:
       return state

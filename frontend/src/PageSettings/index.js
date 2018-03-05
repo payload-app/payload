@@ -13,20 +13,12 @@ export default connect(
       dispatch(
         dataFetchActions.fetch({
           name: 'syncOrganizations',
-          // TODO - make client only args
-          args: {
-            page: 'sync',
-          },
         }),
       ),
     onResyncReposClick: () =>
       dispatch(
         dataFetchActions.fetch({
           name: 'syncRepos',
-          // TODO - make client only args
-          args: {
-            page: 'sync',
-          },
         }),
       ),
   }),
