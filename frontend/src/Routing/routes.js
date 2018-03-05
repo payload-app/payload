@@ -23,6 +23,38 @@ export const listRoute = () =>
     owner: ':owner',
   })
 
+const ownerSettingsRoutePattern = `${listRoutePattern}settings/([\\w-]+)/`
+const ownerSettingsRouteRegex = new RegExp(ownerSettingsRoutePattern)
+
+export const getOwnerSettingsRouteParams = ({ path }) => {
+  const match = ownerSettingsRouteRegex.exec(path)
+  if (match) {
+    return {
+      type: match[1],
+      ownerType: match[2],
+      owner: match[3],
+      settingsType: match[4],
+    }
+  }
+  return null
+}
+
+export const generateOwnerSettingsRoute = ({
+  type,
+  ownerType,
+  owner,
+  settingsType,
+}) =>
+  `/type/${type}/ownertype/${ownerType}/owner/${owner}/settings/${settingsType}`
+
+export const ownerSettingsRoute = () =>
+  generateOwnerSettingsRoute({
+    type: ':type',
+    ownerType: ':ownerType',
+    owner: ':owner',
+    settingsType: ':settingsType',
+  })
+
 const runRoutePattern = `${listRoutePattern}repo/([\\w-]+)/branch/([\\w-]+)/sha/([\\w-]+)/`
 const runRouteRegex = new RegExp(runRoutePattern)
 
@@ -74,6 +106,7 @@ export const routes = {
   AUTH: 'AUTH',
   RUNS: 'RUNS',
   REPO_LIST: 'REPO_LIST',
+  OWNER_SETTINGS: 'OWNER_SETTINGS',
   INIT: 'INIT',
 }
 
@@ -100,6 +133,13 @@ export const matchRoute = ({ path }) => {
   if (params) {
     return {
       route: routes.RUNS,
+      params,
+    }
+  }
+  params = getOwnerSettingsRouteParams({ path })
+  if (params) {
+    return {
+      route: routes.OWNER_SETTINGS,
       params,
     }
   }

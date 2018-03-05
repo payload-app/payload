@@ -55,6 +55,7 @@ const rpcHandler = setSession(
       syncRepos({
         githubServiceClient,
         repoServiceClient,
+        organizationServiceClient,
       }),
     ),
   ),
