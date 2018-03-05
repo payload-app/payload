@@ -15,8 +15,6 @@ import Loading from '../PageLoading'
 import Run from '../PageRun'
 import Settings from '../PageSettings'
 
-console.log('ownerSettingsRoute', ownerSettingsRoute())
-
 export default () => (
   <Switch>
     <ProtectedRoute exact path={baseRoute()} component={Loading} />
