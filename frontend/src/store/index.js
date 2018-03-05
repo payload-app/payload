@@ -34,6 +34,10 @@ import {
   reducer as pageRunReducer,
 } from '../PageRun'
 import { middleware as loadingMiddleware } from '../PageLoading'
+import {
+  selector as pageSettingsSelector,
+  reducer as pageSettingsReducer,
+} from '../PageSettings'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -50,6 +54,7 @@ export default createStore(
     [repoListSelector]: repoListReducer,
     [headerSelector]: headerReducer,
     [pageRunSelector]: pageRunReducer,
+    [pageSettingsSelector]: pageSettingsReducer,
     [routingSelector]: routingReducer,
     router: routerReducer,
   }),

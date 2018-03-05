@@ -2,11 +2,20 @@ import React from 'react'
 import { Button, IconCached } from '../../../components'
 import Header from '../../../Header'
 
-export default ({ onResyncOrgsClick, onResyncReposClick }) => (
+export default ({
+  organizationsLoading,
+  repositoriesLoading,
+  onResyncOrgsClick,
+  onResyncReposClick,
+}) => (
   <div>
     <Header />
     <div>
-      <Button Icon={IconCached} onClick={onResyncOrgsClick}>
+      <Button
+        disabled={organizationsLoading}
+        Icon={IconCached}
+        onClick={onResyncOrgsClick}
+      >
         Resync Organizations?
       </Button>
     </div>
@@ -15,7 +24,11 @@ export default ({ onResyncOrgsClick, onResyncReposClick }) => (
         marginTop: '1rem',
       }}
     >
-      <Button Icon={IconCached} onClick={onResyncReposClick}>
+      <Button
+        disabled={repositoriesLoading}
+        Icon={IconCached}
+        onClick={onResyncReposClick}
+      >
         Resync All Repositories?
       </Button>
     </div>

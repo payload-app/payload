@@ -49,6 +49,15 @@ export default ({ dispatch, getState }) => next => action => {
           dispatch(headerActions.setTitle({ title: 'Payload Dashboard' }))
           dispatch(headerActions.setSubtitle({ subtitle: 'Loading...' }))
           break
+        case routes.OWNER_SETTINGS:
+          if (action.params.settingsType === 'sync') {
+            dispatch(headerActions.setTitle({ title: 'Sync Settings' }))
+            dispatch(
+              headerActions.setSubtitle({
+                subtitle: 'Configuring Telemetry...',
+              }),
+            )
+          }
         default:
           break
       }

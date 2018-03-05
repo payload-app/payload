@@ -26,3 +26,11 @@ storiesOf('Settings', module)
       onResyncReposClick={action('Resync Repos Click')}
     />
   ))
+  .add('loading', () => (
+    <Settings
+      onResyncOrgsClick={action('Resync Orgs Click')}
+      organizationsLoading={true}
+      onResyncReposClick={action('Resync Repos Click')}
+      repositoriesLoading={true}
+    />
+  ))

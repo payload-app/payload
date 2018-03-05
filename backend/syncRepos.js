@@ -48,10 +48,11 @@ const createRepos = async ({
   })
 }
 
-module.exports = ({ githubServiceClient, repoServiceClient }) => async (
-  { organizations },
-  { session },
-) => {
+module.exports = ({
+  githubServiceClient,
+  repoServiceClient,
+  organizationServiceClient,
+}) => async (_, { session }) => {
   const accessToken = parseGithubTokenFromSession({ session })
   const username = parseGithubUsernameFromSession({ session })
   const repos = await getRepos({
@@ -68,6 +69,15 @@ module.exports = ({ githubServiceClient, repoServiceClient }) => async (
     type: 'github',
     userId: session.user._id,
   })
+
+  const organizationIds = session.user.organizationIds
+  const organizations = await organizationServiceClient.call(
+    'getOrganizations',
+    {
+      ids: organizationIds,
+    },
+  )
+
   for (let org of organizations) {
     const repos = await getRepos({
       name: org.name,

@@ -36,9 +36,6 @@ export default ({ dispatch }) => next => action => {
               name: 'syncRepos',
               args: {
                 init: true,
-                organizations: action.result.organizations.map(org => ({
-                  name: org.name,
-                })),
               },
             }),
           )
