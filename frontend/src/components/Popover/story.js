@@ -22,6 +22,11 @@ storiesOf('Popover', module)
       <DemoPopover>Popover</DemoPopover>
     </Popover>
   ))
+  .add('transparent Overlay', () => (
+    <Popover onOverlayClick={action('overlay-click')} transparentOverlay>
+      <DemoPopover>Popover</DemoPopover>
+    </Popover>
+  ))
   .add('left = 10rem', () => (
     <Popover onOverlayClick={action('overlay-click')} left={'10rem'}>
       <DemoPopover>Popover</DemoPopover>
@@ -38,11 +43,6 @@ storiesOf('Popover', module)
       top={'10rem'}
       left={'10rem'}
     >
-      <DemoPopover>Popover</DemoPopover>
-    </Popover>
-  ))
-  .add('transparent Overlay', () => (
-    <Popover onOverlayClick={action('overlay-click')} transparentOverlay>
       <DemoPopover>Popover</DemoPopover>
     </Popover>
   ))
