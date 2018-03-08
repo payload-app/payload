@@ -1,6 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { action } from '@storybook/addon-actions'
+import Text from '../Text'
 import Popover from './index'
 
 const DemoPopover = ({ children }) => (
@@ -16,52 +16,128 @@ const DemoPopover = ({ children }) => (
   </div>
 )
 
+const PopoverContainer = ({ children }) => (
+  <div
+    style={{
+      position: 'relative',
+      margin: '20rem 20rem',
+      display: 'inline-block',
+    }}
+  >
+    {children}
+  </div>
+)
+
 storiesOf('Popover', module)
   .add('default', () => (
-    <Popover onOverlayClick={action('overlay-click')}>
-      <DemoPopover>Popover</DemoPopover>
-    </Popover>
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
   ))
-  .add('transparent Overlay', () => (
-    <Popover onOverlayClick={action('overlay-click')} transparentOverlay>
-      <DemoPopover>Popover</DemoPopover>
-    </Popover>
+  .add('anchor=left', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'left'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
   ))
-  .add('left = 10rem', () => (
-    <Popover onOverlayClick={action('overlay-click')} left={'10rem'}>
-      <DemoPopover>Popover</DemoPopover>
-    </Popover>
+  .add('anchor=leftUp', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'leftUp'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
   ))
-  .add('top = 10rem', () => (
-    <Popover onOverlayClick={action('overlay-click')} top={'10rem'}>
-      <DemoPopover>Popover</DemoPopover>
-    </Popover>
+  .add('anchor=leftDown', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'leftDown'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
   ))
-  .add('top = 10rem left = 10rem', () => (
-    <Popover
-      onOverlayClick={action('overlay-click')}
-      top={'10rem'}
-      left={'10rem'}
-    >
-      <DemoPopover>Popover</DemoPopover>
-    </Popover>
+  .add('anchor=right', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'right'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
   ))
-  .add('right = 10rem', () => (
-    <Popover onOverlayClick={action('overlay-click')} right={'10rem'}>
-      <DemoPopover>Popover</DemoPopover>
-    </Popover>
+  .add('anchor=rightUp', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'rightUp'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
   ))
-  .add('bottom = 10rem', () => (
-    <Popover onOverlayClick={action('overlay-click')} bottom={'10rem'}>
-      <DemoPopover>Popover</DemoPopover>
-    </Popover>
+  .add('anchor=rightDown', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'rightDown'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
   ))
-  .add('bottom = 10rem right = 10rem', () => (
-    <Popover
-      onOverlayClick={action('overlay-click')}
-      bottom={'10rem'}
-      right={'10rem'}
-    >
-      <DemoPopover>Popover</DemoPopover>
-    </Popover>
+  .add('anchor=above', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'above'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
+  ))
+  .add('anchor=aboveRight', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'aboveRight'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
+  ))
+  .add('anchor=aboveLeft', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'aboveLeft'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
+  ))
+  .add('anchor=below', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'below'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
+  ))
+  .add('anchor=belowRight', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'belowRight'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
+  ))
+  .add('anchor=belowLeft', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover anchor={'belowLeft'}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
+  ))
+  .add('hidden', () => (
+    <PopoverContainer>
+      <Text weight={600}>An Anchor Point</Text>
+      <Popover hidden={true}>
+        <DemoPopover>Popover</DemoPopover>
+      </Popover>
+    </PopoverContainer>
   ))
