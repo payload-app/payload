@@ -21,5 +21,15 @@ const user = {
 }
 
 storiesOf('UserMenuItem', module).add('default', () => (
-  <UserMenuItem user={user} />
+  <div
+    style={{
+      width: '30rem',
+      height: '60rem',
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    <div style={{ flexGrow: 1 }} />
+    <UserMenuItem user={user} />
+  </div>
 ))
