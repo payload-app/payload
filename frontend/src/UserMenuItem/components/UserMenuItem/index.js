@@ -13,7 +13,7 @@ const getAvatar = ({ user }) => user.accounts.github.avatar
 const getName = ({ user }) => user.accounts.github.name
 const getEmail = ({ user }) => user.email
 
-const PopoverComponent = ({ user }) => (
+const PopoverComponent = ({ user, onSettingsClick, onLogoutClick }) => (
   <div
     style={{
       border: `1px solid ${text}`,
@@ -23,10 +23,24 @@ const PopoverComponent = ({ user }) => (
     <Text>{getEmail({ user })}</Text>
     <HR />
     <div>
-      <Link>Settings</Link>
+      <Link
+        onClick={e => {
+          e.preventDefault()
+          onSettingsClick()
+        }}
+      >
+        Settings
+      </Link>
     </div>
     <div>
-      <Link>Logout</Link>
+      <Link
+        onClick={e => {
+          e.preventDefault()
+          onLogoutClick()
+        }}
+      >
+        Logout
+      </Link>
     </div>
   </div>
 )
@@ -52,10 +66,12 @@ const AnchorComponent = ({ user, onShowPopover }) => (
   </Button>
 )
 
-export default ({ user }) => (
+export default ({ user, onSettingsClick, onLogoutClick }) => (
   <PopoverContainer
     PopoverComponent={PopoverComponent}
     AnchorComponent={AnchorComponent}
     user={user}
+    onSettingsClick={onSettingsClick}
+    onLogoutClick={onLogoutClick}
   />
 )

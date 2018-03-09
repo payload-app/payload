@@ -1,5 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import UserMenuItem from './'
 
 const user = {
@@ -30,6 +31,10 @@ storiesOf('UserMenuItem', module).add('default', () => (
     }}
   >
     <div style={{ flexGrow: 1 }} />
-    <UserMenuItem user={user} />
+    <UserMenuItem
+      user={user}
+      onSettingsClick={action('Settings Click')}
+      onLogoutClick={action('Logout Click')}
+    />
   </div>
 ))
