@@ -1,7 +1,8 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import Button from './index'
+import Button from './'
+import Text from '../Text'
 import { IconGithub } from '../Icons'
 
 storiesOf('Button', module)
@@ -24,5 +25,15 @@ storiesOf('Button', module)
   .add('withIcon fontSize=2', () => (
     <Button Icon={IconGithub} fontSize={2}>
       Authenticate With Github
+    </Button>
+  ))
+  .add('noStyle', () => (
+    <Button noStyle={true} onClick={action('Button Click')}>
+      <Text>I HAVE NO STYLE</Text>
+    </Button>
+  ))
+  .add('fillContainer', () => (
+    <Button Icon={IconGithub} fillContainer={true}>
+      {"I'm HUGE"}
     </Button>
   ))
