@@ -7,7 +7,7 @@ import {
   Button,
   PopoverContainer,
 } from '../../../components'
-import { text } from '../../../components/style/color'
+import { text, mutedWhite } from '../../../components/style/color'
 
 const getAvatar = ({ user }) => user.accounts.github.avatar
 const getName = ({ user }) => user.accounts.github.name
@@ -50,18 +50,39 @@ const AnchorComponent = ({ user, onShowPopover }) => (
     <div
       style={{
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
       }}
     >
-      <div style={{ flexGrow: 1 }}>
-        <Text weight={400}>{getName({ user })}</Text>
-      </div>
-      <Image
-        height={'4rem'}
-        width={'4rem'}
-        circle={true}
-        src={getAvatar({ user })}
+      <div
+        style={{
+          borderTop: `1px solid ${mutedWhite}`,
+          borderRight: `1px solid ${mutedWhite}`,
+          borderLeft: `1px solid ${mutedWhite}`,
+          height: 10,
+        }}
       />
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          opacity: 0.5,
+          paddingLeft: 10,
+          paddingRight: 10,
+          paddingBottom: 10,
+        }}
+      >
+        <div style={{ flexGrow: 1 }}>
+          <Text weight={400} capitalize>
+            {getName({ user })}
+          </Text>
+        </div>
+        <Image
+          height={'2rem'}
+          width={'2rem'}
+          circle={true}
+          src={getAvatar({ user })}
+        />
+      </div>
     </div>
   </Button>
 )
@@ -69,6 +90,7 @@ const AnchorComponent = ({ user, onShowPopover }) => (
 export default ({ user, onSettingsClick, onLogoutClick }) =>
   user ? (
     <PopoverContainer
+      popoverAnchor={'above'}
       PopoverComponent={PopoverComponent}
       AnchorComponent={AnchorComponent}
       user={user}
