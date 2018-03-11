@@ -5,16 +5,16 @@ import RepoList from '../RepoList'
 import UserMenuItem from '../UserMenuItem'
 
 export default () => (
-  <div>
+  <div style={{ padding: 60 }}>
     <Header />
-    <div style={{ width: '20rem', margin: '2rem 0' }}>
-      <UserMenuItem />
-    </div>
-    <div>
-      <RepoSelector />
-    </div>
-    <div>
-      <RepoList />
+    <div style={{ display: 'flex', marginTop: 50 }}>
+      <div style={{ marginRight: 40 }}>
+        <RepoSelector />
+        <UserMenuItem />
+      </div>
+      <div style={{ flex: 1 }}>
+        <RepoList />
+      </div>
     </div>
   </div>
 )
