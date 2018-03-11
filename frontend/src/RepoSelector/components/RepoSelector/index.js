@@ -6,7 +6,7 @@ export default ({ repoOwners, onChange, value }) => {
   return (
     <div>
       {repoOwners.map(owner => (
-        <div key={owner.id}>
+        <div key={owner.id} style={{ cursor: 'pointer' }}>
           <RepoSelectorItem
             name={owner.name}
             active={JSON.stringify(owner) === JSON.stringify(value)}

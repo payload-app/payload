@@ -7,7 +7,13 @@ export default ({ name, active, onClick }) => {
     <div
       onClick={onClick}
       style={{
-        padding: 10,
+        paddingTop: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        paddingLeft: active ? 10 : 13,
+        borderLeftWidth: active ? 4 : 1,
+        borderLeftStyle: 'solid',
+        borderLeftColor: active ? white : mutedWhite,
       }}
     >
       <Text capitalize color={active ? white : mutedWhite}>
