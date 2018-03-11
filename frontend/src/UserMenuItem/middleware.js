@@ -1,3 +1,5 @@
+import { push } from 'react-router-redux'
+import { authRoute } from '../Routing'
 import {
   actionTypes as dataFetchActionTypes,
   actions as dataFetchActions,
@@ -13,7 +15,8 @@ export default ({ dispatch }) => next => action => {
         }),
       )
       break
-    case `getUser_${dataFetchActionTypes.FETCH_SUCCESS}`:
+    case `logout_${dataFetchActionTypes.FETCH_SUCCESS}`:
+      dispatch(push(authRoute()))
       break
     default:
       break
