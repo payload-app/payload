@@ -26,9 +26,18 @@ const parseGithubUsernameFromSession = ({ session }) => {
   }
 }
 
+const getUserFromSession = ({ session }) => {
+  // TODO: handle if user does not have a github account
+  // TODO: filter out accessToken
+  if (session) {
+    return session.user
+  }
+}
+
 module.exports = {
   parseGithubTokenFromSession,
   validate,
   parseValidationErrorMessage,
   parseGithubUsernameFromSession,
+  getUserFromSession,
 }
