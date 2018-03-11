@@ -30,7 +30,7 @@ export default () => (
         <RepoSelector />
         <UserMenuItem />
       </div>
-      <div style={{ flex: 1, overflow: 'scroll' }}>
+      <div style={{ flex: 1, overflowY: 'scroll' }}>
         <div style={{ flex: 1, marginTop: 50 }}>
           <RepoList />
         </div>
