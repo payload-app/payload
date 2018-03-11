@@ -1,18 +1,19 @@
 import React from 'react'
-import { Select } from '../../../components'
+import RepoSelectorItem from '../RepoSelectorItem'
 
-export default ({ repoOwners, onChange, value }) => (
-  <Select
-    onChange={e => onChange({ value: JSON.parse(e.target.value) })}
-    value={JSON.stringify(value)}
-    options={repoOwners.map(owner => ({
-      name: owner.name,
-      value: JSON.stringify({
-        name: owner.name,
-        type: owner.type,
-        ownerType: owner.ownerType,
-        id: owner.id,
-      }),
-    }))}
-  />
-)
+export default ({ repoOwners, onChange, value }) => {
+  const handleSelect = value => () => onChange({ value })
+  return (
+    <div>
+      {repoOwners.map(owner => (
+        <div key={owner.id}>
+          <RepoSelectorItem
+            name={owner.name}
+            active={JSON.stringify(owner) === JSON.stringify(value)}
+            onClick={handleSelect(owner)}
+          />
+        </div>
+      ))}
+    </div>
+  )
+}
