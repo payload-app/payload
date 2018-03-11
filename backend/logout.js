@@ -15,7 +15,7 @@ module.exports = ({ sessionServiceClient }) => async (_, req, res) => {
         path: '/',
       }),
     )
-    console.log('res.getHeaders()', res.getHeaders())
+    return { logout: true }
   }
-  return 'meep'
+  return { logout: false }
 }
