@@ -90,6 +90,7 @@ const AnchorComponent = ({ user, onShowPopover }) => (
 export default ({ user, onSettingsClick, onLogoutClick }) =>
   user ? (
     <PopoverContainer
+      popoverAnchor={'above'}
       PopoverComponent={PopoverComponent}
       AnchorComponent={AnchorComponent}
       user={user}
