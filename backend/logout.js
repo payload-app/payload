@@ -13,6 +13,7 @@ module.exports = ({ sessionServiceClient }) => async (_, req, res) => {
         maxAge: 0,
         domain: '.local.payloadapp.com',
         path: '/',
+        httpOnly: true,
       }),
     )
     return { logout: true }

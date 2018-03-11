@@ -24,6 +24,7 @@ module.exports = async ({
       maxAge: ms('30 days') / 1000,
       domain: '.local.payloadapp.com',
       path: '/',
+      httpOnly: true,
     }),
   )
   return {
