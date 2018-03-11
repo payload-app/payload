@@ -23,6 +23,7 @@ export default () => (
           display: 'flex',
           justifyContent: 'space-between',
           flexDirection: 'column',
+          width: 200,
         }}
       >
         <RepoSelector />
