@@ -23,6 +23,8 @@ module.exports = async ({
     cookie.serialize('local_payload_session', token, {
       maxAge: ms('30 days') / 1000,
       domain: '.local.payloadapp.com',
+      path: '/',
+      httpOnly: true,
     }),
   )
   return {

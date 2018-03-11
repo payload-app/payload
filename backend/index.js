@@ -9,6 +9,8 @@ const activateRepo = require('./activateRepo')
 const getRun = require('./getRun')
 const syncOrganizations = require('./syncOrganizations')
 const syncRepos = require('./syncRepos')
+const logout = require('./logout')
+const getUser = require('./getUser')
 
 const githubServiceClient = new RPCClient({
   url: 'http://github-service:3000/rpc',
@@ -28,6 +30,10 @@ const runServiceClient = new RPCClient({
 
 const userServiceClient = new RPCClient({
   url: 'http://user-service:3000/rpc',
+})
+
+const sessionServiceClient = new RPCClient({
+  url: 'http://session-service:3000/rpc',
 })
 
 const webhookBaseUrl = process.env.WEBHOOK_BASE_URL
@@ -58,6 +64,8 @@ const rpcHandler = setSession(
         organizationServiceClient,
       }),
     ),
+    method('logout', logout({ sessionServiceClient })),
+    method('getUser', getUser),
   ),
 )
 

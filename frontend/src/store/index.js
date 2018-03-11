@@ -38,6 +38,11 @@ import {
   selector as pageSettingsSelector,
   reducer as pageSettingsReducer,
 } from '../PageSettings'
+import {
+  middleware as userMenuItemMiddleware,
+  selector as userMenuItemSelector,
+  reducer as userMenuItemReducer,
+} from '../UserMenuItem'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -47,7 +52,7 @@ const composeEnhancers =
 
 export const history = createHistory()
 
-export default createStore(
+const store = createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
     [repoSelectorSelector]: repoSelectorReducer,
@@ -56,6 +61,7 @@ export default createStore(
     [pageRunSelector]: pageRunReducer,
     [pageSettingsSelector]: pageSettingsReducer,
     [routingSelector]: routingReducer,
+    [userMenuItemSelector]: userMenuItemReducer,
     router: routerReducer,
   }),
   {},
@@ -75,7 +81,12 @@ export default createStore(
       routingMiddleware,
       runMiddleware,
       loadingMiddleware,
+      userMenuItemMiddleware,
       logger,
     ),
   ),
 )
+
+store.dispatch({ type: 'Store/APP_INIT' })
+
+export default store

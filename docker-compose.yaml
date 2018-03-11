@@ -40,6 +40,7 @@ services:
      - repo-service
      - run-service
      - user-service
+     - session-service
     networks:
       - main
   status-broadcaster:

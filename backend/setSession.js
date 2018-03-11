@@ -1,4 +1,4 @@
-const { createError } = require('@hharnisc/micro-rpc')
+const { send } = require('micro')
 const { parse } = require('cookie')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const userServiceClient = new RPCClient({
@@ -21,10 +21,7 @@ module.exports = next => async (req, res) => {
       user,
     }
   } else {
-    throw createError({
-      message: 'unauthorized',
-      statusCode: 401,
-    })
+    return send(res, 401, { error: 'Unauthorized' })
   }
 
   await next(req, res)

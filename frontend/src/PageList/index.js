@@ -2,6 +2,7 @@ import React from 'react'
 import Header from '../Header'
 import RepoSelector from '../RepoSelector'
 import RepoList from '../RepoList'
+import UserMenuItem from '../UserMenuItem'
 
 export default () => (
   <div style={{ padding: 60 }}>
@@ -9,6 +10,7 @@ export default () => (
     <div style={{ display: 'flex', marginTop: 50 }}>
       <div style={{ marginRight: 40 }}>
         <RepoSelector />
+        <UserMenuItem />
       </div>
       <div style={{ flex: 1 }}>
         <RepoList />

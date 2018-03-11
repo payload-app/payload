@@ -1,5 +1,7 @@
 const { promisify } = require('util')
 const Joi = require('joi')
+const ObjectPathImmutable = require('object-path-immutable')
+const ObjectPath = require('object-path')
 
 const validateWithPromise = promisify(Joi.validate)
 
@@ -26,9 +28,21 @@ const parseGithubUsernameFromSession = ({ session }) => {
   }
 }
 
+const getUserFromSession = ({ session }) => {
+  if (session) {
+    if (ObjectPath.has(session.user, 'accounts.github.accessToken')) {
+      return ObjectPathImmutable.del(
+        session.user,
+        'accounts.github.accessToken',
+      )
+    }
+  }
+}
+
 module.exports = {
   parseGithubTokenFromSession,
   validate,
   parseValidationErrorMessage,
   parseGithubUsernameFromSession,
+  getUserFromSession,
 }

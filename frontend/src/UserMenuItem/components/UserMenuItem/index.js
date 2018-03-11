@@ -26,7 +26,7 @@ const PopoverComponent = ({ user, onSettingsClick, onLogoutClick }) => (
       <Link
         onClick={e => {
           e.preventDefault()
-          onSettingsClick()
+          onSettingsClick({ user })
         }}
       >
         Settings
@@ -66,12 +66,13 @@ const AnchorComponent = ({ user, onShowPopover }) => (
   </Button>
 )
 
-export default ({ user, onSettingsClick, onLogoutClick }) => (
-  <PopoverContainer
-    PopoverComponent={PopoverComponent}
-    AnchorComponent={AnchorComponent}
-    user={user}
-    onSettingsClick={onSettingsClick}
-    onLogoutClick={onLogoutClick}
-  />
-)
+export default ({ user, onSettingsClick, onLogoutClick }) =>
+  user ? (
+    <PopoverContainer
+      PopoverComponent={PopoverComponent}
+      AnchorComponent={AnchorComponent}
+      user={user}
+      onSettingsClick={onSettingsClick}
+      onLogoutClick={onLogoutClick}
+    />
+  ) : null

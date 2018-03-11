@@ -4,11 +4,12 @@ import { Route } from 'react-router'
 import { Redirect } from 'react-router-dom'
 import { authRoute } from '../Routing'
 
+// NOTE: This isn't used anymore and should be delete, keeping it around for a bit for reference
+
 export default ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props => {
-      // TODO: write middleware to handle 401 from rpc and redirect to auth
       // TODO: detect env for local vs prod cookies -- webpack flag
       const sessionCookie = Cookies.get('local_payload_session')
       if (sessionCookie) {
