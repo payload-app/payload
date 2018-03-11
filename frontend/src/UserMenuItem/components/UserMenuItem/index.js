@@ -26,7 +26,7 @@ const PopoverComponent = ({ user, onSettingsClick, onLogoutClick }) => (
       <Link
         onClick={e => {
           e.preventDefault()
-          onSettingsClick()
+          onSettingsClick({ user })
         }}
       >
         Settings

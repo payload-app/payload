@@ -45,7 +45,7 @@ export const generateOwnerSettingsRoute = ({
   owner,
   settingsType,
 }) =>
-  `/type/${type}/ownertype/${ownerType}/owner/${owner}/settings/${settingsType}`
+  `/type/${type}/ownertype/${ownerType}/owner/${owner}/settings/${settingsType}/`
 
 export const ownerSettingsRoute = () =>
   generateOwnerSettingsRoute({
