@@ -57,3 +57,15 @@ storiesOf('Sidebar', module)
   .add('default', () => (
     <Sidebar items={items} value={value} onChange={action('on-change')} />
   ))
+  .add('with backUrl', () => (
+    <Sidebar
+      items={items}
+      value={value}
+      onChange={action('On Change')}
+      onBackClick={({ event, url }) => {
+        event.preventDefault()
+        action('On Back Click')({ event, url })
+      }}
+      backUrl={'https://google.com'}
+    />
+  ))
