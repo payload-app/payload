@@ -1,6 +1,6 @@
 import React from 'react'
-import Text from '../Text'
-import { white, mutedWhite } from '../style/color'
+import { Text } from '../../../components'
+import { white, mutedWhite } from '../../../components/style/color'
 
 export default ({ children, active, onClick }) => {
   return (
