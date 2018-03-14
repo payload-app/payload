@@ -26,21 +26,23 @@ const BackButton = ({ backUrl, onBackClick }) => {
   return null
 }
 
-const handleSelect = ({ onChange, item, value }) => {
+const handleSelect = ({ onChange, item, value, index, layer }) => {
   if (JSON.stringify(item) !== JSON.stringify(value)) {
-    onChange({ item })
+    onChange({ index, layer, item })
   }
 }
 
-export default ({ items, backUrl, onBackClick, onChange, value }) => (
+export default ({ items, backUrl, onBackClick, onChange, value, layer }) => (
   <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
     <BackButton backUrl={backUrl} onBackClick={onBackClick} />
     <div style={{ flexGrow: 1 }}>
-      {items.map(item => (
+      {items.map((item, index) => (
         <div key={item.key} style={{ cursor: 'pointer' }}>
           <SidebarItem
             active={JSON.stringify(item) === JSON.stringify(value)}
-            onClick={() => handleSelect({ onChange, item, value })}
+            onClick={() =>
+              handleSelect({ onChange, item, value, layer, index })
+            }
           >
             {item.display}
           </SidebarItem>

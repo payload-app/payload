@@ -3,6 +3,7 @@ import Header from '../Header'
 import RepoSelector from '../RepoSelector'
 import RepoList from '../RepoList'
 import UserMenuItem from '../UserMenuItem'
+import Sidebar from '../Sidebar'
 
 export default () => (
   <div
@@ -27,8 +28,7 @@ export default () => (
           marginTop: 60,
         }}
       >
-        <RepoSelector />
-        <UserMenuItem />
+        <Sidebar />
       </div>
       <div style={{ flex: 1, overflowY: 'scroll' }}>
         <div style={{ flex: 1, marginTop: 50 }}>
