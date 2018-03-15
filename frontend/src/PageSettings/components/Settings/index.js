@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, IconCached } from '../../../components'
-import Header from '../../../Header'
+import Page from '../../../Page'
 
 export default ({
   organizationsLoading,
@@ -8,8 +8,7 @@ export default ({
   onResyncOrgsClick,
   onResyncReposClick,
 }) => (
-  <div>
-    <Header />
+  <Page>
     <div>
       <Button
         disabled={organizationsLoading}
@@ -32,5 +31,5 @@ export default ({
         Resync All Repositories?
       </Button>
     </div>
-  </div>
+  </Page>
 )
