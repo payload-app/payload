@@ -15,7 +15,6 @@ export default connect(
     },
     onBackClick: ({ event, url }) => {
       event.preventDefault()
-      console.log('url', url)
       dispatch(push(url))
     },
   }),

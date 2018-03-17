@@ -5,7 +5,7 @@ export const actionTypes = {
   SET_MENU: `${selector}/SET_MENU`,
   SELECT: `${selector}/SELECT`,
   SET_BACKURL: `${selector}/SET_BACKURL`,
-  CLEAR_BACKURL: `${selector}/Clear_BACKURL`,
+  CLEAR_BACKURL: `${selector}/CLEAR_BACKURL`,
 }
 
 const initialState = {
@@ -20,7 +20,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         menu: action.menu,
-        selection: action.selection,
       }
     case actionTypes.SELECT:
       return {
@@ -48,10 +47,9 @@ export default (state = initialState, action) => {
 }
 
 export const actions = {
-  setMenu: ({ menu, selection = 0 }) => ({
+  setMenu: ({ menu }) => ({
     type: actionTypes.SET_MENU,
     menu,
-    selection,
   }),
   select: ({ selection }) => ({
     type: actionTypes.SELECT,

@@ -24,11 +24,12 @@ const updateRepoOwnersMenu = ({ dispatch, getState, menu }) => {
   updateMenu({
     dispatch,
     menu,
-    selection,
   })
-  if (selection === -1) {
-    dispatch(actions.select({ selection: 0 }))
-  }
+  dispatch(
+    actions.select({
+      selection: selection === -1 ? 0 : selection,
+    }),
+  )
 }
 
 export default ({ dispatch, getState }) => next => action => {

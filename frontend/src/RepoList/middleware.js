@@ -1,16 +1,17 @@
 import { actions as dataFetchActions } from '@hharnisc/async-data-fetch'
-import { actionTypes as repoSelectorActionTypes } from '../RepoSelector'
+import { actionTypes as sidebarActionTypes, selector } from '../Sidebar'
 
-export default ({ dispatch }) => next => action => {
+export default ({ dispatch, getState }) => next => action => {
   next(action)
   switch (action.type) {
-    case repoSelectorActionTypes.SET_VALUE:
+    case sidebarActionTypes.SELECT:
+      const { repoOwners } = getState()[selector]
       dispatch(
         dataFetchActions.fetch({
           name: 'repos',
           args: {
-            name: action.value.name,
-            ownerType: action.value.ownerType,
+            name: repoOwners[action.selection].name,
+            ownerType: repoOwners[action.selection].ownerType,
           },
         }),
       )
