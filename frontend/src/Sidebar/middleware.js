@@ -83,6 +83,12 @@ export default ({ dispatch, getState }) => next => action => {
             }),
           )
           break
+        case routes.RUNS:
+          dispatch(
+            actions.setBackUrl({
+              url: action.previousPath || generateListRoute(action.params),
+            }),
+          )
         default:
           break
       }
