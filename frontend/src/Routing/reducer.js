@@ -22,9 +22,20 @@ export default (state = initialState, action) => {
 }
 
 export const actions = {
-  emit: ({ route, params = {} }) => ({
+  emit: ({
+    route,
+    params = {},
+    path,
+    previousRoute,
+    previousParams,
+    previousPath,
+  }) => ({
     type: actionTypes.EMIT,
     route,
     params,
+    path,
+    previousRoute,
+    previousParams,
+    previousPath,
   }),
 }

@@ -1,17 +1,22 @@
+import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 import Sidebar from './components/Sidebar'
 import { selector, actions } from './reducer'
-import { getItems, getValue } from './utils'
 
 export default connect(
   state => ({
-    items: getItems(state[selector]),
-    value: getValue(state[selector]),
-    layer: state[selector].length - 1,
+    items: state[selector].menu,
+    value: state[selector].menu[state[selector].selection],
+    backUrl: state[selector].backUrl,
   }),
   dispatch => ({
-    onChange: ({ index, layer }) => {
-      dispatch(actions.select({ selection: index, layer }))
+    onChange: ({ index }) => {
+      dispatch(actions.select({ selection: index }))
+    },
+    onBackClick: ({ event, url }) => {
+      event.preventDefault()
+      console.log('url', url)
+      dispatch(push(url))
     },
   }),
 )(Sidebar)

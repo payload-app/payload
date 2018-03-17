@@ -7,58 +7,105 @@ import {
   actionTypes as routingActionTypes,
   routes,
   generateListRoute,
-  selector as routingSelector,
 } from '../Routing'
-import { actions, actionTypes, selector } from './reducer'
-import { getValue, getItems } from './utils'
+import { selector, actions, actionTypes } from './reducer'
+
+const updateMenu = ({ dispatch, menu, selection }) =>
+  dispatch(
+    actions.setMenu({
+      menu,
+      selection,
+    }),
+  )
+
+const updateRepoOwnersMenu = ({ dispatch, getState, menu }) => {
+  const { router: { location: { pathname } } } = getState()
+  const selection = menu.findIndex(item => item.url === pathname)
+  updateMenu({
+    dispatch,
+    menu,
+    selection,
+  })
+  if (selection === -1) {
+    dispatch(actions.select({ selection: 0 }))
+  }
+}
 
 export default ({ dispatch, getState }) => next => action => {
   next(action)
   switch (action.type) {
     case routingActionTypes.EMIT:
-      if ([routes.BASE, routes.REPO_LIST].includes(action.route)) {
-        if (!getItems(getState()[selector]).length) {
+      switch (action.route) {
+        case routes.BASE:
+        case routes.REPO_LIST:
+          const { repoOwners } = getState()[selector]
+          if (!repoOwners.length) {
+            dispatch(
+              dataFetchActions.fetch({
+                name: 'repoOwners',
+              }),
+            )
+          } else {
+            updateRepoOwnersMenu({
+              dispatch,
+              getState,
+              menu: repoOwners.map(item => {
+                const { type, ownerType, name, id } = item
+                return {
+                  display: name,
+                  key: id,
+                  url: generateListRoute({
+                    type,
+                    ownerType,
+                    owner: name,
+                  }),
+                }
+              }),
+            })
+          }
+          dispatch(actions.clearBackUrl())
+          break
+        case routes.OWNER_SETTINGS:
+          updateMenu({
+            dispatch,
+            menu: [
+              {
+                display: 'Sync Settings',
+                key: 'syncSettings',
+                url: action.path,
+              },
+            ],
+          })
           dispatch(
-            dataFetchActions.fetch({
-              name: 'repoOwners',
+            actions.setBackUrl({
+              url: action.previousPath || generateListRoute(action.params),
             }),
           )
-        }
+          break
+        default:
+          break
       }
       break
     case `repoOwners_${dataFetchActionTypes.FETCH_SUCCESS}`:
-      const { [routingSelector]: { params, route } } = getState()
-      const selection = action.result.findIndex(
-        item =>
-          route === routes.REPO_LIST &&
-          item.name === params.owner &&
-          item.type === params.type &&
-          item.ownerType === params.ownerType,
-      )
-      dispatch(
-        actions.addMenu({
-          menu: action.result.map(item => {
-            const { type, ownerType, name, id } = item
-            return {
-              display: name,
-              key: id,
-              url: generateListRoute({
-                type,
-                ownerType,
-                owner: name,
-              }),
-            }
-          }),
-          selection,
+      updateRepoOwnersMenu({
+        dispatch,
+        getState,
+        menu: action.result.map(item => {
+          const { type, ownerType, name, id } = item
+          return {
+            display: name,
+            key: id,
+            url: generateListRoute({
+              type,
+              ownerType,
+              owner: name,
+            }),
+          }
         }),
-      )
-      if (selection === -1) {
-        // this is will always be the first layer
-        dispatch(actions.select({ selection: 0, layer: 0 }))
-      }
+      })
       break
     case actionTypes.SELECT:
-      const value = getValue(getState()[selector])
+      const value = getState()[selector].menu[action.selection]
       if (value) {
         dispatch(push(value.url))
       }
