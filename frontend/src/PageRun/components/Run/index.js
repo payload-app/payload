@@ -2,7 +2,7 @@ import React from 'react'
 import prettyBytes from 'pretty-bytes'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
-import Header from '../../../Header'
+import Page from '../../../Page'
 import { Text } from '../../../components'
 import { red } from '../../../components/style/color'
 
@@ -111,8 +111,7 @@ export default ({
     recentDefaultBranchRuns,
   },
 }) => (
-  <div>
-    <Header />
+  <Page>
     {loading || errorMessage ? null : (
       <RunComponent
         fileSizes={fileSizes}
@@ -127,5 +126,5 @@ export default ({
     {loading || errorMessage ? null : (
       <RecentRuns recentDefaultBranchRuns={recentDefaultBranchRuns} />
     )}
-  </div>
+  </Page>
 )

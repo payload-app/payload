@@ -8,11 +8,6 @@ import {
   middleware as asyncDataFetchMiddleware,
 } from '@hharnisc/async-data-fetch'
 import {
-  reducer as repoSelectorReducer,
-  selector as repoSelectorSelector,
-  middleware as repoSelectorMiddleware,
-} from '../RepoSelector'
-import {
   reducer as repoListReducer,
   selector as repoListSelector,
   middleware as repoListMiddleware,
@@ -43,6 +38,11 @@ import {
   selector as userMenuItemSelector,
   reducer as userMenuItemReducer,
 } from '../UserMenuItem'
+import {
+  middleware as sidebarMiddleware,
+  selector as sidebarSelector,
+  reducer as sidebarReducer,
+} from '../Sidebar'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -55,13 +55,13 @@ export const history = createHistory()
 const store = createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
-    [repoSelectorSelector]: repoSelectorReducer,
     [repoListSelector]: repoListReducer,
     [headerSelector]: headerReducer,
     [pageRunSelector]: pageRunReducer,
     [pageSettingsSelector]: pageSettingsReducer,
     [routingSelector]: routingReducer,
     [userMenuItemSelector]: userMenuItemReducer,
+    [sidebarSelector]: sidebarReducer,
     router: routerReducer,
   }),
   {},
@@ -74,7 +74,6 @@ const store = createStore(
           sendCredentials: 'same-origin',
         },
       }),
-      repoSelectorMiddleware,
       repoListMiddleware,
       headerMiddleware,
       unauthorizedRedirectMiddleware,
@@ -82,6 +81,7 @@ const store = createStore(
       runMiddleware,
       loadingMiddleware,
       userMenuItemMiddleware,
+      sidebarMiddleware,
       logger,
     ),
   ),

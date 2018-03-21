@@ -2,7 +2,7 @@ import React from 'react'
 import { Text } from '../../../components'
 import { white, mutedWhite } from '../../../components/style/color'
 
-export default ({ name, active, onClick }) => {
+export default ({ children, active, onClick }) => {
   return (
     <div
       onClick={onClick}
@@ -17,7 +17,7 @@ export default ({ name, active, onClick }) => {
       }}
     >
       <Text capitalize color={active ? white : mutedWhite}>
-        {name}
+        {children}
       </Text>
     </div>
   )
