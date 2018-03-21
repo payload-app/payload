@@ -4,14 +4,14 @@ export const selector = 'Sidebar'
 export const actionTypes = {
   SET_MENU: `${selector}/SET_MENU`,
   SELECT: `${selector}/SELECT`,
-  SET_BACKURL: `${selector}/SET_BACKURL`,
-  CLEAR_BACKURL: `${selector}/CLEAR_BACKURL`,
+  TOGGLE_BACK_BUTTON: `${selector}/TOGGLE_BACK_BUTTON`,
 }
 
 const initialState = {
   repoOwners: [],
   menu: [],
   selection: -1,
+  showBackButton: false,
 }
 
 export default (state = initialState, action) => {
@@ -26,15 +26,10 @@ export default (state = initialState, action) => {
         ...state,
         selection: action.selection,
       }
-    case actionTypes.SET_BACKURL:
+    case actionTypes.TOGGLE_BACK_BUTTON:
       return {
         ...state,
-        backUrl: action.url,
-      }
-    case actionTypes.CLEAR_BACKURL:
-      return {
-        ...state,
-        backUrl: undefined,
+        showBackButton: action.toggle,
       }
     case `repoOwners_${dataFetchActionTypes.FETCH_SUCCESS}`:
       return {
@@ -55,11 +50,8 @@ export const actions = {
     type: actionTypes.SELECT,
     selection,
   }),
-  setBackUrl: ({ url }) => ({
-    type: actionTypes.SET_BACKURL,
-    url,
-  }),
-  clearBackUrl: () => ({
-    type: actionTypes.CLEAR_BACKURL,
+  toggleBackButton: ({ toggle }) => ({
+    type: actionTypes.TOGGLE_BACK_BUTTON,
+    toggle,
   }),
 }

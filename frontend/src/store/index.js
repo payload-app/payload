@@ -7,11 +7,6 @@ import {
   storeKey as asyncDataFetchStoreKey,
   middleware as asyncDataFetchMiddleware,
 } from '@hharnisc/async-data-fetch'
-// import {
-//   reducer as repoSelectorReducer,
-//   selector as repoSelectorSelector,
-//   middleware as repoSelectorMiddleware,
-// } from '../RepoSelector'
 import {
   reducer as repoListReducer,
   selector as repoListSelector,
@@ -60,7 +55,6 @@ export const history = createHistory()
 const store = createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
-    // [repoSelectorSelector]: repoSelectorReducer,
     [repoListSelector]: repoListReducer,
     [headerSelector]: headerReducer,
     [pageRunSelector]: pageRunReducer,
@@ -80,7 +74,6 @@ const store = createStore(
           sendCredentials: 'same-origin',
         },
       }),
-      // repoSelectorMiddleware,
       repoListMiddleware,
       headerMiddleware,
       unauthorizedRedirectMiddleware,

@@ -1,4 +1,4 @@
-import { push } from 'react-router-redux'
+import { goBack } from 'react-router-redux'
 import { connect } from 'react-redux'
 import Sidebar from './components/Sidebar'
 import { selector, actions } from './reducer'
@@ -7,15 +7,15 @@ export default connect(
   state => ({
     items: state[selector].menu,
     value: state[selector].menu[state[selector].selection],
-    backUrl: state[selector].backUrl,
+    showBackButton: state[selector].showBackButton,
   }),
   dispatch => ({
     onChange: ({ index }) => {
       dispatch(actions.select({ selection: index }))
     },
-    onBackClick: ({ event, url }) => {
-      event.preventDefault()
-      dispatch(push(url))
+    onBackClick: e => {
+      e.preventDefault()
+      dispatch(goBack())
     },
   }),
 )(Sidebar)

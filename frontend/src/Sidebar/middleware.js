@@ -64,7 +64,7 @@ export default ({ dispatch, getState }) => next => action => {
               }),
             })
           }
-          dispatch(actions.clearBackUrl())
+          dispatch(actions.toggleBackButton({ toggle: false }))
           break
         case routes.OWNER_SETTINGS:
           updateMenu({
@@ -77,18 +77,16 @@ export default ({ dispatch, getState }) => next => action => {
               },
             ],
           })
-          dispatch(
-            actions.setBackUrl({
-              url: action.previousPath || generateListRoute(action.params),
-            }),
-          )
+          dispatch(actions.select({ selection: 0 }))
+          dispatch(actions.toggleBackButton({ toggle: true }))
           break
         case routes.RUNS:
-          dispatch(
-            actions.setBackUrl({
-              url: action.previousPath || generateListRoute(action.params),
-            }),
-          )
+          dispatch(actions.select({ selection: -1 }))
+          updateMenu({
+            dispatch,
+            menu: [],
+          })
+          dispatch(actions.toggleBackButton({ toggle: true }))
         default:
           break
       }
@@ -112,8 +110,10 @@ export default ({ dispatch, getState }) => next => action => {
       })
       break
     case actionTypes.SELECT:
-      const value = getState()[selector].menu[action.selection]
-      if (value) {
+      const state = getState()
+      const value = state[selector].menu[action.selection]
+      const { router: { location: { pathname } } } = state
+      if (value && value.url !== pathname) {
         dispatch(push(value.url))
       }
       break
