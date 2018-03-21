@@ -5,6 +5,7 @@ import TimeAgo from 'react-timeago'
 import Page from '../../../Page'
 import { Text } from '../../../components'
 import { red } from '../../../components/style/color'
+import FileSizeChart from '../FileSizeChart'
 
 const FileSizes = ({ fileSizes }) => (
   <div>
@@ -97,7 +98,10 @@ const ErrorDisplay = ({ errorMessage }) => (
 )
 
 const RecentRuns = ({ recentDefaultBranchRuns }) => (
-  <Text>{JSON.stringify(recentDefaultBranchRuns)}</Text>
+  <div>
+    <Text>{JSON.stringify(recentDefaultBranchRuns)}</Text>
+    <FileSizeChart />
+  </div>
 )
 
 export default ({
