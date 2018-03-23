@@ -111,10 +111,39 @@ const ErrorDisplay = ({ errorMessage }) => (
   </div>
 )
 
+const parseRecentFileSizes = ({ recentDefaultBranchRuns }) =>
+  recentDefaultBranchRuns
+    .map(run =>
+      run.fileSizes.map(fileSize => ({
+        key: fileSize.file,
+        x: new Date(run.stop),
+        y: fileSize.size,
+      })),
+    )
+    .reduce((sizes, runFileSizes) => {
+      let newSizes = { ...sizes }
+      runFileSizes.forEach(runFileSize => {
+        const exisitingFileSizes = newSizes[runFileSize.key] || []
+        newSizes = {
+          ...newSizes,
+          [runFileSize.key]: [
+            ...exisitingFileSizes,
+            {
+              x: runFileSize.x,
+              y: runFileSize.y,
+            },
+          ],
+        }
+      })
+      return newSizes
+    }, {})
+
 const RecentRuns = ({ recentDefaultBranchRuns }) => (
   <div>
     <Text>{JSON.stringify(recentDefaultBranchRuns)}</Text>
-    <FileSizeChart />
+    <FileSizeChart
+      fileSizes={parseRecentFileSizes({ recentDefaultBranchRuns })}
+    />
   </div>
 )
 
