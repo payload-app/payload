@@ -2,7 +2,7 @@ import React from 'react'
 import Color from 'color'
 import { storiesOf } from '@storybook/react'
 import Text from '../Text'
-import { text, background, red } from './color'
+import { text, background, red, mutedWhite } from './color'
 
 const ColorPanel = ({ color }) => (
   <div
@@ -22,5 +22,6 @@ storiesOf('color', module).add('colors', () => (
     <ColorPanel color={text} />
     <ColorPanel color={background} />
     <ColorPanel color={red} />
+    <ColorPanel color={mutedWhite} />
   </div>
 ))

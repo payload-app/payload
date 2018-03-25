@@ -2,11 +2,13 @@ import React from 'react'
 import prettyBytes from 'pretty-bytes'
 import { text } from '../../../components/style/color'
 import { fontFamily } from '../../../components/style/font'
+import { Text } from '../../../components'
 import {
   FlexibleWidthXYPlot,
   VerticalBarSeries,
   VerticalGridLines,
   HorizontalGridLines,
+  DiscreteColorLegend,
   XAxis,
   YAxis,
   Crosshair,
@@ -48,6 +50,12 @@ export default class FileSizeChart extends React.Component {
         height={500}
         xType={'ordinal'}
       >
+        <DiscreteColorLegend
+          items={Object.keys(this.props.fileSizes).map((file, i) => (
+            <Text key={i}>{file}</Text>
+          ))}
+          orientation={'horizontal'}
+        />
         <VerticalGridLines />
         <HorizontalGridLines />
         <XAxis
