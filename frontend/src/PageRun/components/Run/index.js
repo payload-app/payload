@@ -106,7 +106,7 @@ const parseRecentFileSizes = ({ recentDefaultBranchRuns }) =>
         y: fileSize.size,
       })),
     )
-    .reduce((sizes, runFileSizes) => {
+    .reduce((sizes, runFileSizes, index) => {
       let newSizes = { ...sizes }
       runFileSizes.forEach(runFileSize => {
         const exisitingFileSizes = newSizes[runFileSize.key] || []
@@ -115,7 +115,7 @@ const parseRecentFileSizes = ({ recentDefaultBranchRuns }) =>
           [runFileSize.key]: [
             ...exisitingFileSizes,
             {
-              x: runFileSize.x,
+              x: index,
               y: runFileSize.y,
             },
           ],
