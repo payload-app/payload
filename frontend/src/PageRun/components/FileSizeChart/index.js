@@ -3,8 +3,8 @@ import prettyBytes from 'pretty-bytes'
 import { text } from '../../../components/style/color'
 import { fontFamily } from '../../../components/style/font'
 import {
-  XYPlot,
-  LineMarkSeries,
+  FlexibleWidthXYPlot,
+  VerticalBarSeries,
   VerticalGridLines,
   HorizontalGridLines,
   XAxis,
@@ -39,18 +39,19 @@ export default class FileSizeChart extends React.Component {
 
   render() {
     return (
-      <XYPlot
-        margin={{ left: 100 }}
-        height={300}
-        width={800}
+      <FlexibleWidthXYPlot
+        margin={{ left: 70, bottom: 80 }}
         onMouseLeave={this._onMouseLeave}
         style={{
           fontFamily,
         }}
+        height={500}
+        xType={'ordinal'}
       >
         <VerticalGridLines />
         <HorizontalGridLines />
         <XAxis
+          tickLabelAngle={-45}
           style={{
             text: {
               fontSize: '1.5rem',
@@ -68,7 +69,7 @@ export default class FileSizeChart extends React.Component {
           tickFormat={t => <tspan>{prettyBytes(t)}</tspan>}
         />
         {Object.keys(this.props.fileSizes).map(fileName => (
-          <LineMarkSeries
+          <VerticalBarSeries
             onNearestX={this._onNearestX}
             key={fileName}
             data={this.props.fileSizes[fileName]}
@@ -79,6 +80,9 @@ export default class FileSizeChart extends React.Component {
             box: {
               fontFamily,
             },
+            line: {
+              display: 'none',
+            },
           }}
           values={this.state.crosshairValues}
           itemsFormat={values =>
@@ -87,8 +91,12 @@ export default class FileSizeChart extends React.Component {
               value: value.y,
             }))
           }
+          titleFormat={values => ({
+            title: 'sha',
+            value: values[0].x,
+          })}
         />
-      </XYPlot>
+      </FlexibleWidthXYPlot>
     )
   }
 }
