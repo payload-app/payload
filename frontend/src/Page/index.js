@@ -27,8 +27,17 @@ export default ({ children }) => (
       >
         <Sidebar />
       </div>
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        <div style={{ flex: 1, marginTop: 50 }}>{children}</div>
+      <div style={{ flex: 1, overflowY: 'auto', height: '100%' }}>
+        <div
+          style={{
+            flex: 1,
+            paddingTop: 50,
+            height: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
+          {children}
+        </div>
       </div>
     </div>
   </div>

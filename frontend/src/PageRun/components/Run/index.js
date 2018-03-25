@@ -102,11 +102,11 @@ const parseRecentFileSizes = ({ recentDefaultBranchRuns }) =>
     .map(run =>
       run.fileSizes.map(fileSize => ({
         key: fileSize.file,
-        x: new Date(run.stop),
+        x: run.sha.slice(0, 7),
         y: fileSize.size,
       })),
     )
-    .reduce((sizes, runFileSizes, index) => {
+    .reduce((sizes, runFileSizes) => {
       let newSizes = { ...sizes }
       runFileSizes.forEach(runFileSize => {
         const exisitingFileSizes = newSizes[runFileSize.key] || []
@@ -115,7 +115,7 @@ const parseRecentFileSizes = ({ recentDefaultBranchRuns }) =>
           [runFileSize.key]: [
             ...exisitingFileSizes,
             {
-              x: index,
+              x: runFileSize.x,
               y: runFileSize.y,
             },
           ],
@@ -125,8 +125,7 @@ const parseRecentFileSizes = ({ recentDefaultBranchRuns }) =>
     }, {})
 
 const RecentRuns = ({ recentDefaultBranchRuns }) => (
-  <div>
-    <Text>{JSON.stringify(recentDefaultBranchRuns)}</Text>
+  <div style={{ flexGrow: 1 }}>
     <FileSizeChart
       fileSizes={parseRecentFileSizes({ recentDefaultBranchRuns })}
     />
@@ -145,19 +144,21 @@ export default ({
   },
 }) => (
   <Page>
-    {loading || errorMessage ? null : (
-      <RunComponent
-        fileSizes={fileSizes}
-        start={start}
-        stop={stop}
-        created={created}
-      />
-    )}
-    {loading || !errorMessage ? null : (
-      <ErrorDisplay errorMessage={errorMessage} />
-    )}
-    {loading || errorMessage ? null : (
-      <RecentRuns recentDefaultBranchRuns={recentDefaultBranchRuns} />
-    )}
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {loading || errorMessage ? null : (
+        <RunComponent
+          fileSizes={fileSizes}
+          start={start}
+          stop={stop}
+          created={created}
+        />
+      )}
+      {loading || !errorMessage ? null : (
+        <ErrorDisplay errorMessage={errorMessage} />
+      )}
+      {loading || errorMessage ? null : (
+        <RecentRuns recentDefaultBranchRuns={recentDefaultBranchRuns} />
+      )}
+    </div>
   </Page>
 )
