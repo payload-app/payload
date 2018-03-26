@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { AnimateText, Pulse } from '../../../components'
+import { AnimateText, Pulse, Truncate } from '../../../components'
 import LoadingBar from '../LoadingBar'
 
 const StatelessFunctionalHeader = ({
@@ -12,7 +12,7 @@ const StatelessFunctionalHeader = ({
   <div>
     <div
       style={{
-        height: '3.8rem',
+        minHeight: '3.8rem',
         marginBottom: '1.4rem',
       }}
     >
@@ -27,12 +27,15 @@ const StatelessFunctionalHeader = ({
       style={{
         height: '1.5rem',
         marginTop: '1rem',
+        marginRight: '1rem',
         marginBottom: '1rem',
       }}
     >
-      <AnimateText capitalize={true} cursor={true} antialiased={true}>
-        {subtitle}
-      </AnimateText>
+      <Truncate>
+        <AnimateText capitalize={true} cursor={true} antialiased={true}>
+          {subtitle}
+        </AnimateText>
+      </Truncate>
     </div>
   </div>
 )

@@ -1,6 +1,7 @@
 import React from 'react'
 import Typist from 'react-typist'
 import 'react-typist/dist/Typist.css'
+import './style.css'
 import Text from '../Text'
 
 export default ({

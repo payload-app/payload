@@ -82,10 +82,14 @@ export default ({ dispatch, getState }) => next => action => {
       dispatch(headerActions.setLoading({ loading: true }))
       break
     case `getRun_${dataFetchActionTypes.FETCH_SUCCESS}`:
-      const { owner, repo, branch, sha } = action.result
+      const { owner, repo, branch, sha, errorMessage } = action.result
       dispatch(headerActions.setTitle({ title: `${owner}/${repo}` }))
       dispatch(headerActions.setSubtitle({ subtitle: `${branch} » ${sha}` }))
       dispatch(headerActions.setLoading({ loading: false }))
+
+      if (errorMessage) {
+        dispatch(headerActions.setWarning({ warning: 'Failed' }))
+      }
       break
     case `getRun_${dataFetchActionTypes.FETCH_START}`:
       dispatch(headerActions.setTitle({ title: 'Loading Run...' }))
@@ -95,6 +99,16 @@ export default ({ dispatch, getState }) => next => action => {
         }),
       )
       dispatch(headerActions.setLoading({ loading: true }))
+      break
+    case `getRun_${dataFetchActionTypes.FETCH_FAIL}`:
+      dispatch(headerActions.setTitle({ title: 'Loading' }))
+      dispatch(headerActions.setWarning({ warning: 'Failed' }))
+      dispatch(
+        headerActions.setSubtitle({
+          subtitle: 'Please try again later',
+        }),
+      )
+      dispatch(headerActions.setLoading({ loading: false }))
       break
     case `syncRepos_${dataFetchActionTypes.FETCH_START}`:
       dispatch(headerActions.setTitle({ title: 'Syncing Repositories' }))
