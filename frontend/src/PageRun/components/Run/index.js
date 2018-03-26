@@ -5,8 +5,9 @@ import TimeAgo from 'react-timeago'
 import Page from '../../../Page'
 import { Text } from '../../../components'
 import replace from 'react-string-replace'
-import { red, mutedWhite } from '../../../components/style/color'
+import { red, mutedWhite, softLighten } from '../../../components/style/color'
 import FileSizeChart from '../FileSizeChart'
+import { FileListViz } from '../FileListViz'
 
 const FileSizes = ({ fileSizes }) => (
   <div>
@@ -72,8 +73,40 @@ const CreateTime = ({ created }) => (
   </div>
 )
 
-const RunComponent = ({ fileSizes, start, stop, created }) => (
+const mergeRunFilesWithPastRun = ({ files, prevFiles }) => {
+  const prevFilesLookup = prevFiles.reduce((acc, { file, size }) => {
+    acc[file] = { file, size }
+    return acc
+  }, {})
+  console.log(prevFilesLookup)
+  return files.map(({ file: fileName, size }) => {
+    const prevFile = prevFilesLookup[fileName] || {}
+    return {
+      fileName,
+      size,
+      prevSize: prevFile.size || 0,
+    }
+  })
+}
+
+const RunComponent = ({
+  fileSizes,
+  start,
+  stop,
+  created,
+  recentDefaultBranchRuns,
+}) => (
   <div>
+    <FileListViz
+      files={mergeRunFilesWithPastRun({
+        files: fileSizes,
+        prevFiles: recentDefaultBranchRuns[0]
+          ? recentDefaultBranchRuns[0].fileSizes
+          : [],
+      })}
+    />
+    <br />
+    <br />
     <FileSizes fileSizes={fileSizes} />
     <div>
       <Text size={1.5}>Details</Text>
@@ -87,7 +120,7 @@ const ErrorDisplay = ({ errorMessage }) => (
   <div
     style={{
       display: 'flex',
-      background: 'rgba(255,255,255,0.03)',
+      background: softLighten,
       borderLeft: `1px solid ${mutedWhite}`,
       padding: 20,
     }}
@@ -157,6 +190,7 @@ export default ({
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {loading || errorMessage ? null : (
         <RunComponent
+          recentDefaultBranchRuns={recentDefaultBranchRuns}
           fileSizes={fileSizes}
           start={start}
           stop={stop}
