@@ -96,6 +96,16 @@ export default ({ dispatch, getState }) => next => action => {
       )
       dispatch(headerActions.setLoading({ loading: true }))
       break
+    case `getRun_${dataFetchActionTypes.FETCH_FAIL}`:
+      dispatch(headerActions.setTitle({ title: 'Loading' }))
+      dispatch(headerActions.setWarning({ warning: 'Failed' }))
+      dispatch(
+        headerActions.setSubtitle({
+          subtitle: 'Please try again later',
+        }),
+      )
+      dispatch(headerActions.setLoading({ loading: false }))
+      break
     case `syncRepos_${dataFetchActionTypes.FETCH_START}`:
       dispatch(headerActions.setTitle({ title: 'Syncing Repositories' }))
       dispatch(
