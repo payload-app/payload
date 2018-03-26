@@ -4,13 +4,9 @@ import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import Page from '../../../Page'
 import { Text } from '../../../components'
-<<<<<<< HEAD
-import { red, mutedWhite } from '../../../components/style/color'
 import replace from 'react-string-replace'
-=======
-import { red } from '../../../components/style/color'
+import { red, mutedWhite } from '../../../components/style/color'
 import FileSizeChart from '../FileSizeChart'
->>>>>>> stub in file size chart
 
 const FileSizes = ({ fileSizes }) => (
   <div>
