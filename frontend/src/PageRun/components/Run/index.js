@@ -4,7 +4,8 @@ import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import Page from '../../../Page'
 import { Text } from '../../../components'
-import { red } from '../../../components/style/color'
+import { red, mutedWhite } from '../../../components/style/color'
+import replace from 'react-string-replace'
 
 const FileSizes = ({ fileSizes }) => (
   <div>
@@ -85,13 +86,22 @@ const ErrorDisplay = ({ errorMessage }) => (
   <div
     style={{
       display: 'flex',
+      background: 'rgba(255,255,255,0.03)',
+      borderLeft: `1px solid ${mutedWhite}`,
+      padding: 20,
     }}
   >
-    <div style={{ marginRight: '0.5rem' }}>
+    <div style={{ marginRight: '2rem' }}>
       <Text background={red}>Error</Text>
     </div>
     <div>
-      <Text>{errorMessage}</Text>
+      <Text>
+        {replace(errorMessage, /`([^`]+)`/g, code => (
+          <Text background={mutedWhite} key={code}>
+            {code}
+          </Text>
+        ))}
+      </Text>
     </div>
   </div>
 )
