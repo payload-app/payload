@@ -38,6 +38,10 @@ const sessionServiceClient = new RPCClient({
 
 const webhookBaseUrl = process.env.WEBHOOK_BASE_URL
 
+if (webhookBaseUrl === undefined) {
+  console.log('Make sure you have a `WEBHOOK_BASE_URL` set in `backend/.env`')
+}
+
 const rpcHandler = setSession(
   rpc(
     method(
