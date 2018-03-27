@@ -82,7 +82,9 @@ const SizeChangePercent = ({ size, prevSize }) => {
       >
         {symbol}
       </Text>
-      <Text size={1} color={mutedWhite} weight={400}>{`${change}%`}</Text>
+      <Text size={1} color={mutedWhite} weight={400}>
+        {`${change.toFixed(2)}%`}
+      </Text>
     </div>
   )
 }
@@ -134,7 +136,7 @@ const FileVizItem = ({
       backgroundColor: softLighten,
       display: 'flex',
       alignItems: 'center',
-      flex: 1,
+      flex: 3,
       paddingLeft: 15,
       paddingRight: 15,
     },
@@ -143,7 +145,7 @@ const FileVizItem = ({
       height: 50,
     },
     graph: {
-      flex: 1,
+      flex: 2,
       paddingRight: 15,
       display: 'flex',
     },
@@ -195,3 +197,5 @@ const FileVizItem = ({
     </div>
   )
 }
+
+export default FileListViz
