@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import padStart from 'lodash.padstart'
 import { Text } from '../../../components'
 import {
   white,
@@ -165,7 +166,7 @@ const FileVizItem = ({
     <div style={styles.item}>
       <div style={styles.number}>
         <Text size={2} weight={400}>
-          {_.padStart(number, 2, '0')}
+          {padStart(number, 2, '0')}
         </Text>
       </div>
 
