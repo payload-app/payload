@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A base payload service
+name: payload-service
+version: 0.1.0

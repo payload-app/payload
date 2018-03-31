@@ -1,0 +1,31 @@
+{{- if and (.Values.istio.enabled) (.Values.istio.serviceWhitelist) }}
+# whitelist of services the app can communicate with
+apiVersion: config.istio.io/v1alpha2
+kind: listchecker
+metadata:
+  name: {{ template "name" . }}-whitelist
+spec:
+  blacklist: false
+  overrides:
+{{ toYaml .Values.istio.serviceWhitelist | indent 2 }}
+---
+# extract the source application
+apiVersion: config.istio.io/v1alpha2
+kind: listentry
+metadata:
+  name: {{ template "name" . }}-check-source-app
+spec:
+  value: source.labels["app"]
+---
+# do a whitelist check for the app, allows service to be connected to ingress
+apiVersion: config.istio.io/v1alpha2
+kind: rule
+metadata:
+  name: {{ template "name" . }}-check-app
+spec:
+  match: source.labels["istio"] != "ingress" && destination.labels["app"] == "{{ template "name" . }}"
+  actions:
+  - handler: {{ template "name" . }}-whitelist.listchecker
+    instances:
+    - {{ template "name" . }}-check-source-app.listentry
+{{- end }}

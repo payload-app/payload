@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    track: {{ .Values.track }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+        track: {{ .Values.track }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+        {{- with .Values.env }}
+          env:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+      {{- if .Values.healthcheck.enabled }}
+        - name: healthcheck
+          image: bufferapp/ekg:0.1.2
+          env:
+            - name: EKG_CONFIG
+              value: >
+{{ toJson .Values.healthcheck.config | indent 16 }}
+          {{- if .Values.healthcheck.config.livenessChecks }}
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: {{ .Values.healthcheck.config.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          {{- end }}
+          {{- if .Values.healthcheck.config.readinessChecks }}
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.healthcheck.config.port }}
+            periodSeconds: 5
+          {{- end }}
+      {{- end }}
+      imagePullSecrets:
+      - name: dockerhub

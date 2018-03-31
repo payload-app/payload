@@ -1,0 +1,7 @@
+1. Check the status of pods:
+
+  kubectl -n {{ .Values.namespace }} get po -l app={{ template "name" . }}
+
+2. Get the load balancer url by running:
+
+  kubectl -n {{ .Values.namespace }} get svc {{ template "name" . }} -o=go-template --template="{{"{{"}} (index .status.loadBalancer.ingress 0).hostname {{"}}"}}"
