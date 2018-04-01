@@ -12,7 +12,7 @@ const StatelessFunctionalHeader = ({
   <div>
     <div
       style={{
-        minHeight: '3.8rem',
+        minHeight: '4.6rem',
         marginBottom: '1.4rem',
       }}
     >
@@ -40,23 +40,19 @@ const StatelessFunctionalHeader = ({
   </div>
 )
 
+// HACK: only run on first load
+let mounted = false
+
 export default class Header extends Component {
   state = {
     mounted: false,
   }
   componentDidMount() {
     this.setState({ mounted: true })
-  }
-
-  componentWillUnmount() {
-    this.setState({ mounted: true })
+    mounted = true
   }
 
   render() {
-    const props = {
-      ...this.state,
-      ...this.props,
-    }
-    return <StatelessFunctionalHeader {...props} />
+    return <StatelessFunctionalHeader {...this.props} mounted={mounted} />
   }
 }
