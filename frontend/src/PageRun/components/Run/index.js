@@ -1,76 +1,23 @@
 import React from 'react'
-import prettyBytes from 'pretty-bytes'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import Page from '../../../Page'
-import { Text } from '../../../components'
+import { Text, AnimateText, FadeInChildren } from '../../../components'
 import replace from 'react-string-replace'
 import { red, mutedWhite, softLighten } from '../../../components/style/color'
 import FileListViz from '../FileListViz'
 
-const FileSizes = ({ fileSizes }) => (
-  <div>
-    <div>
-      <Text size={1.5}>Build Size</Text>
-    </div>
-    {fileSizes.map(({ file, size }) => (
-      <div key={file} style={{ display: 'flex' }}>
-        <div
-          style={{
-            marginRight: '0.5rem',
-          }}
-        >
-          <Text>{file}</Text>
-        </div>
-        <div>
-          <Text weight={600}>{prettyBytes(size)}</Text>
-        </div>
-      </div>
-    ))}
-  </div>
-)
-
 const datetimeToMS = ({ datetime }) => new Date(datetime).getTime()
-
-const Duration = ({ start, stop }) => (
-  <div style={{ display: 'flex' }}>
-    <div
-      style={{
-        marginRight: '0.5rem',
-      }}
-    >
-      <Text>Duration:</Text>
-    </div>
-    <div>
-      <Text weight={600}>
-        {ms(
-          Math.floor(
-            datetimeToMS({ datetime: stop }) -
-              datetimeToMS({ datetime: start }),
-          ),
-          {
-            long: true,
-          },
-        )}
-      </Text>
-    </div>
-  </div>
-)
-
-const CreateTime = ({ created }) => (
-  <div style={{ display: 'flex' }}>
-    <div
-      style={{
-        marginRight: '0.5rem',
-      }}
-    >
-      <Text>Ran:</Text>
-    </div>
-    <div>
-      <Text weight={600}>{<TimeAgo date={created} />}</Text>
-    </div>
-  </div>
-)
+const formatDuration = ({ start, stop }) => {
+  return ms(
+    Math.floor(
+      datetimeToMS({ datetime: stop }) - datetimeToMS({ datetime: start }),
+    ),
+    {
+      long: true,
+    },
+  )
+}
 
 const mergeRunFilesWithPastRun = ({ files, prevFiles }) => {
   const prevFilesLookup = prevFiles.reduce((acc, { file, size }) => {
@@ -87,6 +34,28 @@ const mergeRunFilesWithPastRun = ({ files, prevFiles }) => {
   })
 }
 
+const Heading = ({ children }) => (
+  <div style={{ paddingBottom: 20 }}>
+    <AnimateText size={2} capitalize color={mutedWhite}>
+      {children}
+    </AnimateText>
+  </div>
+)
+
+const StatBlock = ({ number, label }) => (
+  <div style={{ backgroundColor: softLighten, padding: 20, marginRight: 2 }}>
+    <div>
+      <Text size={2.4} weight={400} capitalize>
+        {number}
+      </Text>
+    </div>
+
+    <div>
+      <Text color={mutedWhite}>{label}</Text>
+    </div>
+  </div>
+)
+
 const RunComponent = ({
   fileSizes,
   start,
@@ -95,6 +64,15 @@ const RunComponent = ({
   recentDefaultBranchRuns,
 }) => (
   <div>
+    <Heading>Run Details</Heading>
+    <div style={{ paddingBottom: 40, display: 'flex' }}>
+      <FadeInChildren>
+        <StatBlock number={formatDuration({ start, stop })} label="Duration" />
+        <StatBlock number={<TimeAgo date={created} />} label="Date Ran" />
+      </FadeInChildren>
+    </div>
+
+    <Heading>Files Tracked</Heading>
     <FileListViz
       files={mergeRunFilesWithPastRun({
         files: fileSizes,
@@ -103,14 +81,6 @@ const RunComponent = ({
           : [],
       })}
     />
-    <br />
-    <br />
-    <FileSizes fileSizes={fileSizes} />
-    <div>
-      <Text size={1.5}>Details</Text>
-    </div>
-    <Duration start={start} stop={stop} />
-    <CreateTime created={created} />
   </div>
 )
 
