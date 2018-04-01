@@ -2,8 +2,8 @@ import React from 'react'
 import Page from '../Page'
 import RepoList from '../RepoList'
 
-export default () => (
+export default ({ match: { params: { owner } } }) => (
   <Page>
-    <RepoList />
+    <RepoList owner={owner} />
   </Page>
 )

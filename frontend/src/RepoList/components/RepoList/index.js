@@ -1,20 +1,18 @@
 import React from 'react'
-import { List } from '../../../components'
+import { FadeInChildren } from '../../../components'
 import RepoListItem from '../RepoListItem'
 
-export default ({ repos, onActivateClick, onRunClick }) => (
-  <List
-    items={repos.map(repo => ({
-      component: (
-        <div style={{ paddingBottom: 14 }}>
+export default ({ owner, repos, onActivateClick, onRunClick }) =>
+  repos.length ? (
+    <FadeInChildren speed={100} key={owner}>
+      {repos.map(repo => (
+        <div style={{ paddingBottom: 14 }} key={repo._id}>
           <RepoListItem
             repo={repo}
             onActivateClick={() => onActivateClick({ repo })}
             onRunClick={() => onRunClick({ repo })}
           />
         </div>
-      ),
-      id: repo._id,
-    }))}
-  />
-)
+      ))}
+    </FadeInChildren>
+  ) : null

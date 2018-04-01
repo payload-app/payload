@@ -12,11 +12,11 @@ export class FadeInChildren extends React.Component {
 
   render() {
     const { loaded } = this.state
-    const { children, delayBetween = 200 } = this.props
+    const { children, delayBetween = 200, speed = 400 } = this.props
 
     const styles = {
       default: {
-        transition: `opacity 600ms 400ms cubic-bezier(.2,.4,.4,1)`,
+        transition: `opacity ${speed}ms 400ms cubic-bezier(.2,.4,.4,1)`,
         opacity: 0,
       },
       entered: {
@@ -25,7 +25,7 @@ export class FadeInChildren extends React.Component {
     }
 
     return React.Children.map(children, (child, i) => (
-      <Transition key={i} in={loaded} timeout={i * delayBetween}>
+      <Transition key={child.key} in={loaded} timeout={i * delayBetween}>
         {animationState => (
           <div style={{ ...styles.default, ...styles[animationState] }}>
             {child}
