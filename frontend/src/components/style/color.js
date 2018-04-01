@@ -1,5 +1,7 @@
 export const text = '#fff'
 export const background = '#222'
 export const red = '#712729'
+export const brightRed = '#b73135'
 export const white = '#fff'
 export const mutedWhite = '#666'
+export const softLighten = 'rgba(255,200,200,0.03)'

@@ -1,84 +1,86 @@
 import React from 'react'
-import prettyBytes from 'pretty-bytes'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import Page from '../../../Page'
-import { Text } from '../../../components'
-import { red, mutedWhite } from '../../../components/style/color'
+import { Text, AnimateText, FadeInChildren } from '../../../components'
 import replace from 'react-string-replace'
-
-const FileSizes = ({ fileSizes }) => (
-  <div>
-    <div>
-      <Text size={1.5}>Build Size</Text>
-    </div>
-    {fileSizes.map(({ file, size }) => (
-      <div key={file} style={{ display: 'flex' }}>
-        <div
-          style={{
-            marginRight: '0.5rem',
-          }}
-        >
-          <Text>{file}</Text>
-        </div>
-        <div>
-          <Text weight={600}>{prettyBytes(size)}</Text>
-        </div>
-      </div>
-    ))}
-  </div>
-)
+import { red, mutedWhite, softLighten } from '../../../components/style/color'
+import FileListViz from '../FileListViz'
 
 const datetimeToMS = ({ datetime }) => new Date(datetime).getTime()
+const formatDuration = ({ start, stop }) => {
+  return ms(
+    Math.floor(
+      datetimeToMS({ datetime: stop }) - datetimeToMS({ datetime: start }),
+    ),
+    {
+      long: true,
+    },
+  )
+}
 
-const Duration = ({ start, stop }) => (
-  <div style={{ display: 'flex' }}>
-    <div
-      style={{
-        marginRight: '0.5rem',
-      }}
-    >
-      <Text>Duration:</Text>
-    </div>
+const mergeRunFilesWithPastRun = ({ files, prevFiles }) => {
+  const prevFilesLookup = prevFiles.reduce((acc, { file, size }) => {
+    acc[file] = { file, size }
+    return acc
+  }, {})
+  return files.map(({ file: fileName, size }) => {
+    const prevFile = prevFilesLookup[fileName] || {}
+    return {
+      fileName,
+      size,
+      prevSize: prevFile.size || 0,
+    }
+  })
+}
+
+const Heading = ({ children }) => (
+  <div style={{ paddingBottom: 20 }}>
+    <AnimateText size={2} capitalize color={mutedWhite}>
+      {children}
+    </AnimateText>
+  </div>
+)
+
+const StatBlock = ({ number, label }) => (
+  <div style={{ backgroundColor: softLighten, padding: 20, marginRight: 2 }}>
     <div>
-      <Text weight={600}>
-        {ms(
-          Math.floor(
-            datetimeToMS({ datetime: stop }) -
-              datetimeToMS({ datetime: start }),
-          ),
-          {
-            long: true,
-          },
-        )}
+      <Text size={2.4} weight={400} capitalize>
+        {number}
       </Text>
     </div>
-  </div>
-)
 
-const CreateTime = ({ created }) => (
-  <div style={{ display: 'flex' }}>
-    <div
-      style={{
-        marginRight: '0.5rem',
-      }}
-    >
-      <Text>Ran:</Text>
-    </div>
     <div>
-      <Text weight={600}>{<TimeAgo date={created} />}</Text>
+      <Text color={mutedWhite}>{label}</Text>
     </div>
   </div>
 )
 
-const RunComponent = ({ fileSizes, start, stop, created }) => (
+const RunComponent = ({
+  fileSizes,
+  start,
+  stop,
+  created,
+  recentDefaultBranchRuns,
+}) => (
   <div>
-    <FileSizes fileSizes={fileSizes} />
-    <div>
-      <Text size={1.5}>Details</Text>
+    <Heading>Run Details</Heading>
+    <div style={{ paddingBottom: 40, display: 'flex' }}>
+      <FadeInChildren>
+        <StatBlock number={formatDuration({ start, stop })} label="Duration" />
+        <StatBlock number={<TimeAgo date={created} />} label="Date Ran" />
+      </FadeInChildren>
     </div>
-    <Duration start={start} stop={stop} />
-    <CreateTime created={created} />
+
+    <Heading>Files Tracked</Heading>
+    <FileListViz
+      files={mergeRunFilesWithPastRun({
+        files: fileSizes,
+        prevFiles: recentDefaultBranchRuns[0]
+          ? recentDefaultBranchRuns[0].fileSizes
+          : [],
+      })}
+    />
   </div>
 )
 
@@ -86,7 +88,7 @@ const ErrorDisplay = ({ errorMessage }) => (
   <div
     style={{
       display: 'flex',
-      background: 'rgba(255,255,255,0.03)',
+      background: softLighten,
       borderLeft: `1px solid ${mutedWhite}`,
       padding: 20,
     }}
@@ -106,35 +108,50 @@ const ErrorDisplay = ({ errorMessage }) => (
   </div>
 )
 
-const RecentRuns = ({ recentDefaultBranchRuns }) => (
-  <Text>{JSON.stringify(recentDefaultBranchRuns)}</Text>
-)
+export default class extends React.Component {
+  state = {
+    runLoading: true,
+  }
 
-export default ({
-  loading,
-  run: {
-    fileSizes,
-    start,
-    stop,
-    created,
-    errorMessage,
-    recentDefaultBranchRuns,
-  },
-}) => (
-  <Page>
-    {loading || errorMessage ? null : (
-      <RunComponent
-        fileSizes={fileSizes}
-        start={start}
-        stop={stop}
-        created={created}
-      />
-    )}
-    {loading || !errorMessage ? null : (
-      <ErrorDisplay errorMessage={errorMessage} />
-    )}
-    {loading || errorMessage ? null : (
-      <RecentRuns recentDefaultBranchRuns={recentDefaultBranchRuns} />
-    )}
-  </Page>
-)
+  componentWillReceiveProps(nextProps) {
+    if (this.props.loading && nextProps.loading === false) {
+      setTimeout(() => this.setState({ runLoading: false }), 1000)
+    }
+  }
+
+  render() {
+    const { runLoading } = this.state
+    const {
+      loading,
+      run: {
+        fileSizes,
+        start,
+        stop,
+        created,
+        errorMessage,
+        recentDefaultBranchRuns,
+      },
+    } = this.props
+
+    return (
+      <Page>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+        >
+          {runLoading || errorMessage ? null : (
+            <RunComponent
+              recentDefaultBranchRuns={recentDefaultBranchRuns}
+              fileSizes={fileSizes}
+              start={start}
+              stop={stop}
+              created={created}
+            />
+          )}
+          {loading || !errorMessage ? null : (
+            <ErrorDisplay errorMessage={errorMessage} />
+          )}
+        </div>
+      </Page>
+    )
+  }
+}
