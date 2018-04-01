@@ -138,31 +138,50 @@ const ErrorDisplay = ({ errorMessage }) => (
   </div>
 )
 
-export default ({
-  loading,
-  run: {
-    fileSizes,
-    start,
-    stop,
-    created,
-    errorMessage,
-    recentDefaultBranchRuns,
-  },
-}) => (
-  <Page>
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {loading || errorMessage ? null : (
-        <RunComponent
-          recentDefaultBranchRuns={recentDefaultBranchRuns}
-          fileSizes={fileSizes}
-          start={start}
-          stop={stop}
-          created={created}
-        />
-      )}
-      {loading || !errorMessage ? null : (
-        <ErrorDisplay errorMessage={errorMessage} />
-      )}
-    </div>
-  </Page>
-)
+export default class extends React.Component {
+  state = {
+    runLoading: true,
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.loading && nextProps.loading === false) {
+      setTimeout(() => this.setState({ runLoading: false }), 1000)
+    }
+  }
+
+  render() {
+    const { runLoading } = this.state
+    const {
+      loading,
+      run: {
+        fileSizes,
+        start,
+        stop,
+        created,
+        errorMessage,
+        recentDefaultBranchRuns,
+      },
+    } = this.props
+
+    return (
+      <Page>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+        >
+          {runLoading || errorMessage ? null : (
+            <RunComponent
+              recentDefaultBranchRuns={recentDefaultBranchRuns}
+              fileSizes={fileSizes}
+              start={start}
+              stop={stop}
+              created={created}
+            />
+          )}
+          {loading || !errorMessage ? null : (
+            <ErrorDisplay errorMessage={errorMessage} />
+          )}
+        </div>
+      </Page>
+    )
+  }
+}
