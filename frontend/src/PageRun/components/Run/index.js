@@ -7,7 +7,7 @@ import { Text } from '../../../components'
 import replace from 'react-string-replace'
 import { red, mutedWhite, softLighten } from '../../../components/style/color'
 import FileSizeChart from '../FileSizeChart'
-import { FileListViz } from '../FileListViz'
+import FileListViz from '../FileListViz'
 
 const FileSizes = ({ fileSizes }) => (
   <div>
@@ -78,7 +78,6 @@ const mergeRunFilesWithPastRun = ({ files, prevFiles }) => {
     acc[file] = { file, size }
     return acc
   }, {})
-  console.log(prevFilesLookup)
   return files.map(({ file: fileName, size }) => {
     const prevFile = prevFilesLookup[fileName] || {}
     return {

@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import { Text } from '../../../components'
+import { Text, AnimateText } from '../../../components'
 import {
   white,
   mutedWhite,
@@ -9,7 +9,9 @@ import {
 } from '../../../components/style/color'
 import prettyBytes from 'pretty-bytes'
 
-export const FileListViz = ({ files = [] }) => {
+import Transition from 'react-transition-group/Transition'
+
+export const FileListViz = ({ files = [], mounted = false }) => {
   const largestFile = _(files)
     .map('size')
     .max()
@@ -19,15 +21,20 @@ export const FileListViz = ({ files = [] }) => {
   return (
     <div>
       {files.map(({ fileName, size, prevSize }, i) => (
-        <div key={fileName} style={{ marginBottom: 2 }}>
-          <FileVizItem
-            fileName={fileName}
-            size={size}
-            prevSize={prevSize}
-            number={i + 1}
-            largestGraphSize={Math.max(largestFile, largestPrevFile)}
-          />
-        </div>
+        <Transition key={fileName} in={mounted} timeout={i * 200}>
+          {animationState => (
+            <div style={{ marginBottom: 2 }}>
+              <FileVizItem
+                animationState={animationState}
+                fileName={fileName}
+                size={size}
+                prevSize={prevSize}
+                number={i + 1}
+                largestGraphSize={Math.max(largestFile, largestPrevFile)}
+              />
+            </div>
+          )}
+        </Transition>
       ))}
     </div>
   )
@@ -37,30 +44,58 @@ const CompareFileSizeGraph = ({
   primary,
   secondary,
   max = Math.max(primary, secondary),
+  animationState,
 }) => {
-  const style = {
-    graph: {
+  const graphStyle = {
+    default: {
       flex: 1,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
+
+      transition: `transform 400ms 600ms cubic-bezier(.2,.4,.4,1)`,
+      transform: 'translateX(10px)',
     },
-    primaryBar: {
+    entered: {
+      transform: 'translateX(0)',
+    },
+  }
+
+  const primaryBarStyle = {
+    default: {
       height: 4,
       background: primary <= secondary ? white : brightRed,
       width: `${primary / max * 100}%`,
+
+      transition: `transform 800ms 600ms cubic-bezier(.2,.4,.4,1)`,
+      transform: 'scaleX(0)',
+      transformOrigin: 'left',
     },
-    secondaryBar: {
+    entered: {
+      transform: 'scaleX(1)',
+    },
+  }
+
+  const secondaryBarStyle = {
+    default: {
       marginTop: 4,
       height: 2,
       background: mutedWhite,
       width: `${secondary / max * 100}%`,
+
+      transition: `transform 800ms 600ms cubic-bezier(.2,.4,.4,1)`,
+      transform: 'scaleX(0)',
+      transformOrigin: 'left',
+    },
+    entered: {
+      transform: 'scaleX(1)',
     },
   }
+
   return (
-    <div style={style.graph}>
-      <div style={style.primaryBar} />
-      <div style={style.secondaryBar} />
+    <div style={combineCSS({ style: graphStyle, animationState })}>
+      <div style={combineCSS({ style: primaryBarStyle, animationState })} />
+      <div style={combineCSS({ style: secondaryBarStyle, animationState })} />
     </div>
   )
 }
@@ -99,9 +134,9 @@ const SplitFileSize = ({ size }) => {
         alignItems: 'flex-end',
       }}
     >
-      <Text size={2} weight={400}>
+      <AnimateText delay={1000} speed={80} size={2} weight={400}>
         {smallSize}
-      </Text>
+      </AnimateText>
 
       <span style={{ marginLeft: 4, marginBottom: 2 }}>
         <Text size={1} capitalize={true}>
@@ -112,18 +147,21 @@ const SplitFileSize = ({ size }) => {
   )
 }
 
+const combineCSS = ({ style, animationState }) => ({
+  ...style.default,
+  ...style[animationState],
+})
+
 const FileVizItem = ({
   fileName,
   size,
   prevSize,
   number,
   largestGraphSize,
+  animationState,
 }) => {
-  const styles = {
-    item: {
-      display: 'flex',
-    },
-    number: {
+  const numberModuleStyle = {
+    default: {
       backgroundColor: mutedWhite,
       width: 50,
       height: 50,
@@ -131,53 +169,118 @@ const FileVizItem = ({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+
+      transition: `transform 800ms cubic-bezier(.2,.4,.4,1)`,
+      transform: 'scaleX(0)',
+      transformOrigin: 'left',
     },
-    file: {
+    entered: {
+      transform: 'scaleX(1)',
+    },
+  }
+
+  const numberStyle = {
+    default: {
+      transition: `opacity 600ms 800ms cubic-bezier(.2,.4,.4,1)`,
+      opacity: 0,
+    },
+    entered: {
+      opacity: 1,
+    },
+  }
+
+  const fileStyle = {
+    default: {
       backgroundColor: softLighten,
       display: 'flex',
       alignItems: 'center',
       flex: 3,
       paddingLeft: 15,
       paddingRight: 15,
+
+      transition: `transform 800ms cubic-bezier(.2,.4,.4,1)`,
+      transform: 'scaleX(0)',
+      transformOrigin: 'left',
     },
-    arrow: {
+    entered: {
+      transform: 'scaleX(1)',
+    },
+  }
+
+  const arrowStyle = {
+    default: {
       width: 50,
       height: 50,
+
+      transition: `opacity 800ms 800ms cubic-bezier(.2,.4,.4,1)`,
+      opacity: 0,
+    },
+    entered: {
+      opacity: 1,
+    },
+  }
+
+  const sizeStyle = {
+    default: {
+      minWidth: 60,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+
+      transition: `opacity 800ms 800ms cubic-bezier(.2,.4,.4,1)`,
+      opacity: 0,
+    },
+    entered: {
+      opacity: 1,
+    },
+  }
+
+  const decorationStyle = {
+    default: {
+      width: 10,
+      borderRight: `1px solid ${mutedWhite}`,
+      borderTop: `1px solid ${mutedWhite}`,
+      height: 10,
+
+      transition: `transform 200ms 1400ms cubic-bezier(.2,.4,.4,1)`,
+      transform: 'scaleX(0)',
+      transformOrigin: 'top right',
+    },
+    entered: {
+      transform: 'scaleX(1)',
+    },
+  }
+
+  const styles = {
+    item: {
+      display: 'flex',
     },
     graph: {
       flex: 2,
       paddingRight: 15,
       display: 'flex',
     },
-    size: {
-      minWidth: 60,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-    },
-    decoration: {
-      width: 10,
-      borderRight: `1px solid ${mutedWhite}`,
-      borderTop: `1px solid ${mutedWhite}`,
-      height: 10,
-    },
   }
 
   return (
     <div style={styles.item}>
-      <div style={styles.number}>
-        <Text size={2} weight={400}>
-          {_.padStart(number, 2, '0')}
-        </Text>
+      <div style={combineCSS({ style: numberModuleStyle, animationState })}>
+        <div style={combineCSS({ style: numberStyle, animationState })}>
+          <Text size={2} weight={400}>
+            {_.padStart(number, 2, '0')}
+          </Text>
+        </div>
       </div>
 
-      <div style={styles.file}>
-        <Text size={2} capitalize={true}>
-          {fileName}
-        </Text>
+      <div style={combineCSS({ style: fileStyle, animationState })}>
+        {animationState === 'entered' && (
+          <AnimateText delay={300} speed={40} size={2} capitalize={true}>
+            {fileName}
+          </AnimateText>
+        )}
       </div>
 
-      <div style={styles.arrow}>
+      <div style={combineCSS({ style: arrowStyle, animationState })}>
         <SizeChangePercent size={size} prevSize={prevSize} />
       </div>
 
@@ -186,16 +289,29 @@ const FileVizItem = ({
           primary={size}
           secondary={prevSize}
           max={largestGraphSize}
+          animationState={animationState}
         />
       </div>
 
-      <div style={styles.size}>
-        <SplitFileSize size={size} />
+      <div style={combineCSS({ style: sizeStyle, animationState })}>
+        {animationState === 'entered' && <SplitFileSize size={size} />}
       </div>
 
-      <div style={styles.decoration} />
+      <div style={combineCSS({ style: decorationStyle, animationState })} />
     </div>
   )
 }
 
-export default FileListViz
+export default class extends React.Component {
+  state = {
+    mounted: false,
+  }
+
+  componentDidMount() {
+    this.setState({ mounted: true })
+  }
+
+  render() {
+    return <FileListViz {...this.props} {...this.state} />
+  }
+}
