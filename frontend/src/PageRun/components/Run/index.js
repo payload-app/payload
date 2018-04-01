@@ -6,7 +6,6 @@ import Page from '../../../Page'
 import { Text } from '../../../components'
 import replace from 'react-string-replace'
 import { red, mutedWhite, softLighten } from '../../../components/style/color'
-import FileSizeChart from '../FileSizeChart'
 import FileListViz from '../FileListViz'
 
 const FileSizes = ({ fileSizes }) => (
@@ -139,41 +138,6 @@ const ErrorDisplay = ({ errorMessage }) => (
   </div>
 )
 
-const parseRecentFileSizes = ({ recentDefaultBranchRuns }) =>
-  recentDefaultBranchRuns
-    .map(run =>
-      run.fileSizes.map(fileSize => ({
-        key: fileSize.file,
-        x: run.sha.slice(0, 7),
-        y: fileSize.size,
-      })),
-    )
-    .reduce((sizes, runFileSizes) => {
-      let newSizes = { ...sizes }
-      runFileSizes.forEach(runFileSize => {
-        const exisitingFileSizes = newSizes[runFileSize.key] || []
-        newSizes = {
-          ...newSizes,
-          [runFileSize.key]: [
-            ...exisitingFileSizes,
-            {
-              x: runFileSize.x,
-              y: runFileSize.y,
-            },
-          ],
-        }
-      })
-      return newSizes
-    }, {})
-
-const RecentRuns = ({ recentDefaultBranchRuns }) => (
-  <div style={{ flexGrow: 1 }}>
-    <FileSizeChart
-      fileSizes={parseRecentFileSizes({ recentDefaultBranchRuns })}
-    />
-  </div>
-)
-
 export default ({
   loading,
   run: {
@@ -198,9 +162,6 @@ export default ({
       )}
       {loading || !errorMessage ? null : (
         <ErrorDisplay errorMessage={errorMessage} />
-      )}
-      {loading || errorMessage ? null : (
-        <RecentRuns recentDefaultBranchRuns={recentDefaultBranchRuns} />
       )}
     </div>
   </Page>
