@@ -9,5 +9,5 @@ Create a default fully qualified app name.
 */}}
 {{- define "fullname" -}}
 {{- $name := default .Values.name -}}
-{{- printf "%s-%s-%s" .Chart.Name .Values.name .Values.track | trimSuffix "-" -}}
+{{- printf "%s-%s" .Chart.Name .Values.name | trimSuffix "-" -}}
 {{- end -}}
