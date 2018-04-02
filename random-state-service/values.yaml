@@ -3,4 +3,4 @@ image:
   repository: payloadapp/random-state-service
 env:
   - name: STATE_TTL_SECONDS
-    value: 300
+    value: "300"
