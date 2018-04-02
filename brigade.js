@@ -185,3 +185,16 @@ events.on(
       namespace: 'payload',
     }),
 )
+
+events.on(
+  'deploy-status-broadcaster-service',
+  async (event, payload) =>
+    await deployService({
+      event,
+      payload,
+      baseDir: 'status-broadcaster',
+      valuesFile: 'values.yaml',
+      chart: 'payload-service',
+      namespace: 'payload',
+    }),
+)
