@@ -27,11 +27,11 @@ healthcheck:
     livenessChecks:
     - name: httpget-check
       type: httpGetCheck
-      url: http://localhost:3000
+      url: http://localhost:3000/healthz
     readinessChecks:
     - name: httpget-check
       type: httpGetCheck
-      url: http://localhost:3000
+      url: http://localhost:3000/healthz
 ingress:
   enabled: false
 # ingress:
