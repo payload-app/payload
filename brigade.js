@@ -159,8 +159,22 @@ events.on(
     }),
 )
 
+// TODO: need to do a mongodb deployment
 events.on(
-  'deploy-init-db',
+  'deploy-user-service',
+  async (event, payload) =>
+    await deployService({
+      event,
+      payload,
+      baseDir: 'user-service',
+      valuesFile: 'values.yaml',
+      chart: 'payload-service',
+      namespace: 'payload',
+    }),
+)
+
+events.on(
+  'deploy-init-db-job',
   async (event, payload) =>
     await deployService({
       event,
