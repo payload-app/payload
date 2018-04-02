@@ -1,0 +1,8 @@
+name: run-service
+image:
+  repository: payloadapp/run-service
+env:
+  - name: MONGO_URL
+    value: "mongodb://mongodb-mongodb:27017"
+  - name: MONGO_DB
+    value: "payload"
