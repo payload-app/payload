@@ -49,13 +49,7 @@ const healthHandler = () => 'OK'
 
 module.exports = initDB(({ collectionClient, repoServiceClient }) =>
   router(
-    get(
-      '/healthz',
-      healthHandler({
-        collectionClient,
-        repoServiceClient,
-      }),
-    ),
+    get('/healthz', healthHandler),
     post(
       '/rpc',
       rpcHandler({
