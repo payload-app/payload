@@ -33,27 +33,11 @@ const rpcHandler = ({ collectionClient, userServiceClient }) =>
     method('addUsers', addUsers({ collectionClient, userServiceClient })),
   )
 
-const healthHandler = ({ collectionClient, userServiceClient }) => async (
-  req,
-  res,
-) => {
-  try {
-    const dbResponse = await collectionClient.stats()
-    if (!dbResponse.ok) {
-      throw new Error('MongoDB organizations collection is not ok')
-    }
-    await userServiceClient.call('methods')
-    send(res, 200, { status: 'OK' })
-  } catch (err) {
-    send(res, 500, {
-      status: err.message,
-    })
-  }
-}
+const healthHandler = () => 'OK'
 
 module.exports = init(({ collectionClient, userServiceClient }) =>
   router(
-    get('/healthz', healthHandler({ collectionClient, userServiceClient })),
+    get('/healthz', healthHandler),
     post('/rpc', rpcHandler({ collectionClient, userServiceClient })),
   ),
 )
