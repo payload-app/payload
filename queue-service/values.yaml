@@ -1,0 +1,3 @@
+name: queue-service
+image:
+  repository: payloadapp/queue-service
