@@ -61,37 +61,12 @@ const rpcHandler = ({
     method('generateWebhookToken', generateWebhookToken({ collectionClient })),
   )
 
-const healthHandler = ({
-  collectionClient,
-  organizationServiceClient,
-  userServiceClient,
-}) => async (req, res) => {
-  try {
-    const dbResponse = await collectionClient.stats()
-    if (!dbResponse.ok) {
-      throw new Error('MongoDB is not ok')
-    }
-    await organizationServiceClient.call('methods')
-    await userServiceClient.call('methods')
-    send(res, 200, { status: 'OK' })
-  } catch (err) {
-    send(res, 500, {
-      status: err.message,
-    })
-  }
-}
+const healthHandler = () => 'OK'
 
 module.exports = initDB(
   ({ collectionClient, organizationServiceClient, userServiceClient }) =>
     router(
-      get(
-        '/healthz',
-        healthHandler({
-          collectionClient,
-          organizationServiceClient,
-          userServiceClient,
-        }),
-      ),
+      get('/healthz', healthHandler),
       post(
         '/rpc',
         rpcHandler({
