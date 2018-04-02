@@ -2,7 +2,6 @@ name: you-had-one-job
 image:
   repository: payloadapp/you-had-one-job
   tag: 0.1.0
-  pullPolicy: Always
 resources:
   limits:
    cpu: 100m
