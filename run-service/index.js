@@ -1,6 +1,5 @@
 const { promisify } = require('util')
 const { MongoClient } = require('mongodb')
-const { send } = require('micro')
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const { router, get, post } = require('microrouter')
@@ -46,23 +45,7 @@ const rpcHandler = ({ collectionClient, repoServiceClient }) =>
     method('getLatestBranchRuns', getLatestBranchRuns({ collectionClient })),
   )
 
-const healthHandler = ({ collectionClient, repoServiceClient }) => async (
-  req,
-  res,
-) => {
-  try {
-    const dbResponse = await collectionClient.stats()
-    if (!dbResponse.ok) {
-      throw new Error('MongoDB is not ok')
-    }
-    await repoServiceClient.call('methods')
-    send(res, 200, { status: 'OK' })
-  } catch (err) {
-    send(res, 500, {
-      status: err.message,
-    })
-  }
-}
+const healthHandler = () => 'OK'
 
 module.exports = initDB(({ collectionClient, repoServiceClient }) =>
   router(
