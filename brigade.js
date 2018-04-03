@@ -226,3 +226,16 @@ events.on(
       namespace: 'payload',
     }),
 )
+
+events.on(
+  'deploy-backend-service',
+  async (event, payload) =>
+    await deployService({
+      event,
+      payload,
+      baseDir: 'backend',
+      valuesFile: 'values.yaml',
+      chart: 'payload-service',
+      namespace: 'payload',
+    }),
+)
