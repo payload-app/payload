@@ -173,6 +173,34 @@ events.on(
     }),
 )
 
+// TODO: need to do a mongodb deployment
+events.on(
+  'deploy-run-service',
+  async (event, payload) =>
+    await deployService({
+      event,
+      payload,
+      baseDir: 'run-service',
+      valuesFile: 'values.yaml',
+      chart: 'payload-service',
+      namespace: 'payload',
+    }),
+)
+
+// TODO: need to do a mongodb deployment
+events.on(
+  'deploy-repo-service',
+  async (event, payload) =>
+    await deployService({
+      event,
+      payload,
+      baseDir: 'repo-service',
+      valuesFile: 'values.yaml',
+      chart: 'payload-service',
+      namespace: 'payload',
+    }),
+)
+
 events.on(
   'deploy-init-db-job',
   async (event, payload) =>
