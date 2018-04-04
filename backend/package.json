@@ -4,12 +4,9 @@
   "description": "Payload Backend Application",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node node_modules/micro/bin/micro.js"
+    "start": "micro"
   },
-  "keywords": [
-    "payload",
-    "backend"
-  ],
+  "keywords": ["payload", "backend"],
   "author": "hharnisc@gmail.com",
   "license": "MIT",
   "dependencies": {
@@ -30,8 +27,6 @@
     "babel-preset-flow": "^6.23.0"
   },
   "babel": {
-    "presets": [
-      "flow"
-    ]
+    "presets": ["flow"]
   }
 }
