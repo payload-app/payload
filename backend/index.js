@@ -76,6 +76,6 @@ const rpcHandler = setSession(
 const healthHandler = () => 'OK'
 
 module.exports = router(
-  get('/api/healthz', healthHandler),
+  get('/healthz', healthHandler),
   post('/api/rpc', rpcHandler),
 )
