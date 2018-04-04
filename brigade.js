@@ -11,7 +11,7 @@ const echoedTasks = tasks => {
 
 const yaml2jsonJob = async ({ baseDir, valuesFile }) => {
   // parse yaml file and return json
-  const yaml2json = new Job('yaml2json', 'simplealpine/yaml2json')
+  const yaml2json = new Job(`yaml2json-${baseDir}`, 'simplealpine/yaml2json')
   yaml2json.tasks = [`cd /src/${baseDir}`, `yaml2json < ${valuesFile}`]
   const result = await yaml2json.run()
   return result.toString()
@@ -19,7 +19,10 @@ const yaml2jsonJob = async ({ baseDir, valuesFile }) => {
 
 const dockerBuilderJob = async ({ event, payload, dockerImage, baseDir }) => {
   // build docker image
-  const dockerBuilder = new Job('docker-builder', 'docker:stable-dind')
+  const dockerBuilder = new Job(
+    `docker-builder-${baseDir}`,
+    'docker:stable-dind',
+  )
   dockerBuilder.privileged = true
   dockerBuilder.env = {
     DOCKER_DRIVER: payload.secrets.DOCKER_DRIVER || 'overlay',
@@ -46,7 +49,10 @@ const helmDeployerJob = async ({
   namespace,
 }) => {
   // do helm deploy
-  const helmDeployer = new Job('helm-deployer', 'linkyard/docker-helm:2.8.2')
+  const helmDeployer = new Job(
+    `helm-deployer-${baseDir}`,
+    'linkyard/docker-helm:2.8.2',
+  )
   helmDeployer.tasks = echoedTasks([
     `cd /src/${baseDir}`,
     'helm init --client-only',
@@ -91,151 +97,181 @@ const deployService = async ({
   })
 }
 
-events.on(
-  'deploy-session-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'session-service',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+const deploySessionService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'session-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+const deployQueueService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'queue-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+const deployRandomStateService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'random-state-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+const deployGithubService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'github-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+const deployOrganizationService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'organization-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+const deployUserService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'user-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+const deployRunService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'run-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+const deployRepoService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'repo-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+const deployInitDbJob = (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'init-db',
+    valuesFile: 'values.yaml',
+    chart: 'payload-job',
+    namespace: 'payload',
+  })
+
+const deployStatusBroadcasterService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'status-broadcaster',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+const deployBackendService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'backend',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
+
+events.on('deploy-session-service', deploySessionService)
 
 // TODO: need to do a redis deployment
-events.on(
-  'deploy-queue-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'queue-service',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-queue-service', deployQueueService)
 
 // TODO: need to do a redis deployment
-events.on(
-  'deploy-random-state-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'random-state-service',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-random-state-service', deployRandomStateService)
 
-events.on(
-  'deploy-github-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'github-service',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-github-service', deployGithubService)
 
 // TODO: need to do a mongodb deployment
-events.on(
-  'deploy-organization-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'organization-service',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-organization-service', deployOrganizationService)
 
 // TODO: need to do a mongodb deployment
-events.on(
-  'deploy-user-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'user-service',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-user-service', deployUserService)
 
 // TODO: need to do a mongodb deployment
-events.on(
-  'deploy-run-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'run-service',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-run-service', deployRunService)
 
 // TODO: need to do a mongodb deployment
-events.on(
-  'deploy-repo-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'repo-service',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-repo-service', deployRepoService)
 
-events.on(
-  'deploy-init-db-job',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'init-db',
-      valuesFile: 'values.yaml',
-      chart: 'payload-job',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-init-db-job', deployInitDbJob)
 
-events.on(
-  'deploy-status-broadcaster-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'status-broadcaster',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-status-broadcaster-service', deployStatusBroadcasterService)
 
-events.on(
-  'deploy-backend-service',
-  async (event, payload) =>
-    await deployService({
-      event,
-      payload,
-      baseDir: 'backend',
-      valuesFile: 'values.yaml',
-      chart: 'payload-service',
-      namespace: 'payload',
-    }),
-)
+events.on('deploy-backend-service', deployBackendService)
+
+events.on('deploy-minikube-services', async (event, payload) => {
+  // deploy istio
+  // deploy local redis
+  // deploy local mongodb
+  // ... then
+  await Promise.all([
+    deployRandomStateService(event, payload),
+    deploySessionService(event, payload),
+    deployStatusBroadcasterService(event, payload),
+  ])
+
+  await Promise.all([
+    // TODO: need to do a redis deployment
+    deployQueueService(event, payload),
+    // TODO: need to do a redis deployment
+    deployGithubService(event, payload),
+  ])
+
+  try {
+    await deployInitDbJob(event, payload)
+  } catch (err) {
+    console.log(
+      'There was an error deploying the init DB Job, **this will fail if the initialization has already been applied**',
+    )
+    console.log(err.message)
+  }
+
+  await Promise.all([
+    // TODO: need to do a mongodb deployment
+    deployOrganizationService(event, payload),
+    // TODO: need to do a mongodb deployment
+    deployUserService(event, payload),
+    // TODO: need to do a mongodb deployment
+    deployRunService(event, payload),
+    // TODO: need to do a mongodb deployment
+    deployRepoService(event, payload),
+  ])
+
+  await deployBackendService(event, payload)
+})
