@@ -177,15 +177,23 @@ const deployRepoService = async (event, payload) =>
     namespace: 'payload',
   })
 
-const deployInitDbJob = (event, payload) =>
-  deployService({
-    event,
-    payload,
-    baseDir: 'init-db',
-    valuesFile: 'values.yaml',
-    chart: 'payload-job',
-    namespace: 'payload',
-  })
+const deployInitDbJob = async (event, payload) => {
+  try {
+    await deployService({
+      event,
+      payload,
+      baseDir: 'init-db',
+      valuesFile: 'values.yaml',
+      chart: 'payload-job',
+      namespace: 'payload',
+    })
+  } catch (err) {
+    console.log(
+      'There was an error deploying the init DB Job, **this will fail if the initialization has already been applied**',
+    )
+    console.log(err.message)
+  }
+}
 
 const deployStatusBroadcasterService = async (event, payload) =>
   deployService({
@@ -207,43 +215,47 @@ const deployBackendService = async (event, payload) =>
     namespace: 'payload',
   })
 
-events.on('deploy-session-service', deploySessionService)
+const deployFrontendService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'frontend',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+  })
 
+events.on('deploy-session-service', deploySessionService)
 // TODO: need to do a redis deployment
 events.on('deploy-queue-service', deployQueueService)
-
 // TODO: need to do a redis deployment
 events.on('deploy-random-state-service', deployRandomStateService)
-
 events.on('deploy-github-service', deployGithubService)
-
 // TODO: need to do a mongodb deployment
 events.on('deploy-organization-service', deployOrganizationService)
-
 // TODO: need to do a mongodb deployment
 events.on('deploy-user-service', deployUserService)
-
 // TODO: need to do a mongodb deployment
 events.on('deploy-run-service', deployRunService)
-
 // TODO: need to do a mongodb deployment
 events.on('deploy-repo-service', deployRepoService)
-
 events.on('deploy-init-db-job', deployInitDbJob)
-
 events.on('deploy-status-broadcaster-service', deployStatusBroadcasterService)
-
 events.on('deploy-backend-service', deployBackendService)
+events.on('deploy-frontend-service', deployFrontendService)
 
 events.on('deploy-minikube-services', async (event, payload) => {
   // deploy istio
   // deploy local redis
   // deploy local mongodb
   // ... then
+
+  // have no dependencies
   await Promise.all([
     deployRandomStateService(event, payload),
     deploySessionService(event, payload),
     deployStatusBroadcasterService(event, payload),
+    deployInitDbJob(event, payload),
   ])
 
   await Promise.all([
@@ -252,15 +264,6 @@ events.on('deploy-minikube-services', async (event, payload) => {
     // TODO: need to do a redis deployment
     deployGithubService(event, payload),
   ])
-
-  try {
-    await deployInitDbJob(event, payload)
-  } catch (err) {
-    console.log(
-      'There was an error deploying the init DB Job, **this will fail if the initialization has already been applied**',
-    )
-    console.log(err.message)
-  }
 
   await Promise.all([
     // TODO: need to do a mongodb deployment
@@ -274,4 +277,5 @@ events.on('deploy-minikube-services', async (event, payload) => {
   ])
 
   await deployBackendService(event, payload)
+  await deployFrontendService(event, payload)
 })
