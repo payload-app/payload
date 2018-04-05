@@ -234,6 +234,16 @@ const deployFrontendService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
+  })
+
+const deployGithubAuthService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'github-auth',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
     envVars: {
       GH_CLIENT_ID: payload.secrets.GH_CLIENT_ID,
       GH_CLIENT_SECRET: payload.secrets.GH_CLIENT_SECRET,
@@ -259,6 +269,7 @@ events.on('deploy-init-db-job', deployInitDbJob)
 events.on('deploy-status-broadcaster-service', deployStatusBroadcasterService)
 events.on('deploy-backend-service', deployBackendService)
 events.on('deploy-frontend-service', deployFrontendService)
+events.on('deploy-github-auth-service', deployGithubAuthService)
 
 events.on('deploy-minikube-services', async (event, payload) => {
   // deploy istio
@@ -292,6 +303,9 @@ events.on('deploy-minikube-services', async (event, payload) => {
     deployRepoService(event, payload),
   ])
 
-  await deployBackendService(event, payload)
-  await deployFrontendService(event, payload)
+  await Promise.all([
+    await deployBackendService(event, payload),
+    await deployFrontendService(event, payload),
+    await deployGithubAuthService(event, payload),
+  ])
 })
