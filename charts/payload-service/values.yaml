@@ -37,7 +37,8 @@ ingress:
 # ingress:
 #   enabled: true
 #   host: buffer-hello.local
-#   path: /
+#   paths:
+#     - /
 istio:
   enabled: false
 # istio:
