@@ -40,6 +40,11 @@ const dockerBuilderJob = async ({ event, payload, dockerImage, baseDir }) => {
   await dockerBuilder.run()
 }
 
+const generateHelmEnvVars = ({ envVars = {} }) =>
+  Object.entries(envVars)
+    .map(item => `--set env.${item[0]}=${item[1]}`)
+    .join(' ')
+
 const helmDeployerJob = async ({
   event,
   baseDir,
@@ -47,6 +52,7 @@ const helmDeployerJob = async ({
   name,
   chart,
   namespace,
+  envVars,
 }) => {
   // do helm deploy
   const helmDeployer = new Job(
@@ -58,10 +64,10 @@ const helmDeployerJob = async ({
     'helm init --client-only',
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
-    } --debug --dry-run`,
+    } ${generateHelmEnvVars({ envVars })} --debug --dry-run`,
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
-    }`,
+    } ${generateHelmEnvVars({ envVars })}`,
   ])
   await helmDeployer.run()
 }
@@ -73,6 +79,7 @@ const deployService = async ({
   valuesFile,
   chart,
   namespace,
+  envVars,
 }) => {
   const values = await yaml2jsonJob({
     baseDir,
@@ -94,6 +101,7 @@ const deployService = async ({
     name,
     chart,
     namespace,
+    envVars,
   })
 }
 
@@ -213,6 +221,9 @@ const deployBackendService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
+    envVars: {
+      WEBHOOK_BASE_URL: payload.secrets.WEBHOOK_BASE_URL,
+    },
   })
 
 const deployFrontendService = async (event, payload) =>
@@ -223,6 +234,11 @@ const deployFrontendService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
+    envVars: {
+      GH_CLIENT_ID: payload.secrets.GH_CLIENT_ID,
+      GH_CLIENT_SECRET: payload.secrets.GH_CLIENT_SECRET,
+      REDIRECT_URL: payload.secrets.REDIRECT_URL,
+    },
   })
 
 events.on('deploy-session-service', deploySessionService)
