@@ -1,6 +1,8 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import { withKnobs, select } from '@storybook/addon-knobs/react'
 import FileListViz from './'
+import FileVizItem from './FileVizItem'
 
 const files = [
   {
@@ -25,3 +27,25 @@ storiesOf('FileListViz', module).add('default', () => (
     <FileListViz files={files} />
   </div>
 ))
+
+storiesOf('FileVizItem', module)
+  .addDecorator(withKnobs)
+  .add('default', () => {
+    const animationState = select('animationState', {
+      entering: 'entering',
+      entered: 'entered',
+      exiting: 'exiting',
+      exited: 'exited',
+    })
+
+    return (
+      <div style={{ padding: 40 }}>
+        <FileVizItem
+          animationState={animationState}
+          {...files[0]}
+          number={1}
+          largestGraphSize={3145728}
+        />
+      </div>
+    )
+  })
