@@ -1,125 +1,11 @@
 import React from 'react'
 import _ from 'lodash'
 import { Text, AnimateText } from '../../../components'
-import {
-  white,
-  mutedWhite,
-  softLighten,
-  brightRed,
-} from '../../../components/style/color'
-import prettyBytes from 'pretty-bytes'
+import { mutedWhite, softLighten } from '../../../components/style/color'
 
-const CompareFileSizeGraph = ({
-  primary,
-  secondary,
-  max = Math.max(primary, secondary),
-  animationState,
-}) => {
-  const graphStyle = {
-    default: {
-      flex: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-
-      transition: `transform 400ms 600ms cubic-bezier(.2,.4,.4,1)`,
-      transform: 'translateX(10px)',
-    },
-    entered: {
-      transform: 'translateX(0)',
-    },
-  }
-
-  const primaryBarStyle = {
-    default: {
-      height: 4,
-      background: primary <= secondary ? white : brightRed,
-      width: `${primary / max * 100}%`,
-
-      transition: `transform 800ms 600ms cubic-bezier(.2,.4,.4,1)`,
-      transform: 'scaleX(0)',
-      transformOrigin: 'left',
-    },
-    entered: {
-      transform: 'scaleX(1)',
-    },
-  }
-
-  const secondaryBarStyle = {
-    default: {
-      marginTop: 4,
-      height: 2,
-      background: mutedWhite,
-      width: `${secondary / max * 100}%`,
-
-      transition: `transform 800ms 600ms cubic-bezier(.2,.4,.4,1)`,
-      transform: 'scaleX(0)',
-      transformOrigin: 'left',
-    },
-    entered: {
-      transform: 'scaleX(1)',
-    },
-  }
-
-  return (
-    <div style={combineCSS({ style: graphStyle, animationState })}>
-      <div style={combineCSS({ style: primaryBarStyle, animationState })} />
-      <div style={combineCSS({ style: secondaryBarStyle, animationState })} />
-    </div>
-  )
-}
-
-const SizeChangePercent = ({ size, prevSize }) => {
-  const change = (size - prevSize) / prevSize * 100
-  const increased = change > 0
-
-  const symbol = increased ? '↗' : change < 0 ? '↘' : '-'
-
-  return (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-    >
-      <Text
-        size={2.4}
-        color={increased ? brightRed : white}
-        weight={increased ? 600 : 400}
-      >
-        {symbol}
-      </Text>
-      <Text size={1} color={mutedWhite} weight={400}>
-        {`${change.toFixed(2)}%`}
-      </Text>
-    </div>
-  )
-}
-
-const SplitFileSize = ({ size }) => {
-  const [smallSize, sizeLabel] = prettyBytes(size).split(' ')
-
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'flex-end',
-      }}
-    >
-      <AnimateText delay={1000} speed={80} size={2} weight={400}>
-        {smallSize}
-      </AnimateText>
-
-      <span style={{ marginLeft: 4, marginBottom: 2 }}>
-        <Text size={1} capitalize={true}>
-          {sizeLabel}
-        </Text>
-      </span>
-    </div>
-  )
-}
-
-const combineCSS = ({ style, animationState }) => ({
-  ...style.default,
-  ...style[animationState],
-})
+import CompareFileSizeGraph from './CompareFileSizeGraph'
+import SizeChangePercent from './SizeChangePercent'
+import SplitFileSize from './SplitFileSize'
 
 export const FileVizItem = ({
   fileName,
@@ -128,9 +14,13 @@ export const FileVizItem = ({
   number,
   largestGraphSize,
   animationState,
+  animationStyles,
 }) => {
-  const numberModuleStyle = {
-    default: {
+  const styles = _.merge(animationStyles, {
+    item: {
+      display: 'flex',
+    },
+    numberModule: {
       backgroundColor: mutedWhite,
       width: 50,
       height: 50,
@@ -138,110 +28,49 @@ export const FileVizItem = ({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-
-      transition: `transform 800ms cubic-bezier(.2,.4,.4,1)`,
-      transform: 'scaleX(0)',
-      transformOrigin: 'left',
     },
-    entered: {
-      transform: 'scaleX(1)',
-    },
-  }
-
-  const numberStyle = {
-    default: {
-      transition: `opacity 600ms 800ms cubic-bezier(.2,.4,.4,1)`,
-      opacity: 0,
-    },
-    entered: {
-      opacity: 1,
-    },
-  }
-
-  const fileStyle = {
-    default: {
+    file: {
       backgroundColor: softLighten,
       display: 'flex',
       alignItems: 'center',
       flex: 3,
       paddingLeft: 15,
       paddingRight: 15,
-
-      transition: `transform 800ms cubic-bezier(.2,.4,.4,1)`,
-      transform: 'scaleX(0)',
-      transformOrigin: 'left',
     },
-    entered: {
-      transform: 'scaleX(1)',
-    },
-  }
-
-  const arrowStyle = {
-    default: {
+    arrow: {
       width: 50,
       height: 50,
-
-      transition: `opacity 800ms 800ms cubic-bezier(.2,.4,.4,1)`,
-      opacity: 0,
-    },
-    entered: {
-      opacity: 1,
-    },
-  }
-
-  const sizeStyle = {
-    default: {
-      minWidth: 60,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-
-      transition: `opacity 800ms 800ms cubic-bezier(.2,.4,.4,1)`,
-      opacity: 0,
-    },
-    entered: {
-      opacity: 1,
-    },
-  }
-
-  const decorationStyle = {
-    default: {
-      width: 10,
-      borderRight: `1px solid ${mutedWhite}`,
-      borderTop: `1px solid ${mutedWhite}`,
-      height: 10,
-
-      transition: `transform 200ms 1400ms cubic-bezier(.2,.4,.4,1)`,
-      transform: 'scaleX(0)',
-      transformOrigin: 'top right',
-    },
-    entered: {
-      transform: 'scaleX(1)',
-    },
-  }
-
-  const styles = {
-    item: {
-      display: 'flex',
     },
     graph: {
       flex: 2,
       paddingRight: 15,
       display: 'flex',
     },
-  }
+    size: {
+      minWidth: 60,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+    },
+    decoration: {
+      width: 10,
+      borderRight: `1px solid ${mutedWhite}`,
+      borderTop: `1px solid ${mutedWhite}`,
+      height: 10,
+    },
+  })
 
   return (
     <div style={styles.item}>
-      <div style={combineCSS({ style: numberModuleStyle, animationState })}>
-        <div style={combineCSS({ style: numberStyle, animationState })}>
+      <div style={styles.numberModule}>
+        <div style={styles.number}>
           <Text size={2} weight={400}>
             {_.padStart(number, 2, '0')}
           </Text>
         </div>
       </div>
 
-      <div style={combineCSS({ style: fileStyle, animationState })}>
+      <div style={styles.file}>
         {animationState === 'entered' && (
           <AnimateText delay={300} speed={40} size={2} capitalize={true}>
             {fileName}
@@ -249,7 +78,7 @@ export const FileVizItem = ({
         )}
       </div>
 
-      <div style={combineCSS({ style: arrowStyle, animationState })}>
+      <div style={styles.arrow}>
         <SizeChangePercent size={size} prevSize={prevSize} />
       </div>
 
@@ -262,13 +91,76 @@ export const FileVizItem = ({
         />
       </div>
 
-      <div style={combineCSS({ style: sizeStyle, animationState })}>
+      <div style={styles.size}>
         {animationState === 'entered' && <SplitFileSize size={size} />}
       </div>
 
-      <div style={combineCSS({ style: decorationStyle, animationState })} />
+      <div style={styles.decoration} />
     </div>
   )
 }
 
-export default FileVizItem
+export default ({ animationState, ...props }) => {
+  const animationStyles = {
+    default: {
+      numberModule: {
+        transition: `transform 800ms cubic-bezier(.2,.4,.4,1)`,
+        transform: 'scaleX(0)',
+        transformOrigin: 'left',
+      },
+      number: {
+        transition: `opacity 600ms 800ms cubic-bezier(.2,.4,.4,1)`,
+        opacity: 0,
+      },
+      file: {
+        transition: `transform 800ms cubic-bezier(.2,.4,.4,1)`,
+        transform: 'scaleX(0)',
+        transformOrigin: 'left',
+      },
+      arrow: {
+        transition: `opacity 800ms 800ms cubic-bezier(.2,.4,.4,1)`,
+        opacity: 0,
+      },
+      size: {
+        transition: `opacity 800ms 800ms cubic-bezier(.2,.4,.4,1)`,
+        opacity: 0,
+      },
+      decoration: {
+        transition: `transform 200ms 1400ms cubic-bezier(.2,.4,.4,1)`,
+        transform: 'scaleX(0)',
+        transformOrigin: 'top right',
+      },
+    },
+    entered: {
+      numberModule: {
+        transform: 'scaleX(1)',
+      },
+      number: {
+        opacity: 1,
+      },
+      file: {
+        transform: 'scaleX(1)',
+      },
+      arrow: {
+        opacity: 1,
+      },
+      size: {
+        opacity: 1,
+      },
+      decoration: {
+        transform: 'scaleX(1)',
+      },
+    },
+  }
+
+  return (
+    <FileVizItem
+      {...props}
+      animationStyles={_.merge(
+        animationStyles.default,
+        animationStyles[animationState],
+      )}
+      animationState={animationState}
+    />
+  )
+}
