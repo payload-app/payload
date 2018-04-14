@@ -40,9 +40,14 @@ const dockerBuilderJob = async ({ event, payload, dockerImage, baseDir }) => {
   await dockerBuilder.run()
 }
 
-const generateHelmEnvVars = ({ envVars = {} }) =>
+const generateHelmEnvVars = ({ existingEnvVars, envVars = {} }) =>
+  // need to convert to
+  // env:
+  //  - name: EKG_CONFIG
+  //    value: value
+  // and then integrate with existing environment variables
   Object.entries(envVars)
-    .map(item => `--set env.${item[0]}=${item[1]}`)
+    .map(item => `--set env.${item[0]}="${item[1]}"`)
     .join(' ')
 
 const helmDeployerJob = async ({
@@ -304,8 +309,8 @@ events.on('deploy-minikube-services', async (event, payload) => {
   ])
 
   await Promise.all([
-    await deployBackendService(event, payload),
-    await deployFrontendService(event, payload),
-    await deployGithubAuthService(event, payload),
+    deployBackendService(event, payload),
+    deployFrontendService(event, payload),
+    deployGithubAuthService(event, payload),
   ])
 })
