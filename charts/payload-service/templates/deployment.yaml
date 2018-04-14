@@ -23,11 +23,11 @@ spec:
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
-        {{- with .Values.env }}
+{{ toYaml .Values.resources | trimSuffix "\n" | indent 12 }}
+          {{- if .Values.env }}
           env:
-{{ toYaml . | indent 12 }}
-        {{- end }}
+{{ toYaml .Values.env | trimSuffix "\n"  | indent 12 }}
+          {{- end }}
       {{- if .Values.healthcheck.enabled }}
         - name: healthcheck
           image: bufferapp/ekg:0.1.2
