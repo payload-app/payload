@@ -13,6 +13,7 @@ export default ({
 }) => (
   <span
     style={{
+      cursor: 'inherit',
       fontFamily,
       fontWeight: weight,
       fontSize: `${size}rem`,

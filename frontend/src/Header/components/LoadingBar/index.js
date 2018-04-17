@@ -6,7 +6,7 @@ import Transition from 'react-transition-group/Transition'
 
 const bigWhiteBarStyle = {
   default: {
-    width: '74%',
+    width: '38%',
     height: 4,
     background: white,
     marginRight: 5,
@@ -21,7 +21,7 @@ const bigWhiteBarStyle = {
 
 const smallMutedBarStyle = {
   default: {
-    width: '11%',
+    width: '9%',
     height: 4,
     background: mutedWhite,
     transition: `transform 600ms ease-in-out`,
