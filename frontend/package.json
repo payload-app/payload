@@ -49,6 +49,7 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-string-replace": "^0.4.1",
+    "react-stripe-elements": "^1.6.0",
     "react-timeago": "^3.4.3",
     "react-transition-group": "^2.2.1",
     "react-typist": "^2.0.4",
@@ -119,6 +120,7 @@
     "@storybook/react": "^3.3.12",
     "babel-cli": "^6.26.0",
     "babel-preset-flow": "^6.23.0",
+    "dotenv-webpack": "^1.5.5",
     "flow-bin": "^0.63.1"
   }
 }

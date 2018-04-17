@@ -7,6 +7,7 @@ import {
   actionTypes as routingActionTypes,
   routes,
   generateListRoute,
+  generateOwnerSettingsRoute,
 } from '../Routing'
 import { selector, actions, actionTypes } from './reducer'
 
@@ -67,17 +68,40 @@ export default ({ dispatch, getState }) => next => action => {
           dispatch(actions.toggleBackButton({ toggle: false }))
           break
         case routes.OWNER_SETTINGS:
+          const { router: { location: { pathname } } } = getState()
+          const { type, ownerType, owner } = action.params
+          const menu = [
+            {
+              display: 'Sync Settings',
+              key: 'syncSettings',
+              url: generateOwnerSettingsRoute({
+                type,
+                ownerType,
+                owner,
+                settingsType: 'sync',
+              }),
+            },
+            {
+              display: 'Billing',
+              key: 'billing',
+              url: generateOwnerSettingsRoute({
+                type,
+                ownerType,
+                owner,
+                settingsType: 'billing',
+              }),
+            },
+          ]
+          const selection = menu.findIndex(item => item.url === pathname)
           updateMenu({
             dispatch,
-            menu: [
-              {
-                display: 'Sync Settings',
-                key: 'syncSettings',
-                url: action.path,
-              },
-            ],
+            menu,
           })
-          dispatch(actions.select({ selection: 0 }))
+          dispatch(
+            actions.select({
+              selection: selection === -1 ? 0 : selection,
+            }),
+          )
           dispatch(actions.toggleBackButton({ toggle: true }))
           break
         case routes.RUNS:
