@@ -1,5 +1,6 @@
 import React from 'react'
-import _ from 'lodash'
+import padStart from 'lodash.padstart'
+import merge from 'lodash.merge'
 import { Text, AnimateText } from '../../../components'
 import { mutedWhite, softLighten } from '../../../components/style/color'
 
@@ -16,7 +17,7 @@ export const FileVizItem = ({
   animationState,
   animationStyles,
 }) => {
-  const styles = _.merge(animationStyles, {
+  const styles = merge(animationStyles, {
     item: {
       display: 'flex',
     },
@@ -65,7 +66,7 @@ export const FileVizItem = ({
       <div style={styles.numberModule}>
         <div style={styles.number}>
           <Text size={2} weight={400}>
-            {_.padStart(number, 2, '0')}
+            {padStart(number, 2, '0')}
           </Text>
         </div>
       </div>
