@@ -1,6 +1,6 @@
-name: backend
+name: github-auth
 image:
-  repository: payloadapp/backend
+  repository: payloadapp/github-auth
 ingress:
   enabled: true
   host: local.payloadapp.com
