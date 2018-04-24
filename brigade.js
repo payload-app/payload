@@ -256,19 +256,42 @@ const deployGithubAuthService = async (event, payload) =>
     },
   })
 
+const deployDevRedis = async ({ namespace }) => {
+  const redisDeployer = new Job(`redis-deployer`, 'linkyard/docker-helm:2.8.2')
+  redisDeployer.tasks = echoedTasks([
+    'helm init --client-only',
+    `helm upgrade --install redis stable/redis --namespace ${namespace} --set usePassword=false --debug --dry-run`,
+    `helm upgrade --install redis stable/redis --namespace ${namespace} --set usePassword=false`,
+  ])
+  await redisDeployer.run()
+}
+
+const deployDevMongodb = async ({ namespace }) => {
+  const redisDeployer = new Job(
+    `mongodb-deployer`,
+    'linkyard/docker-helm:2.8.2',
+  )
+  redisDeployer.tasks = echoedTasks([
+    'helm init --client-only',
+    `helm upgrade --install mongodb stable/mongodb --namespace ${namespace} --debug --dry-run`,
+    `helm upgrade --install mongodb stable/mongodb --namespace ${namespace}`,
+  ])
+  await redisDeployer.run()
+}
+
+events.on('deploy-dev-mongodb', () => {
+  deployDevMongodb({ namespace: 'payload' })
+})
+events.on('deploy-dev-redis', () => {
+  deployDevRedis({ namespace: 'payload' })
+})
 events.on('deploy-session-service', deploySessionService)
-// TODO: need to do a redis deployment
 events.on('deploy-queue-service', deployQueueService)
-// TODO: need to do a redis deployment
 events.on('deploy-random-state-service', deployRandomStateService)
 events.on('deploy-github-service', deployGithubService)
-// TODO: need to do a mongodb deployment
 events.on('deploy-organization-service', deployOrganizationService)
-// TODO: need to do a mongodb deployment
 events.on('deploy-user-service', deployUserService)
-// TODO: need to do a mongodb deployment
 events.on('deploy-run-service', deployRunService)
-// TODO: need to do a mongodb deployment
 events.on('deploy-repo-service', deployRepoService)
 events.on('deploy-init-db-job', deployInitDbJob)
 events.on('deploy-status-broadcaster-service', deployStatusBroadcasterService)
@@ -280,6 +303,10 @@ events.on('deploy-minikube-services', async (event, payload) => {
   // deploy istio
   // deploy local redis
   // deploy local mongodb
+  await Promise.all([
+    deployDevRedis({ namespace: 'payload' }),
+    deployDevMongodb({ namespace: 'payload' }),
+  ])
   // ... then
 
   // have no dependencies
