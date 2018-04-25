@@ -40,15 +40,24 @@ const dockerBuilderJob = async ({ event, payload, dockerImage, baseDir }) => {
   await dockerBuilder.run()
 }
 
-const generateHelmEnvVars = ({ existingEnvVars, envVars = {} }) =>
-  // need to convert to
-  // env:
-  //  - name: EKG_CONFIG
-  //    value: value
-  // and then integrate with existing environment variables
-  Object.entries(envVars)
-    .map(item => `--set env.${item[0]}="${item[1]}"`)
+const generateHelmEnvVars = ({ existingEnvVars = [], envVars = [] }) => {
+  const used = new Set()
+  // merge the env vars in the value.yaml and custom defined -- custom defined win if there is an overlap
+  const mergedEnvVars = [...envVars, ...existingEnvVars].filter(item => {
+    if (used.has(item.name)) {
+      return false
+    }
+    used.add(item.name)
+    return true
+  })
+
+  return mergedEnvVars
+    .map(
+      (item, i) =>
+        `--set env[${i}].name=${item.name},env[${i}].value=${item.value}`,
+    )
     .join(' ')
+}
 
 const helmDeployerJob = async ({
   event,
@@ -58,6 +67,7 @@ const helmDeployerJob = async ({
   chart,
   namespace,
   envVars,
+  values,
 }) => {
   // do helm deploy
   const helmDeployer = new Job(
@@ -69,10 +79,13 @@ const helmDeployerJob = async ({
     'helm init --client-only',
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
-    } ${generateHelmEnvVars({ envVars })} --debug --dry-run`,
+    } ${generateHelmEnvVars({
+      existingEnvVars: values.env,
+      envVars,
+    })} --debug --dry-run`,
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
-    } ${generateHelmEnvVars({ envVars })}`,
+    } ${generateHelmEnvVars({ existingEnvVars: values.env, envVars })}`,
   ])
   await helmDeployer.run()
 }
@@ -107,6 +120,7 @@ const deployService = async ({
     chart,
     namespace,
     envVars,
+    values,
   })
 }
 
@@ -226,9 +240,12 @@ const deployBackendService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
-    envVars: {
-      WEBHOOK_BASE_URL: payload.secrets.WEBHOOK_BASE_URL,
-    },
+    envVars: [
+      {
+        name: 'WEBHOOK_BASE_URL',
+        value: payload.secrets.WEBHOOK_BASE_URL,
+      },
+    ],
   })
 
 const deployFrontendService = async (event, payload) =>
