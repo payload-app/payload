@@ -11,7 +11,7 @@ const garbageCollect = require('./garbageCollect')
 const requeueTask = require('./requeueTask')
 
 const redisClient = new Redis({
-  host: 'redis',
+  host: process.env.REDIS_HOST,
   port: 6379,
 })
 

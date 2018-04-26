@@ -88,6 +88,8 @@ services:
     build:
       context: ./queue-service
       dockerfile: Dockerfile.development
+    environment:
+      - REDIS_HOST=redis
     volumes:
      - ./queue-service:/usr/src/app/
     links:
