@@ -54,7 +54,9 @@ const generateHelmEnvVars = ({ existingEnvVars = [], envVars = [] }) => {
   return mergedEnvVars
     .map(
       (item, i) =>
-        `--set env[${i}].name=${item.name},env[${i}].value=${item.value}`,
+        `--set env[${i}].name=${item.name},env[${i}].value=\\\"${
+          item.value
+        }\\\"`,
     )
     .join(' ')
 }
