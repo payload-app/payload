@@ -268,11 +268,20 @@ const deployGithubAuthService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
-    envVars: {
-      GH_CLIENT_ID: payload.secrets.GH_CLIENT_ID,
-      GH_CLIENT_SECRET: payload.secrets.GH_CLIENT_SECRET,
-      REDIRECT_URL: payload.secrets.REDIRECT_URL,
-    },
+    envVars: [
+      {
+        name: 'GH_CLIENT_ID',
+        value: payload.secrets.GH_CLIENT_ID,
+      },
+      {
+        name: 'GH_CLIENT_SECRET',
+        value: payload.secrets.GH_CLIENT_SECRET,
+      },
+      {
+        name: 'REDIRECT_URL',
+        value: payload.secrets.REDIRECT_URL,
+      },
+    ],
   })
 
 const deployDevRedis = async ({ namespace }) => {
