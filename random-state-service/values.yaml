@@ -4,3 +4,5 @@ image:
 env:
   - name: STATE_TTL_SECONDS
     value: "300"
+  - name: REDIS_HOST
+    value: "redis-master"

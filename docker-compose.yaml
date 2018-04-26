@@ -246,6 +246,7 @@ services:
       dockerfile: Dockerfile.development
     environment:
      - STATE_TTL_SECONDS=300
+     - REDIS_HOST=redis
     volumes:
      - ./random-state-service:/usr/src/app/
     links:

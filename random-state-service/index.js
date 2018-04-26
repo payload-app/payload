@@ -7,7 +7,7 @@ const validateState = require('./validateState')
 const deleteState = require('./deleteState')
 
 const redisClient = new Redis({
-  host: 'redis',
+  host: process.env.REDIS_HOST,
   port: 6379,
 })
 
