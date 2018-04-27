@@ -89,6 +89,8 @@ const callback = async (req, res) => {
         redirectWithQueryString(res, { error: 'GitHub server error.' })
       }
     } catch (err) {
+      console.log('err.message', err.message)
+      console.log('err.stack', err.stack)
       redirectWithQueryString(res, {
         error: err.message,
       })
