@@ -96,4 +96,10 @@ const callback = async (req, res) => {
   }
 }
 
-module.exports = router(get('/login', login), get('/callback', callback))
+const healthHandler = () => 'OK'
+
+module.exports = router(
+  get('/healthz', healthHandler),
+  get('/login', login),
+  get('/callback', callback),
+)
