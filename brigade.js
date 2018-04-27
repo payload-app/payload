@@ -54,7 +54,9 @@ const generateHelmEnvVars = ({ existingEnvVars = [], envVars = [] }) => {
   return mergedEnvVars
     .map(
       (item, i) =>
-        `--set env[${i}].name=${item.name},env[${i}].value=${item.value}`,
+        `--set-string env[${i}].name=${item.name},env[${i}].value=${
+          item.value
+        }`,
     )
     .join(' ')
 }
@@ -72,7 +74,7 @@ const helmDeployerJob = async ({
   // do helm deploy
   const helmDeployer = new Job(
     `helm-deployer-${baseDir}`,
-    'linkyard/docker-helm:2.8.2',
+    'linkyard/docker-helm:latest', // TODO: change to 2.9.0 when it gets published
   )
   helmDeployer.tasks = echoedTasks([
     `cd /src/${baseDir}`,
