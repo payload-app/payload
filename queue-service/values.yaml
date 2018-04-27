@@ -3,4 +3,4 @@ image:
   repository: payloadapp/queue-service
 env:
   - name: REDIS_HOST
-    value: "redis-master"
+    value: redis-master
