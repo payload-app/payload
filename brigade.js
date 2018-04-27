@@ -327,8 +327,6 @@ events.on('deploy-github-auth-service', deployGithubAuthService)
 
 events.on('deploy-minikube-services', async (event, payload) => {
   // deploy istio
-  // deploy local redis
-  // deploy local mongodb
   await Promise.all([
     deployDevRedis({ namespace: 'payload' }),
     deployDevMongodb({ namespace: 'payload' }),
@@ -344,20 +342,14 @@ events.on('deploy-minikube-services', async (event, payload) => {
   ])
 
   await Promise.all([
-    // TODO: need to do a redis deployment
     deployQueueService(event, payload),
-    // TODO: need to do a redis deployment
     deployGithubService(event, payload),
   ])
 
   await Promise.all([
-    // TODO: need to do a mongodb deployment
     deployOrganizationService(event, payload),
-    // TODO: need to do a mongodb deployment
     deployUserService(event, payload),
-    // TODO: need to do a mongodb deployment
     deployRunService(event, payload),
-    // TODO: need to do a mongodb deployment
     deployRepoService(event, payload),
   ])
 
