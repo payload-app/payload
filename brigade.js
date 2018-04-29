@@ -313,32 +313,28 @@ const deployDevRedis = async ({ namespace }) => {
 }
 
 const deployDevMongodb = async ({ payload, namespace }) => {
-  const redisDeployer = new Job(
+  const mongodbDeployer = new Job(
     `mongodb-deployer`,
-    'linkyard/docker-helm:2.8.2',
+    'linkyard/docker-helm:latest',
   )
-  redisDeployer.tasks = echoedTasks([
+  mongodbDeployer.tasks = echoedTasks([
     'helm init --client-only',
-    `helm upgrade --install mongodb stable/mongodb --set mongodbUsername=${
-      payload.secrets.MONGODB_USERNAME
-    } --set mongodbPassword=${
-      payload.secrets.MONGODB_PASSWORD
-    } --set mongodbDatabase=${
-      payload.secrets.MONGODB_DATABASE
-    } --set mongodbRootPassword=${
+    `helm upgrade --install mongodb stable/mongodb --set mongodbRootPassword=${
       payload.secrets.MONGODB_ROOT_PASSWORD
+    },mongodbUsername=${payload.secrets.MONGODB_USERNAME},mongodbPassword=${
+      payload.secrets.MONGODB_PASSWORD
+    },mongodbDatabase=${
+      payload.secrets.MONGODB_DATABASE
     } --namespace ${namespace} --debug --dry-run`,
-    `helm upgrade --install mongodb stable/mongodb --set mongodbUsername=${
-      payload.secrets.MONGODB_USERNAME
-    } --set mongodbPassword=${
-      payload.secrets.MONGODB_PASSWORD
-    } --set mongodbDatabase=${
-      payload.secrets.MONGODB_DATABASE
-    } --set mongodbRootPassword=${
+    `helm upgrade --install mongodb stable/mongodb --set mongodbRootPassword=${
       payload.secrets.MONGODB_ROOT_PASSWORD
+    },mongodbUsername=${payload.secrets.MONGODB_USERNAME},mongodbPassword=${
+      payload.secrets.MONGODB_PASSWORD
+    },mongodbDatabase=${
+      payload.secrets.MONGODB_DATABASE
     } --namespace ${namespace}`,
   ])
-  await redisDeployer.run()
+  await mongodbDeployer.run()
 }
 
 events.on('deploy-dev-mongodb', (event, payload) => {
