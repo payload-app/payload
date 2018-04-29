@@ -49,7 +49,7 @@ const initRunsCollection = async ({ dbClient }) => {
 const initDB = async () => {
   console.log('Connecting to Client...')
   const mongoClient = await promisifiedMongoClient.connect(
-    process.env.MONGODB_URL,
+    `${process.env.MONGODB_URL}/${process.env.MONGODB_DATABASE}`,
     {
       auth: {
         user: process.env.MONGODB_USERNAME,
