@@ -2,8 +2,3 @@ name: init-db
 image:
   repository: payloadapp/init-db
 revision: '001' # version of DB initialization
-env:
-  - name: MONGO_URL
-    value: "mongodb://mongodb-mongodb:27017"
-  - name: MONGO_DB
-    value: "payload"

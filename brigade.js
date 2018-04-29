@@ -215,6 +215,24 @@ const deployInitDbJob = async (event, payload) => {
       valuesFile: 'values.yaml',
       chart: 'payload-job',
       namespace: 'payload',
+      envVars: [
+        {
+          name: 'MONGODB_USERNAME',
+          value: payload.secrets.MONGODB_USERNAME,
+        },
+        {
+          name: 'MONGODB_PASSWORD',
+          value: payload.secrets.MONGODB_PASSWORD,
+        },
+        {
+          name: 'MONGODB_DATABASE',
+          value: payload.secrets.MONGODB_DATABASE,
+        },
+        {
+          name: 'MONGODB_URL',
+          value: payload.secrets.MONGODB_URL,
+        },
+      ],
     })
   } catch (err) {
     console.log(
@@ -294,21 +312,33 @@ const deployDevRedis = async ({ namespace }) => {
   await redisDeployer.run()
 }
 
-const deployDevMongodb = async ({ namespace }) => {
+const deployDevMongodb = async ({ payload, namespace }) => {
   const redisDeployer = new Job(
     `mongodb-deployer`,
     'linkyard/docker-helm:2.8.2',
   )
   redisDeployer.tasks = echoedTasks([
     'helm init --client-only',
-    `helm upgrade --install mongodb stable/mongodb --set usePassword=false --namespace ${namespace} --debug --dry-run`,
-    `helm upgrade --install mongodb stable/mongodb --set usePassword=false --namespace ${namespace}`,
+    `helm upgrade --install mongodb stable/mongodb --set mongodbUsername=${
+      payload.secrets.MONGODB_USERNAME
+    } --set mongodbPassword=${
+      payload.secrets.MONGODB_PASSWORD
+    } --set mongodbDatabase=${
+      payload.secrets.MONGODB_DATABASE
+    } --namespace ${namespace} --debug --dry-run`,
+    `helm upgrade --install mongodb stable/mongodb --set mongodbUsername=${
+      payload.secrets.MONGODB_USERNAME
+    } --set mongodbPassword=${
+      payload.secrets.MONGODB_PASSWORD
+    } --set mongodbDatabase=${
+      payload.secrets.MONGODB_DATABASE
+    } --namespace ${namespace}`,
   ])
   await redisDeployer.run()
 }
 
-events.on('deploy-dev-mongodb', () => {
-  deployDevMongodb({ namespace: 'payload' })
+events.on('deploy-dev-mongodb', (event, payload) => {
+  deployDevMongodb({ namespace: 'payload', event, payload })
 })
 events.on('deploy-dev-redis', () => {
   deployDevRedis({ namespace: 'payload' })
@@ -331,7 +361,7 @@ events.on('deploy-minikube-services', async (event, payload) => {
   // deploy istio
   await Promise.all([
     deployDevRedis({ namespace: 'payload' }),
-    deployDevMongodb({ namespace: 'payload' }),
+    deployDevMongodb({ namespace: 'payload', event, payload }),
   ])
   // ... then
 

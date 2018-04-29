@@ -49,9 +49,15 @@ const initRunsCollection = async ({ dbClient }) => {
 const initDB = async () => {
   console.log('Connecting to Client...')
   const mongoClient = await promisifiedMongoClient.connect(
-    process.env.MONGO_URL,
+    process.env.MONGODB_URL,
+    {
+      auth: {
+        user: process.env.MONGODB_USERNAME,
+        password: process.env.MONGODB_PASSWORD,
+      },
+    },
   )
-  const dbClient = mongoClient.db(process.env.MONGO_DB)
+  const dbClient = mongoClient.db(process.env.MONGODB_DATABASE)
   console.log('Connecting to Client...Done')
   await initUserCollection({ dbClient })
   await initOrganizationCollection({ dbClient })
