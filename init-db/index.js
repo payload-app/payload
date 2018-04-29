@@ -60,4 +60,8 @@ const initDB = async () => {
   mongoClient.close()
 }
 
-initDB()
+try {
+  initDB()
+} catch (error) {
+  console.error(error)
+}
