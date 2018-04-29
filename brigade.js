@@ -325,6 +325,8 @@ const deployDevMongodb = async ({ payload, namespace }) => {
       payload.secrets.MONGODB_PASSWORD
     } --set mongodbDatabase=${
       payload.secrets.MONGODB_DATABASE
+    } --set mongodbRootPassword=${
+      payload.secrets.MONGODB_ROOT_PASSWORD
     } --namespace ${namespace} --debug --dry-run`,
     `helm upgrade --install mongodb stable/mongodb --set mongodbUsername=${
       payload.secrets.MONGODB_USERNAME
@@ -332,6 +334,8 @@ const deployDevMongodb = async ({ payload, namespace }) => {
       payload.secrets.MONGODB_PASSWORD
     } --set mongodbDatabase=${
       payload.secrets.MONGODB_DATABASE
+    } --set mongodbRootPassword=${
+      payload.secrets.MONGODB_ROOT_PASSWORD
     } --namespace ${namespace}`,
   ])
   await redisDeployer.run()
