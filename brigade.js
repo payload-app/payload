@@ -301,8 +301,8 @@ const deployDevMongodb = async ({ namespace }) => {
   )
   redisDeployer.tasks = echoedTasks([
     'helm init --client-only',
-    `helm upgrade --install mongodb stable/mongodb --usePassword=false --namespace ${namespace} --debug --dry-run`,
-    `helm upgrade --install mongodb stable/mongodb --usePassword=false --namespace ${namespace}`,
+    `helm upgrade --install mongodb stable/mongodb --set usePassword=false --namespace ${namespace} --debug --dry-run`,
+    `helm upgrade --install mongodb stable/mongodb --set usePassword=false --namespace ${namespace}`,
   ])
   await redisDeployer.run()
 }
