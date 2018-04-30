@@ -153,6 +153,12 @@ const deploySessionService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
+    envVars: [
+      {
+        name: 'JWT_SECRET',
+        value: payload.secrets.JWT_SECRET,
+      },
+    ],
   })
 
 const deployQueueService = async (event, payload) =>
