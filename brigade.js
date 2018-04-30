@@ -226,6 +226,7 @@ const deployRepoService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
+    envVars: [...generateMongodbEnvVars({ payload })],
   })
 
 const deployInitDbJob = async (event, payload) => {
@@ -237,24 +238,7 @@ const deployInitDbJob = async (event, payload) => {
       valuesFile: 'values.yaml',
       chart: 'payload-job',
       namespace: 'payload',
-      envVars: [
-        {
-          name: 'MONGODB_USERNAME',
-          value: payload.secrets.MONGODB_USERNAME,
-        },
-        {
-          name: 'MONGODB_PASSWORD',
-          value: payload.secrets.MONGODB_PASSWORD,
-        },
-        {
-          name: 'MONGODB_DATABASE',
-          value: payload.secrets.MONGODB_DATABASE,
-        },
-        {
-          name: 'MONGODB_URL',
-          value: payload.secrets.MONGODB_URL,
-        },
-      ],
+      envVars: [...generateMongodbEnvVars({ payload })],
     })
   } catch (err) {
     console.log(

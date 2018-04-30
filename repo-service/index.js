@@ -1,6 +1,5 @@
 const { promisify } = require('util')
 const { MongoClient } = require('mongodb')
-const { send } = require('micro')
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const { router, get, post } = require('microrouter')
@@ -15,9 +14,17 @@ const generateWebhookToken = require('./generateWebhookToken')
 const promisifiedMongoClient = promisify(MongoClient)
 
 const initDB = async handler => {
-  const client = await promisifiedMongoClient.connect(process.env.MONGO_URL)
+  const client = await promisifiedMongoClient.connect(
+    `${process.env.MONGODB_URL}/${process.env.MONGODB_DATABASE}`,
+    {
+      auth: {
+        user: process.env.MONGODB_USERNAME,
+        password: process.env.MONGODB_PASSWORD,
+      },
+    },
+  )
   const collectionClient = client
-    .db(process.env.MONGO_DB)
+    .db(process.env.MONGODB_DATABASE)
     .collection('repositories')
   const organizationServiceClient = new RPCClient({
     url: 'http://organization-service:3000/rpc',
