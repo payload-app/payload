@@ -322,7 +322,7 @@ const deployWorker = async (event, payload) => {
     payload,
     baseDir: 'worker',
     valuesFile: 'values.yaml',
-    chart: 'payload-service',
+    chart: 'payload-job',
     namespace: 'payload',
     envVars: [
       {

@@ -25,6 +25,8 @@ spec:
           env:
 {{ toYaml . | indent 12 }}
         {{- end }}
+      {{- if .Values.restartPolicy }}
       restartPolicy: {{ .Values.restartPolicy }}
+      {{- end }}
       imagePullSecrets:
       - name: dockerhub
