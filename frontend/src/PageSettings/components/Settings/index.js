@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, IconCached } from '../../../components'
 import Page from '../../../Page'
-import Billing from '../Billing'
+import BillingPage from '../../../Billing'
 
 export default ({
   organizationsLoading,
@@ -40,7 +40,7 @@ export default ({
         </div>
       )}
 
-      {page === 'billing' && <Billing />}
+      {page === 'billing' && <BillingPage />}
     </Page>
   )
 }
