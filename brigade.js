@@ -70,7 +70,9 @@ const generateHelmEnvVars = ({ existingEnvVars = [], envVars = [] }) => {
     return true
   })
 
+  // NOTE: this only merges items with a name and a value
   return mergedEnvVars
+    .filter(item => item.name && item.value)
     .map(
       (item, i) =>
         `--set-string env[${i}].name=${item.name},env[${i}].value=${
