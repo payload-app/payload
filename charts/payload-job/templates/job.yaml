@@ -7,6 +7,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
 spec:
+  {{- if .Values.parallelism }}
+  parallelism: {{ .Values.parallelism }}
+  {{- end }}
   template:
     metadata:
       labels:

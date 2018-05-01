@@ -1,11 +1,8 @@
 name: worker
 image:
   repository: payloadapp/worker
-replicaCount: 2
-healthcheck:
-  enabled: false
-service:
-  enabled: false
+parallelism: 2
+restartPolicy: Always
 env:
   # HACK: put placeholder values so WORKER_NAME does not get overwritten
   - name: BASE_RUN_URL
