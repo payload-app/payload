@@ -337,6 +337,23 @@ const deployWorker = async (event, payload) => {
   })
 }
 
+const deployQueueGarbageCollector = async (event, payload) => {
+  deployService({
+    event,
+    payload,
+    baseDir: 'queue-garbage-collector',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+    envVars: [
+      {
+        name: 'WORKER_QUEUE',
+        value: payload.secrets.WORKER_QUEUE,
+      },
+    ],
+  })
+}
+
 const deployDevRedis = async ({ namespace }) => {
   const redisDeployer = new Job(`redis-deployer`, 'linkyard/docker-helm:2.8.2')
   redisDeployer.tasks = echoedTasks([
@@ -392,6 +409,7 @@ events.on('deploy-backend-service', deployBackendService)
 events.on('deploy-frontend-service', deployFrontendService)
 events.on('deploy-github-auth-service', deployGithubAuthService)
 events.on('deploy-worker', deployWorker)
+events.on('deploy-queue-garbage-collector', deployQueueGarbageCollector)
 
 events.on('deploy-minikube-services', async (event, payload) => {
   // deploy istio
@@ -425,5 +443,10 @@ events.on('deploy-minikube-services', async (event, payload) => {
     deployBackendService(event, payload),
     deployFrontendService(event, payload),
     deployGithubAuthService(event, payload),
+  ])
+
+  await Promise.all([
+    deployWorker(event, payload),
+    deployQueueGarbageCollector(event, payload),
   ])
 })

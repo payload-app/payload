@@ -29,4 +29,19 @@ const main = async () => {
   }
 }
 
-main()
+const controlLoop = async () => {
+  try {
+    await main()
+  } catch (error) {
+    console.log('Uncaught Error In Main')
+    console.log(
+      JSON.stringify({
+        stack: error.stack,
+        error: error.message,
+      }),
+    )
+  }
+  await controlLoop()
+}
+
+controlLoop()
