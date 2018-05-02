@@ -1,5 +1,10 @@
 const { events, Job } = require('brigadier')
 
+const JOB_ID_LENGTH = 26
+
+const formatJobName = ({ name, maxLength = 63 }) =>
+  name.substr(0, maxLength - JOB_ID_LENGTH)
+
 const echoedTasks = tasks => {
   const echoTasks = []
   tasks.forEach(task => {
@@ -11,7 +16,10 @@ const echoedTasks = tasks => {
 
 const yaml2jsonJob = async ({ baseDir, valuesFile }) => {
   // parse yaml file and return json
-  const yaml2json = new Job(`yaml2json-${baseDir}`, 'simplealpine/yaml2json')
+  const yaml2json = new Job(
+    formatJobName({ name: `yaml2json-${baseDir}` }),
+    'simplealpine/yaml2json',
+  )
   yaml2json.tasks = [`cd /src/${baseDir}`, `yaml2json < ${valuesFile}`]
   const result = await yaml2json.run()
   return result.toString()
@@ -39,7 +47,7 @@ const generateMongodbEnvVars = ({ payload }) => [
 const dockerBuilderJob = async ({ event, payload, dockerImage, baseDir }) => {
   // build docker image
   const dockerBuilder = new Job(
-    `docker-builder-${baseDir}`,
+    formatJobName({ name: `docker-builder-${baseDir}` }),
     'docker:stable-dind',
   )
   dockerBuilder.privileged = true
@@ -94,7 +102,7 @@ const helmDeployerJob = async ({
 }) => {
   // do helm deploy
   const helmDeployer = new Job(
-    `helm-deployer-${baseDir}`,
+    formatJobName({ name: `helm-deployer-${baseDir}` }),
     'linkyard/docker-helm:latest', // TODO: change to 2.9.0 when it gets published
   )
   helmDeployer.tasks = echoedTasks([
