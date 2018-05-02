@@ -362,6 +362,27 @@ const deployQueueGarbageCollector = async (event, payload) => {
   })
 }
 
+const deployWebhookCollectorService = async (event, payload) => {
+  deployService({
+    event,
+    payload,
+    baseDir: 'webhook-collector',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+    envVars: [
+      {
+        name: 'BASE_RUN_URL',
+        value: payload.secrets.REDIRECT_URL,
+      },
+      {
+        name: 'WORKER_QUEUE',
+        value: payload.secrets.WORKER_QUEUE,
+      },
+    ],
+  })
+}
+
 const deployDevRedis = async ({ namespace }) => {
   const redisDeployer = new Job(`redis-deployer`, 'linkyard/docker-helm:2.8.2')
   redisDeployer.tasks = echoedTasks([
@@ -418,6 +439,7 @@ events.on('deploy-frontend-service', deployFrontendService)
 events.on('deploy-github-auth-service', deployGithubAuthService)
 events.on('deploy-worker', deployWorker)
 events.on('deploy-queue-garbage-collector', deployQueueGarbageCollector)
+events.on('deploy-webhook-collector-service', deployWebhookCollectorService)
 
 events.on('deploy-minikube-services', async (event, payload) => {
   // deploy istio
@@ -456,5 +478,6 @@ events.on('deploy-minikube-services', async (event, payload) => {
   await Promise.all([
     deployWorker(event, payload),
     deployQueueGarbageCollector(event, payload),
+    deployWebhookCollectorService(event, payload),
   ])
 })
