@@ -260,6 +260,6 @@ const healthHandler = () => ({
 })
 
 module.exports = router(
-  get('/webhook/healthz', healthHandler),
+  get('/healthz', healthHandler),
   post('/webhook/:app/:token', webhookHandler),
 )
