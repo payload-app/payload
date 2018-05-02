@@ -3,7 +3,7 @@ const { events, Job } = require('brigadier')
 const JOB_ID_LENGTH = 26
 
 const formatJobName = ({ name, maxLength = 63 }) =>
-  name.substr(0, maxLength - JOB_ID_LENGTH)
+  name.substr(0, maxLength - JOB_ID_LENGTH - 1)
 
 const echoedTasks = tasks => {
   const echoTasks = []
