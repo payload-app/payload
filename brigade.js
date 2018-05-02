@@ -316,6 +316,8 @@ const deployGithubAuthService = async (event, payload) =>
     ],
   })
 
+// TODO: think about a way to get parallel workers -- could use cron, but more likely will need a custom controller
+
 const deployWorker = async (event, payload) => {
   deployService({
     event,

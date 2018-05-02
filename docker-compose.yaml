@@ -157,7 +157,6 @@ services:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-1
      - BASE_RUN_URL=http://local.payloadapp.com
-    restart: always
     networks:
      - main
   worker-clone:
@@ -174,7 +173,6 @@ services:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-2
      - BASE_RUN_URL=http://local.payloadapp.com
-    restart: always
     networks:
      - main
   queue-garbage-collector:
