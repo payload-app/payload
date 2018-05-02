@@ -1,0 +1,19 @@
+name: webhook-collector
+image:
+  repository: payloadapp/webhook-collector
+ingress:
+  enabled: true
+  host: local.payloadapp.com
+  paths:
+  - /webhook
+env:
+  - name: BASE_RUN_URL
+    value: ''
+  - name: WORKER_QUEUE
+    value: ''
+  - name: RETRIES
+    value: 3
+  - name: LEASE_SECONDS
+    value: 30
+  - name: MAX_LEASE_SECONDS
+    value: 600 # 10 minutes
