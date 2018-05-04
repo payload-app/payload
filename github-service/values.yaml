@@ -1,3 +1,5 @@
 name: github-service
 image:
   repository: payloadapp/github-service
+istio:
+  enabled: true
