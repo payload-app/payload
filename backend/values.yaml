@@ -6,3 +6,5 @@ ingress:
   host: local.payloadapp.com
   paths:
   - /api
+istio:
+  enabled: true
