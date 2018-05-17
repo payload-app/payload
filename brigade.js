@@ -442,7 +442,6 @@ events.on('deploy-queue-garbage-collector', deployQueueGarbageCollector)
 events.on('deploy-webhook-collector-service', deployWebhookCollectorService)
 
 events.on('deploy-minikube-services', async (event, payload) => {
-  // deploy istio
   await Promise.all([
     deployDevRedis({ namespace: 'payload' }),
     deployDevMongodb({ namespace: 'payload', event, payload }),

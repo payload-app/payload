@@ -39,12 +39,3 @@ ingress:
 #   host: buffer-hello.local
 #   paths:
 #     - /
-istio:
-  enabled: false
-# istio:
-#   enabled: true
-#   serviceWhitelist:
-#   - sleep
-#   trackWeights:
-#     stable: 99
-#     canary: 1
