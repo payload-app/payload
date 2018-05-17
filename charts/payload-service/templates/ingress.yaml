@@ -13,9 +13,6 @@ metadata:
     {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
-    {{- if .Values.istio.enabled}}
-    kubernetes.io/ingress.class: "istio"
-    {{- end}}
 spec:
   rules:
     - host: {{ .Values.ingress.host }}
