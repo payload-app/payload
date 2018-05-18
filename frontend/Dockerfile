@@ -1,13 +1,9 @@
-FROM node:8.11.0-alpine
-
-RUN mkdir -p /usr/src/app
+FROM node:8.11.2-alpine as builder
 WORKDIR /usr/src/app
-
-ENV NODE_ENV production
-
 COPY . /usr/src/app
+ENV NODE_ENV production
 RUN npm install
+RUN npm run build
 
-EXPOSE 3000
-
-CMD npm start
+FROM nginx:latest
+COPY --from=builder /usr/src/app/build /usr/share/nginx/html

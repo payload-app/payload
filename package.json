@@ -24,11 +24,7 @@
       "node": true,
       "es6": true
     },
-    "plugins": [
-      "prettier",
-      "flowtype",
-      "import"
-    ],
+    "plugins": ["prettier", "flowtype", "import"],
     "extends": [
       "plugin:flowtype/recommended",
       "plugin:import/errors",
@@ -48,9 +44,7 @@
       "import/no-unresolved": [
         2,
         {
-          "ignore": [
-            "api-types"
-          ]
+          "ignore": ["api-types"]
         }
       ],
       "import/no-named-as-default": 0,
