@@ -6,15 +6,19 @@ ingress:
   host: local.payloadapp.com
   paths:
   - /
+service:
+  enabled: true
+  externalPort: 80
+  internalPort: 80
 healthcheck:
-  enabled: false
+  enabled: true
   config:
     port: 8086
     livenessChecks:
     - name: httpget-check
       type: httpGetCheck
-      url: http://localhost:3000/
+      url: http://localhost/
     readinessChecks:
     - name: httpget-check
       type: httpGetCheck
-      url: http://localhost:3000/
+      url: http://localhost/
