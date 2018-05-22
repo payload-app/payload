@@ -73,7 +73,7 @@ const rpcHandler = setSession(
   ),
 )
 
-const healthHandler = () => 'OK'
+const healthHandler = () => 'OKz'
 
 module.exports = router(
   get('/healthz', healthHandler),
