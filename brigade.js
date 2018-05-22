@@ -501,23 +501,69 @@ const calculateDiffs = ({ event }) => {
   return Array.from(diffs)
 }
 
+events.on('update-production-services', async (event, project) => {
+  calculateDiffs({ event }).forEach(diffPath => {
+    switch (diffPath) {
+      case 'session-service':
+        events.emit('deploy-session-service', event, project)
+        break
+      case 'queue-service':
+        events.emit('deploy-queue-service', event, project)
+        break
+      case 'random-state-service':
+        events.emit('deploy-random-state-service', event, project)
+        break
+      case 'github-service':
+        events.emit('deploy-github-service', event, project)
+        break
+      case 'organization-service':
+        events.emit('deploy-organization-service', event, project)
+        break
+      case 'user-service':
+        events.emit('deploy-user-service', event, project)
+        break
+      case 'run-service':
+        events.emit('deploy-run-service', event, project)
+        break
+      case 'repo-service':
+        events.emit('deploy-repo-service', event, project)
+        break
+      case 'init-db':
+        events.emit('deploy-init-db-job', event, project)
+        break
+      case 'status-broadcaster':
+        events.emit('deploy-status-broadcaster-service', event, project)
+        break
+      case 'backend-service':
+        events.emit('deploy-backend-service', event, project)
+        break
+      case 'frontend-service':
+        events.emit('deploy-frontend-service', event, project)
+        break
+      case 'github-auth-service':
+        events.emit('deploy-github-auth-service', event, project)
+        break
+      case 'worker':
+        events.emit('deploy-worker', event, project)
+        break
+      case 'queue-garbage-collector':
+        events.emit('deploy-queue-garbage-collector', event, project)
+        break
+      case 'webhook-collector':
+        events.emit('deploy-webhook-collector-service', event, project)
+        break
+      default:
+        console.log(`unknown change path: ${diffPath}`)
+        break
+    }
+  })
+})
+
 events.on('push', async (event, project) => {
   // if (event.revision.ref === 'refs/heads/master') {
   //   events.emit('release', event, project)
   // } else {
   //   events.emit('dev_release', event, project)
   // }
-  const eventPayload = JSON.parse(event.payload)
-  console.log('event', event)
-  console.log('eventPayload', JSON.stringify(eventPayload, null, 2))
-  console.log('calculateDiffs({event})', calculateDiffs({ event }))
-  console.log('project', project)
-})
-
-events.on('pull_request', async (event, project) => {
-  const eventPayload = JSON.parse(event.payload)
-  console.log('event', event)
-  console.log('eventPayload', JSON.stringify(eventPayload, null, 2))
-  console.log('calculateDiffs({event})', calculateDiffs({ event }))
-  console.log('project', project)
+  events.emit('update-production-services', event, project)
 })
