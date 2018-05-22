@@ -502,6 +502,7 @@ const calculateDiffs = ({ event }) => {
 }
 
 events.on('update-production-services', async (event, project) => {
+  console.log(`Calculated Deployments From Diff: ${calculateDiffs({ event })}`)
   calculateDiffs({ event }).forEach(diffPath => {
     switch (diffPath) {
       case 'session-service':
