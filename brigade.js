@@ -487,11 +487,15 @@ events.on('push', async (event, project) => {
   // } else {
   //   events.emit('dev_release', event, project)
   // }
+  const eventPayload = JSON.parse(event.payload)
   console.log('event', event)
+  console.log('eventPayload', JSON.stringify(eventPayload, null, 2))
   console.log('project', project)
 })
 
 events.on('pull_request', async (event, project) => {
+  const eventPayload = JSON.parse(event.payload)
   console.log('event', event)
+  console.log('eventPayload', JSON.stringify(eventPayload, null, 2))
   console.log('project', project)
 })
