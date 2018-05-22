@@ -481,6 +481,26 @@ events.on('deploy-minikube-services', async (event, payload) => {
   ])
 })
 
+const validPath = /.+?(?=\/)/
+const ignoredPaths = ['api-types', 'charts', 'proxy']
+
+const calculateDiffs = ({ event }) => {
+  const eventPayload = JSON.parse(event.payload)
+  const diffs = new Set()
+  const updateDiffs = filePath => {
+    const result = validPath.exec(filePath)
+    if (result && !ignoredPaths.includes(result[0])) {
+      diffs.add(result[0])
+    }
+  }
+  eventPayload.commits.forEach(commit => {
+    commit.added.forEach(updateDiffs)
+    commit.removed.forEach(updateDiffs)
+    commit.modified.forEach(updateDiffs)
+  })
+  return Array.from(diffs)
+}
+
 events.on('push', async (event, project) => {
   // if (event.revision.ref === 'refs/heads/master') {
   //   events.emit('release', event, project)
@@ -490,6 +510,7 @@ events.on('push', async (event, project) => {
   const eventPayload = JSON.parse(event.payload)
   console.log('event', event)
   console.log('eventPayload', JSON.stringify(eventPayload, null, 2))
+  console.log('calculateDiffs({event})', calculateDiffs({ event }))
   console.log('project', project)
 })
 
@@ -497,5 +518,6 @@ events.on('pull_request', async (event, project) => {
   const eventPayload = JSON.parse(event.payload)
   console.log('event', event)
   console.log('eventPayload', JSON.stringify(eventPayload, null, 2))
+  console.log('calculateDiffs({event})', calculateDiffs({ event }))
   console.log('project', project)
 })
