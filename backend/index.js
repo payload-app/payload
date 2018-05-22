@@ -74,7 +74,7 @@ const rpcHandler = setSession(
 )
 
 const healthHandler = () => ({
-  status: 'OK',
+  status: 'OKZ',
 })
 
 module.exports = router(
