@@ -480,3 +480,18 @@ events.on('deploy-minikube-services', async (event, payload) => {
     deployWebhookCollectorService(event, payload),
   ])
 })
+
+events.on('push', async (event, project) => {
+  // if (event.revision.ref === 'refs/heads/master') {
+  //   events.emit('release', event, project)
+  // } else {
+  //   events.emit('dev_release', event, project)
+  // }
+  console.log('event', event)
+  console.log('project', project)
+})
+
+events.on('pull_request', async (event, project) => {
+  console.log('event', event)
+  console.log('project', project)
+})
