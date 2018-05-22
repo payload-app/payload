@@ -567,10 +567,7 @@ events.on('update-production-services', async (event, project) => {
 })
 
 events.on('push', async (event, project) => {
-  // if (event.revision.ref === 'refs/heads/master') {
-  //   events.emit('release', event, project)
-  // } else {
-  //   events.emit('dev_release', event, project)
-  // }
-  events.emit('update-production-services', event, project)
+  if (event.revision.ref === 'refs/heads/master') {
+    events.emit('update-production-services', event, project)
+  }
 })
