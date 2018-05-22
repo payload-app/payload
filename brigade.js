@@ -541,13 +541,13 @@ events.on('update-production-services', async (event, project) => {
       case 'status-broadcaster':
         events.emit('deploy-status-broadcaster-service', event, project)
         break
-      case 'backend-service':
+      case 'backend':
         events.emit('deploy-backend-service', event, project)
         break
-      case 'frontend-service':
+      case 'frontend':
         events.emit('deploy-frontend-service', event, project)
         break
-      case 'github-auth-service':
+      case 'github-auth':
         events.emit('deploy-github-auth-service', event, project)
         break
       case 'worker':
