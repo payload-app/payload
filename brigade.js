@@ -153,7 +153,7 @@ const deployService = async ({
   try {
     await githubStatusJob({
       event,
-      project,
+      project: payload,
       state: 'pending',
       status: 'Deploy In Progress...',
       context: 'baseDir',
@@ -183,7 +183,7 @@ const deployService = async ({
     })
     await githubStatusJob({
       event,
-      project,
+      project: payload,
       state: 'success',
       status: 'Deploy Complete',
       context: 'baseDir',
@@ -191,7 +191,7 @@ const deployService = async ({
   } catch (error) {
     await githubStatusJob({
       event,
-      project,
+      project: payload,
       state: 'failure',
       status: 'Deploy Failed',
       context: 'baseDir',
