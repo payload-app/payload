@@ -14,6 +14,26 @@ const echoedTasks = tasks => {
   return echoTasks
 }
 
+let id = 0
+const generateGithubStatusId = () => id++
+
+const githubStatusJob = async ({ event, project, state, status, context }) => {
+  const githubStatus = new Job(
+    `set-github-build-status-${generateGithubStatusId()}`,
+    'technosophos/github-notify:latest',
+  )
+  githubStatus.env = {
+    GH_REPO: project.repo.name,
+    GH_STATE: state,
+    GH_DESCRIPTION: status,
+    GH_CONTEXT: context ? `Brigade - ${context}` : 'Brigade',
+    GH_TOKEN: project.repo.token,
+    GH_COMMIT: event.revision.commit,
+  }
+  githubStatus.useSource = false
+  await githubStatus.run()
+}
+
 const yaml2jsonJob = async ({ baseDir, valuesFile }) => {
   // parse yaml file and return json
   const yaml2json = new Job(
@@ -130,29 +150,54 @@ const deployService = async ({
   namespace,
   envVars,
 }) => {
-  const values = await yaml2jsonJob({
-    baseDir,
-    valuesFile,
-  })
-  const { name, image: { repository: dockerImage } } = values
+  try {
+    await githubStatusJob({
+      event,
+      project,
+      state: 'pending',
+      status: 'Deploy In Progress...',
+      context: 'baseDir',
+    })
+    const values = await yaml2jsonJob({
+      baseDir,
+      valuesFile,
+    })
+    const { name, image: { repository: dockerImage } } = values
 
-  await dockerBuilderJob({
-    event,
-    payload,
-    dockerImage,
-    baseDir,
-  })
+    await dockerBuilderJob({
+      event,
+      payload,
+      dockerImage,
+      baseDir,
+    })
 
-  await helmDeployerJob({
-    event,
-    baseDir,
-    valuesFile,
-    name,
-    chart,
-    namespace,
-    envVars,
-    values,
-  })
+    await helmDeployerJob({
+      event,
+      baseDir,
+      valuesFile,
+      name,
+      chart,
+      namespace,
+      envVars,
+      values,
+    })
+    await githubStatusJob({
+      event,
+      project,
+      state: 'success',
+      status: 'Deploy Complete',
+      context: 'baseDir',
+    })
+  } catch (error) {
+    await githubStatusJob({
+      event,
+      project,
+      state: 'failure',
+      status: 'Deploy Failed',
+      context: 'baseDir',
+    })
+    throw error
+  }
 }
 
 const deploySessionService = async (event, payload) =>
@@ -567,7 +612,7 @@ events.on('update-production-services', async (event, project) => {
 })
 
 events.on('push', async (event, project) => {
-  if (event.revision.ref === 'refs/heads/master') {
-    events.emit('update-production-services', event, project)
-  }
+  // if (event.revision.ref === 'refs/heads/master') {
+  events.emit('update-production-services', event, project)
+  // }
 })
