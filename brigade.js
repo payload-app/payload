@@ -486,13 +486,14 @@ events.on('deploy-worker', deployWorker)
 events.on('deploy-queue-garbage-collector', deployQueueGarbageCollector)
 events.on('deploy-webhook-collector-service', deployWebhookCollectorService)
 
-events.on('deploy-minikube-services', async (event, payload) => {
+events.on('deploy-dev-dbs', async (event, payload) => {
   await Promise.all([
     deployDevRedis({ namespace: 'payload' }),
     deployDevMongodb({ namespace: 'payload', event, payload }),
   ])
-  // ... then
+})
 
+events.on('deploy-all-services', async (event, payload) => {
   // have no dependencies
   await Promise.all([
     deployRandomStateService(event, payload),
