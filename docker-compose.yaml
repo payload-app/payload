@@ -101,8 +101,11 @@ services:
     networks:
      - main
   mongodb:
-    image: mongo:latest
-    command: mongod --smallfiles
+    image: bitnami/mongodb:latest
+    environment:
+      - MONGODB_USERNAME=payloaduser
+      - MONGODB_PASSWORD=password
+      - MONGODB_DATABASE=payload
     networks:
      - main
   init-db:
@@ -110,8 +113,8 @@ services:
       context: ./init-db
       dockerfile: Dockerfile.development
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_DATABASE=payload
     volumes:
      - ./init-db:/usr/src/app/
     links:
@@ -125,8 +128,10 @@ services:
     networks:
       - main
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
     volumes:
      - ./user-service:/usr/src/app/
     links:
@@ -193,8 +198,10 @@ services:
       context: ./organization-service
       dockerfile: Dockerfile.development
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
     volumes:
      - ./organization-service:/usr/src/app/
     links:
@@ -216,8 +223,10 @@ services:
     ports:
     - 3000:3000
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
     volumes:
      - ./repo-service:/usr/src/app/
     links:
@@ -231,8 +240,10 @@ services:
       context: ./run-service
       dockerfile: Dockerfile.development
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
     volumes:
      - ./run-service:/usr/src/app/
     links:
