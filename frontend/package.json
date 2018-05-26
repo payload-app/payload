@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@hharnisc/async-data-fetch": "^1.2.5",
+    "@hharnisc/async-data-fetch": "^1.2.6",
     "@middleware/github-api": "^0.1.0",
     "@storybook/react": "^3.3.13",
     "autoprefixer": "7.1.6",
@@ -38,7 +38,7 @@
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
-    "pretty-bytes": "^4.0.2",
+    "pretty-bytes": "^5.0.0",
     "promise": "8.0.1",
     "raf": "3.4.0",
     "react": "^16.2.0",

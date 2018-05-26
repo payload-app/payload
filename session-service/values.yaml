@@ -1,0 +1,3 @@
+name: session-service
+image:
+  repository: payloadapp/session-service

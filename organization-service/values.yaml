@@ -1,0 +1,3 @@
+name: organization-service
+image:
+  repository: payloadapp/organization-service

@@ -1,0 +1,3 @@
+name: status-broadcaster
+image:
+  repository: payloadapp/status-broadcaster-service

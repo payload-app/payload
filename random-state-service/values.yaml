@@ -1,0 +1,8 @@
+name: random-state-service
+image:
+  repository: payloadapp/random-state-service
+env:
+  - name: STATE_TTL_SECONDS
+    value: 300
+  - name: REDIS_HOST
+    value: redis-master

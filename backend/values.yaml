@@ -1,0 +1,8 @@
+name: backend
+image:
+  repository: payloadapp/backend
+ingress:
+  enabled: true
+  host: local.payloadapp.com
+  paths:
+  - /api

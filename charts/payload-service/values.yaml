@@ -1,0 +1,41 @@
+name: payload-hello
+track: stable
+replicaCount: 1
+image:
+  repository: bufferapp/buffer-hello
+  tag: 1.0.1
+  pullPolicy: Always
+service:
+  enabled: true
+  externalPort: 3000
+  internalPort: 3000
+resources:
+  limits:
+   cpu: 100m
+   memory: 128Mi
+  requests:
+   cpu: 100m
+   memory: 64Mi
+env: {}
+# env:
+#   - name: VERSION
+#     value: v1
+healthcheck:
+  enabled: true
+  config:
+    port: 8086
+    livenessChecks:
+    - name: httpget-check
+      type: httpGetCheck
+      url: http://localhost:3000/healthz
+    readinessChecks:
+    - name: httpget-check
+      type: httpGetCheck
+      url: http://localhost:3000/healthz
+ingress:
+  enabled: false
+# ingress:
+#   enabled: true
+#   host: buffer-hello.local
+#   paths:
+#     - /

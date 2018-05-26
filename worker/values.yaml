@@ -1,0 +1,18 @@
+name: worker
+image:
+  repository: payloadapp/worker
+replicaCount: 2
+healthcheck:
+  enabled: false
+service:
+  enabled: false
+env:
+  # HACK: put placeholder values so WORKER_NAME does not get overwritten
+  - name: BASE_RUN_URL
+    value: ''
+  - name: WORKER_QUEUE
+    value: ''
+  - name: WORKER_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name

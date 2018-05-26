@@ -3,12 +3,15 @@ const RPCClient = require('@hharnisc/micro-rpc-client')
 const { logger } = require('./logger')
 const doWork = require('./doWork')
 const { broadcastComplete, broadcastCompleteWithDiffs } = require('./broadcast')
+const cleanup = require('./cleanup')
 
 const sleep = promisify(setTimeout)
 
 const queueServiceClient = new RPCClient({
   url: 'http://queue-service:3000/rpc',
 })
+
+const workingDirBase = '/home/sandbox'
 
 const main = async () => {
   const queue = process.env.WORKER_QUEUE
@@ -69,7 +72,8 @@ const main = async () => {
         })
         // if the lease was lost, exit the process
         if (error.message === 'could not find existing lease') {
-          process.exit(2)
+          return
+          // process.exit(2)
         }
       }
     }, lease * 1000 / 2)
@@ -93,7 +97,7 @@ const main = async () => {
           },
         })
       }
-      process.exit(1)
+      // process.exit(1)
     }, task.maxLease * 1000)
 
     // use these to calculate github status
@@ -111,6 +115,7 @@ const main = async () => {
         sha: baseSha,
         branch: baseBranch,
         logger,
+        workingDirBase,
       })
       baseFileSizes = fileSizes
     } catch (error) {
@@ -122,7 +127,7 @@ const main = async () => {
         },
       })
       if (error.message === 'Another worker is processing this run') {
-        process.exit(0)
+        // process.exit(0)
       }
     }
 
@@ -137,6 +142,7 @@ const main = async () => {
         sha: headSha,
         branch: headBranch,
         logger,
+        workingDirBase,
       })
       headFileSizes = fileSizes
       increaseThreshold = threshold
@@ -164,7 +170,7 @@ const main = async () => {
         })
       }
       // let the task expire since another worker is processing this run
-      process.exit(0)
+      // process.exit(0)
     }
 
     if (headFileSizes && baseFileSizes && taskType === 'pullRequest') {
@@ -208,12 +214,20 @@ const main = async () => {
   await sleep(10000)
 }
 
-main().catch(error => {
-  logger.error({
-    message: 'Uncaught Error In Main',
-    data: {
-      stack: error.stack,
-      error: error.message,
-    },
-  })
-})
+const controlLoop = async () => {
+  try {
+    await main()
+  } catch (error) {
+    logger.error({
+      message: 'Uncaught Error In Main',
+      data: {
+        stack: error.stack,
+        error: error.message,
+      },
+    })
+    cleanup({ workingDirBase })
+  }
+  await controlLoop()
+}
+
+controlLoop()

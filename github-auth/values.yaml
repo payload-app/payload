@@ -1,0 +1,9 @@
+name: github-auth
+image:
+  repository: payloadapp/github-auth
+ingress:
+  enabled: true
+  host: local.payloadapp.com
+  paths:
+  - /login
+  - /callback

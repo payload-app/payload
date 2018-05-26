@@ -1,0 +1,11 @@
+name: queue-garbage-collector
+image:
+  repository: payloadapp/queue-garbage-collector
+replicaCount: 1
+healthcheck:
+  enabled: false
+service:
+  enabled: false
+env:
+  - name: SLEEP_AFTER_COLLECT
+    value: 60 # seconds

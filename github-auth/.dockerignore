@@ -1,0 +1,4 @@
+node_modules
+Dockerfile.development
+.env
+.env.example

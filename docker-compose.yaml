@@ -88,6 +88,8 @@ services:
     build:
       context: ./queue-service
       dockerfile: Dockerfile.development
+    environment:
+      - REDIS_HOST=redis
     volumes:
      - ./queue-service:/usr/src/app/
     links:
@@ -99,8 +101,11 @@ services:
     networks:
      - main
   mongodb:
-    image: mongo:latest
-    command: mongod --smallfiles
+    image: bitnami/mongodb:latest
+    environment:
+      - MONGODB_USERNAME=payloaduser
+      - MONGODB_PASSWORD=password
+      - MONGODB_DATABASE=payload
     networks:
      - main
   init-db:
@@ -108,8 +113,8 @@ services:
       context: ./init-db
       dockerfile: Dockerfile.development
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_DATABASE=payload
     volumes:
      - ./init-db:/usr/src/app/
     links:
@@ -123,8 +128,10 @@ services:
     networks:
       - main
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
     volumes:
      - ./user-service:/usr/src/app/
     links:
@@ -155,7 +162,6 @@ services:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-1
      - BASE_RUN_URL=http://local.payloadapp.com
-    restart: always
     networks:
      - main
   worker-clone:
@@ -172,7 +178,6 @@ services:
      - WORKER_QUEUE=payload-worker
      - WORKER_NAME=worker-2
      - BASE_RUN_URL=http://local.payloadapp.com
-    restart: always
     networks:
      - main
   queue-garbage-collector:
@@ -186,7 +191,6 @@ services:
     environment:
      - WORKER_QUEUE=payload-worker
      - SLEEP_AFTER_COLLECT=60 #seconds
-    restart: always
     networks:
      - main
   organization-service:
@@ -194,8 +198,10 @@ services:
       context: ./organization-service
       dockerfile: Dockerfile.development
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
     volumes:
      - ./organization-service:/usr/src/app/
     links:
@@ -217,8 +223,10 @@ services:
     ports:
     - 3000:3000
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
     volumes:
      - ./repo-service:/usr/src/app/
     links:
@@ -232,8 +240,10 @@ services:
       context: ./run-service
       dockerfile: Dockerfile.development
     environment:
-     - MONGO_URL=mongodb://mongodb:27017
-     - MONGO_DB=payload
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
     volumes:
      - ./run-service:/usr/src/app/
     links:
@@ -246,6 +256,7 @@ services:
       dockerfile: Dockerfile.development
     environment:
      - STATE_TTL_SECONDS=300
+     - REDIS_HOST=redis
     volumes:
      - ./random-state-service:/usr/src/app/
     links:

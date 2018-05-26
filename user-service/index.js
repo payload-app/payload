@@ -1,6 +1,5 @@
 const { promisify } = require('util')
 const { MongoClient } = require('mongodb')
-const { send } = require('micro')
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const { router, get, post } = require('microrouter')
@@ -13,8 +12,18 @@ const addOrganizations = require('./addOrganizations')
 const promisifiedMongoClient = promisify(MongoClient)
 
 const initDB = async handler => {
-  const client = await promisifiedMongoClient.connect(process.env.MONGO_URL)
-  const collectionClient = client.db(process.env.MONGO_DB).collection('users')
+  const client = await promisifiedMongoClient.connect(
+    `${process.env.MONGODB_URL}/${process.env.MONGODB_DATABASE}`,
+    {
+      auth: {
+        user: process.env.MONGODB_USERNAME,
+        password: process.env.MONGODB_PASSWORD,
+      },
+    },
+  )
+  const collectionClient = client
+    .db(process.env.MONGODB_DATABASE)
+    .collection('users')
   const organizationServiceClient = new RPCClient({
     url: 'http://organization-service:3000/rpc',
   })
@@ -42,30 +51,11 @@ const rpcHandler = ({ collectionClient, organizationServiceClient }) =>
     ),
   )
 
-const healthHandler = ({
-  collectionClient,
-  organizationServiceClient,
-}) => async (req, res) => {
-  try {
-    const dbResponse = await collectionClient.stats()
-    if (!dbResponse.ok) {
-      throw new Error('MongoDB is not ok')
-    }
-    await organizationServiceClient.call('methods')
-    send(res, 200, { status: 'OK' })
-  } catch (err) {
-    send(res, 500, {
-      status: err.message,
-    })
-  }
-}
+const healthHandler = () => 'OK'
 
 module.exports = initDB(({ collectionClient, organizationServiceClient }) =>
   router(
-    get(
-      '/healthz',
-      healthHandler({ collectionClient, organizationServiceClient }),
-    ),
+    get('/healthz', healthHandler),
     post('/rpc', rpcHandler({ collectionClient, organizationServiceClient })),
   ),
 )

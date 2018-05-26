@@ -1,0 +1,24 @@
+name: frontend
+image:
+  repository: payloadapp/frontend
+ingress:
+  enabled: true
+  host: local.payloadapp.com
+  paths:
+  - /
+service:
+  enabled: true
+  externalPort: 80
+  internalPort: 80
+healthcheck:
+  enabled: true
+  config:
+    port: 8086
+    livenessChecks:
+    - name: httpget-check
+      type: httpGetCheck
+      url: http://localhost/
+    readinessChecks:
+    - name: httpget-check
+      type: httpGetCheck
+      url: http://localhost/

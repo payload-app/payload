@@ -1,0 +1,6 @@
+name: queue-service
+image:
+  repository: payloadapp/queue-service
+env:
+  - name: REDIS_HOST
+    value: redis-master
