@@ -220,8 +220,6 @@ services:
     build:
       context: ./repo-service
       dockerfile: Dockerfile.development
-    ports:
-    - 3000:3000
     environment:
      - MONGODB_URL=mongodb://mongodb:27017
      - MONGODB_USERNAME=payloaduser
