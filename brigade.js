@@ -17,18 +17,28 @@ const echoedTasks = tasks => {
 let id = 0
 const generateGithubStatusId = () => id++
 
-const githubStatusJob = async ({ event, project, state, status, context }) => {
+const githubStatusJob = async ({
+  event,
+  payload,
+  state,
+  status,
+  context,
+  target,
+}) => {
   const githubStatus = new Job(
     `set-github-build-status-${generateGithubStatusId()}`,
     'technosophos/github-notify:latest',
   )
   githubStatus.env = {
-    GH_REPO: project.repo.name,
+    GH_REPO: payload.repo.name,
     GH_STATE: state,
     GH_DESCRIPTION: status,
     GH_CONTEXT: context ? `Brigade - ${context}` : 'Brigade',
-    GH_TOKEN: project.repo.token,
+    GH_TOKEN: payload.repo.token,
     GH_COMMIT: event.revision.commit,
+  }
+  if (target) {
+    githubStatus.env.GH_TARGET_URL = target
   }
   githubStatus.useSource = false
   await githubStatus.run()
@@ -110,6 +120,10 @@ const generateHelmEnvVars = ({ existingEnvVars = [], envVars = [] }) => {
     .join(' ')
 }
 
+const generateHostOverride = ({ hostOverride }) => {
+  return hostOverride ? `--set-string ingress.host=${hostOverride}` : undefined
+}
+
 const helmDeployerJob = async ({
   event,
   baseDir,
@@ -119,11 +133,12 @@ const helmDeployerJob = async ({
   namespace,
   envVars,
   values,
+  hostOverride,
 }) => {
   // do helm deploy
   const helmDeployer = new Job(
     formatJobName({ name: `helm-deployer-${baseDir}` }),
-    'linkyard/docker-helm:latest', // TODO: change to 2.9.0 when it gets published
+    'linkyard/docker-helm:2.9.1',
   )
   helmDeployer.tasks = echoedTasks([
     `cd /src/${baseDir}`,
@@ -133,13 +148,20 @@ const helmDeployerJob = async ({
     } ${generateHelmEnvVars({
       existingEnvVars: values.env,
       envVars,
-    })} --debug --dry-run`,
+    })} ${generateHostOverride({
+      hostOverride,
+    })} --set name=${name} --debug --dry-run`,
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
-    } ${generateHelmEnvVars({ existingEnvVars: values.env, envVars })}`,
+    } ${generateHelmEnvVars({
+      existingEnvVars: values.env,
+      envVars,
+    })} ${generateHostOverride({ hostOverride })} --set name=${name}`,
   ])
   await helmDeployer.run()
 }
+
+const formattedBranchName = ({ branchName }) => branchName.replace(/\//g, '-')
 
 const deployService = async ({
   event,
@@ -149,20 +171,35 @@ const deployService = async ({
   chart,
   namespace,
   envVars,
+  branchName,
 }) => {
   try {
     await githubStatusJob({
       event,
-      project: payload,
+      payload,
       state: 'pending',
       status: 'Deploy In Progress...',
-      context: 'baseDir',
+      context: baseDir,
     })
     const values = await yaml2jsonJob({
       baseDir,
       valuesFile,
     })
-    const { name, image: { repository: dockerImage } } = values
+    const {
+      name,
+      image: { repository: dockerImage },
+      ingress: { host },
+    } = values
+    const deploymentName = branchName
+      ? `${formattedBranchName({ branchName })}-${name}`
+      : name
+    const hostOverride =
+      branchName && host
+        ? `${formattedBranchName({ branchName })}.${host}`
+        : undefined
+
+    console.log('deploymentName', deploymentName)
+    console.log('hostOverride', hostOverride)
 
     await dockerBuilderJob({
       event,
@@ -175,26 +212,28 @@ const deployService = async ({
       event,
       baseDir,
       valuesFile,
-      name,
+      name: deploymentName,
       chart,
       namespace,
       envVars,
       values,
+      hostOverride,
     })
     await githubStatusJob({
       event,
-      project: payload,
+      payload,
       state: 'success',
       status: 'Deploy Complete',
-      context: 'baseDir',
+      context: baseDir,
+      target: hostOverride | host,
     })
   } catch (error) {
     await githubStatusJob({
       event,
-      project: payload,
+      payload,
       state: 'failure',
       status: 'Deploy Failed',
-      context: 'baseDir',
+      context: baseDir,
     })
     throw error
   }
@@ -343,6 +382,12 @@ const deployFrontendService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
+    envVars: [
+      {
+        name: 'BACKEND_URL',
+        value: payload.secrets.WEBHOOK_BASE_URL,
+      },
+    ],
   })
 
 const deployGithubAuthService = async (event, payload) =>
@@ -547,7 +592,7 @@ const calculateDiffs = ({ event }) => {
   return Array.from(diffs)
 }
 
-events.on('update-production-services', async (event, project) => {
+events.on('update-production-services', async (event, payload) => {
   console.log(
     `Calculated Deployments From Diff: ${JSON.stringify(
       calculateDiffs({ event }),
@@ -558,52 +603,52 @@ events.on('update-production-services', async (event, project) => {
   calculateDiffs({ event }).forEach(diffPath => {
     switch (diffPath) {
       case 'session-service':
-        events.emit('deploy-session-service', event, project)
+        events.emit('deploy-session-service', event, payload)
         break
       case 'queue-service':
-        events.emit('deploy-queue-service', event, project)
+        events.emit('deploy-queue-service', event, payload)
         break
       case 'random-state-service':
-        events.emit('deploy-random-state-service', event, project)
+        events.emit('deploy-random-state-service', event, payload)
         break
       case 'github-service':
-        events.emit('deploy-github-service', event, project)
+        events.emit('deploy-github-service', event, payload)
         break
       case 'organization-service':
-        events.emit('deploy-organization-service', event, project)
+        events.emit('deploy-organization-service', event, payload)
         break
       case 'user-service':
-        events.emit('deploy-user-service', event, project)
+        events.emit('deploy-user-service', event, payload)
         break
       case 'run-service':
-        events.emit('deploy-run-service', event, project)
+        events.emit('deploy-run-service', event, payload)
         break
       case 'repo-service':
-        events.emit('deploy-repo-service', event, project)
+        events.emit('deploy-repo-service', event, payload)
         break
       case 'init-db':
-        events.emit('deploy-init-db-job', event, project)
+        events.emit('deploy-init-db-job', event, payload)
         break
       case 'status-broadcaster':
-        events.emit('deploy-status-broadcaster-service', event, project)
+        events.emit('deploy-status-broadcaster-service', event, payload)
         break
       case 'backend':
-        events.emit('deploy-backend-service', event, project)
+        events.emit('deploy-backend-service', event, payload)
         break
       case 'frontend':
-        events.emit('deploy-frontend-service', event, project)
+        events.emit('deploy-frontend-service', event, payload)
         break
       case 'github-auth':
-        events.emit('deploy-github-auth-service', event, project)
+        events.emit('deploy-github-auth-service', event, payload)
         break
       case 'worker':
-        events.emit('deploy-worker', event, project)
+        events.emit('deploy-worker', event, payload)
         break
       case 'queue-garbage-collector':
-        events.emit('deploy-queue-garbage-collector', event, project)
+        events.emit('deploy-queue-garbage-collector', event, payload)
         break
       case 'webhook-collector':
-        events.emit('deploy-webhook-collector-service', event, project)
+        events.emit('deploy-webhook-collector-service', event, payload)
         break
       default:
         console.log(`unknown change path: ${diffPath}`)
@@ -612,8 +657,22 @@ events.on('update-production-services', async (event, project) => {
   })
 })
 
-events.on('push', async (event, project) => {
+events.on('deploy-staging-frontend-sevice', async (event, payload) => {
+  deployService({
+    event,
+    payload,
+    baseDir: 'frontend',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+    branchName: 'my-pr',
+  })
+})
+
+events.on('destroy-staging-frontend-service', () => {})
+
+events.on('push', async (event, payload) => {
   // if (event.revision.ref === 'refs/heads/master') {
-  events.emit('update-production-services', event, project)
+  events.emit('update-production-services', event, payload)
   // }
 })

@@ -1,5 +1,4 @@
 name: payload-hello
-track: stable
 replicaCount: 1
 image:
   repository: bufferapp/buffer-hello
