@@ -82,7 +82,7 @@ const store = createStore(
           url: `${window.location.protocol}//${backendUrl({
             hostname: window.location.hostname,
           })}/api/rpc`,
-          sendCredentials: 'same-origin',
+          sendCredentials: 'include',
         },
       }),
       repoListMiddleware,
