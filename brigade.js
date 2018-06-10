@@ -655,6 +655,7 @@ events.on('update-production-services', async (event, payload) => {
 })
 
 events.on('deploy-staging-frontend-sevice', async (event, payload) => {
+  // TODO: detect branch name
   deployService({
     event,
     payload,
@@ -667,10 +668,16 @@ events.on('deploy-staging-frontend-sevice', async (event, payload) => {
   })
 })
 
-events.on('destroy-staging-frontend-service', () => {})
+events.on('destroy-staging-frontend-service', () => {
+  // TODO: create a helm destroy function
+})
 
 events.on('push', async (event, payload) => {
+  // TODO: only update when sync to master
   // if (event.revision.ref === 'refs/heads/master') {
   events.emit('update-production-services', event, payload)
   // }
 })
+
+// TODO: do staging deployment on PR sync and create
+// TODO: do a staging destroy when PR closes
