@@ -79,7 +79,9 @@ const store = createStore(
       routerMiddleware(history),
       asyncDataFetchMiddleware({
         rpcClientOptions: {
-          url: `${backendUrl({ hostname: window.location.hostname })}/api/rpc`,
+          url: `${window.location.protocol}://${backendUrl({
+            hostname: window.location.hostname,
+          })}/api/rpc`,
           sendCredentials: 'same-origin',
         },
       }),
