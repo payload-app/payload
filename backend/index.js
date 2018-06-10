@@ -1,7 +1,6 @@
 require('dotenv').config()
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const { router, get, post } = require('microrouter')
-const microCors = require('micro-cors')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const setSession = require('./setSession')
 const repoOwners = require('./repoOwners')
@@ -76,10 +75,7 @@ const rpcHandler = setSession(
 
 const healthHandler = () => 'OK'
 
-const cors = microCors({
-  origin: '*',
-})
-
-module.exports = cors(
-  router(get('/healthz', healthHandler), post('/api/rpc', rpcHandler)),
+module.exports = router(
+  get('/healthz', healthHandler),
+  post('/api/rpc', rpcHandler),
 )

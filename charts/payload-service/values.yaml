@@ -34,8 +34,13 @@ healthcheck:
       url: http://localhost:3000/healthz
 ingress:
   enabled: false
+  stagingBackend:
+    enabled: false
 # ingress:
 #   enabled: true
 #   host: buffer-hello.local
 #   paths:
 #     - /
+#   stagingBackend:
+#     # set to true to create an ingress to the backend
+#     enabled: true

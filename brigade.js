@@ -121,7 +121,7 @@ const generateHelmEnvVars = ({ existingEnvVars = [], envVars = [] }) => {
 }
 
 const generateHostOverride = ({ hostOverride }) => {
-  return hostOverride ? `--set-string ingress.host=${hostOverride}` : undefined
+  return hostOverride ? `--set-string ingress.host=${hostOverride}` : ''
 }
 
 const helmDeployerJob = async ({
@@ -134,7 +134,9 @@ const helmDeployerJob = async ({
   envVars,
   values,
   hostOverride,
+  stagingBackendEnabled,
 }) => {
+  const stagingBackendEnabledOption = stagingBackendEnabled || false
   // do helm deploy
   const helmDeployer = new Job(
     formatJobName({ name: `helm-deployer-${baseDir}` }),
@@ -150,13 +152,15 @@ const helmDeployerJob = async ({
       envVars,
     })} ${generateHostOverride({
       hostOverride,
-    })} --set name=${name} --debug --dry-run`,
+    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} --debug --dry-run`,
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
     } ${generateHelmEnvVars({
       existingEnvVars: values.env,
       envVars,
-    })} ${generateHostOverride({ hostOverride })} --set name=${name}`,
+    })} ${generateHostOverride({
+      hostOverride,
+    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption}`,
   ])
   await helmDeployer.run()
 }
@@ -172,6 +176,7 @@ const deployService = async ({
   namespace,
   envVars,
   branchName,
+  stagingBackendEnabled,
 }) => {
   try {
     await githubStatusJob({
@@ -215,6 +220,7 @@ const deployService = async ({
       envVars,
       values,
       hostOverride,
+      stagingBackendEnabled,
     })
     await githubStatusJob({
       event,
@@ -657,6 +663,7 @@ events.on('deploy-staging-frontend-sevice', async (event, payload) => {
     chart: 'payload-service',
     namespace: 'payload',
     branchName: 'my-pr',
+    stagingBackendEnabled: true,
   })
 })
 
