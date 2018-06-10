@@ -77,7 +77,8 @@ const rpcHandler = setSession(
 const healthHandler = () => 'OK'
 
 const cors = microCors({
-  origin: '.payloadapp.com$',
+  // prettier-ignore
+  origin: '\.payloadapp\.com$'
 })
 
 module.exports = cors(
