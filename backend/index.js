@@ -78,7 +78,7 @@ const healthHandler = () => 'OK'
 
 const cors = microCors({
   // prettier-ignore
-  origin: '\.payloadapp\.com$'
+  origin: '^(https?://.+\.payloadapp\.com(?::\d{1,5})?)$'
 })
 
 module.exports = cors(
