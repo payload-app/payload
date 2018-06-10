@@ -19,6 +19,7 @@
     "dotenv": "^5.0.0",
     "joi": "^13.1.2",
     "micro": "^9.0.2",
+    "micro-cors": "^0.1.0",
     "microrouter": "^3.0.0",
     "object-path": "^0.11.4",
     "object-path-immutable": "^1.0.1",
