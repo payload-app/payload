@@ -198,9 +198,6 @@ const deployService = async ({
         ? `${formattedBranchName({ branchName })}.${host}`
         : undefined
 
-    console.log('deploymentName', deploymentName)
-    console.log('hostOverride', hostOverride)
-
     await dockerBuilderJob({
       event,
       payload,
@@ -382,12 +379,6 @@ const deployFrontendService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
-    envVars: [
-      {
-        name: 'BACKEND_URL',
-        value: payload.secrets.WEBHOOK_BASE_URL,
-      },
-    ],
   })
 
 const deployGithubAuthService = async (event, payload) =>

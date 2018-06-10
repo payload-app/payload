@@ -50,6 +50,15 @@ const composeEnhancers =
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
     : compose
 
+const backendUrl = ({ hostname }) => {
+  if (hostname.endsWith('local.payloadapp.com')) {
+    return 'local.payloadapp.com'
+  } else if (hostname.endsWith('payloadapp.com')) {
+    return 'payloadapp.com'
+  }
+  return hostname
+}
+
 export const history = createHistory()
 
 const store = createStore(
@@ -70,7 +79,7 @@ const store = createStore(
       routerMiddleware(history),
       asyncDataFetchMiddleware({
         rpcClientOptions: {
-          url: `${__BACKEND_URL__}/api/rpc`,
+          url: `${backendUrl({ hostname: window.location.hostname })}/api/rpc`,
           sendCredentials: 'same-origin',
         },
       }),
