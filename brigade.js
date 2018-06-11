@@ -165,6 +165,18 @@ const helmDeployerJob = async ({
   await helmDeployer.run()
 }
 
+const helmDestroyerJob = async ({ name, baseDir }) => {
+  const helmDestroyer = new Job(
+    formatJobName({ name: `helm-deployer-${baseDir}` }),
+    'linkyard/docker-helm:2.9.1',
+  )
+  helmDestroyer.tasks = echoedTasks([
+    'helm init --client-only',
+    `helm del --purge ${name}`,
+  ])
+  await helmDestroyer.run()
+}
+
 const formattedBranchName = ({ branchName }) => branchName.replace(/\//g, '-')
 
 const deployService = async ({
@@ -236,6 +248,52 @@ const deployService = async ({
       payload,
       state: 'failure',
       status: 'Deploy Failed',
+      context: baseDir,
+    })
+    throw error
+  }
+}
+
+const destroyService = async ({
+  event,
+  payload,
+  valuesFile,
+  baseDir,
+  branchName,
+}) => {
+  try {
+    await githubStatusJob({
+      event,
+      payload,
+      state: 'pending',
+      status: 'Teardown In Progress...',
+      context: baseDir,
+    })
+    const values = await yaml2jsonJob({
+      baseDir,
+      valuesFile,
+    })
+    const { name } = values
+    const deploymentName = branchName
+      ? `${formattedBranchName({ branchName })}-${name}`
+      : name
+    await helmDestroyerJob({
+      baseDir,
+      name: deploymentName,
+    })
+    await githubStatusJob({
+      event,
+      payload,
+      state: 'success',
+      status: 'Teardown Complete',
+      context: baseDir,
+    })
+  } catch (error) {
+    await githubStatusJob({
+      event,
+      payload,
+      state: 'failure',
+      status: 'Teardown Failed',
       context: baseDir,
     })
     throw error
@@ -654,6 +712,9 @@ events.on('update-production-services', async (event, payload) => {
   })
 })
 
+const getBranchName = ({ event }) =>
+  event.revision.ref.replace('refs/heads/', '')
+
 events.on('deploy-staging-frontend-sevice', async (event, payload) => {
   // TODO: detect branch name
   deployService({
@@ -668,8 +729,15 @@ events.on('deploy-staging-frontend-sevice', async (event, payload) => {
   })
 })
 
-events.on('destroy-staging-frontend-service', () => {
-  // TODO: create a helm destroy function
+events.on('destroy-staging-frontend-service', async (event, payload) => {
+  // TODO: detect branch name
+  destroyService({
+    event,
+    payload,
+    valuesFile: 'values.yaml',
+    baseDir: 'frontend',
+    branchName: 'my-pr',
+  })
 })
 
 events.on('push', async (event, payload) => {
