@@ -755,7 +755,7 @@ events.on('push', async (event, payload) => {
 events.on('pull_request', async (event, payload) => {
   console.log('event', event)
   console.log('payload', payload)
-  console.log('payload.action', payload.action)
+  const parsedPayload = JSON.parse(payload)
   console.log('parsedPayload.action', parsedPayload.action)
   if (['opened', 'reopened', 'synchronize'].includes(parsedPayload.action)) {
     events.emit('deploy-staging-frontend-sevice', event, payload)
