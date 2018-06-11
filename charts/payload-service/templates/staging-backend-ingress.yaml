@@ -1,0 +1,30 @@
+{{- if .Values.ingress.enabled -}}
+{{- if .Values.ingress.stagingBackend.enabled -}}
+{{- $serviceName := include "name" . -}}
+{{- $servicePort := .Values.service.externalPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}-backend-staging-ingress
+  labels:
+    app: {{ template "name" . }}-backend-staging-ingress
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    # use the same host as staging frontend
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+        # hardcode the path to the backend service
+        # TODO: decouple this or spin up a backend service
+        - path: /api/rpc
+          backend:
+            serviceName: backend
+            servicePort: 3000
+{{- end -}}
+{{- end -}}
