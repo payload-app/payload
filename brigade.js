@@ -747,10 +747,9 @@ events.on('destroy-staging-frontend-service', async (event, payload) => {
 })
 
 events.on('push', async (event, payload) => {
-  // TODO: only update when sync to master
-  // if (event.revision.ref === 'refs/heads/master') {
-  events.emit('update-production-services', event, payload)
-  // }
+  if (event.revision.ref === 'refs/heads/master') {
+    events.emit('update-production-services', event, payload)
+  }
 })
 
 events.on('pull_request', async (event, payload) => {
