@@ -758,10 +758,7 @@ events.on('push', async (event, payload) => {
 })
 
 events.on('pull_request', async (event, payload) => {
-  console.log('event', event)
-  console.log('payload', payload)
   const action = getPRAction({ event })
-  console.log('parsedPayload.action', action)
   if (['opened', 'reopened', 'synchronize'].includes(action)) {
     events.emit('deploy-staging-frontend-sevice', event, payload)
   } else if (parsedPayload.action === 'closed') {
