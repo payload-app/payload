@@ -753,6 +753,9 @@ events.on('push', async (event, payload) => {
 })
 
 events.on('pull_request', async (event, payload) => {
+  console.log('event', event)
+  console.log('payload', payload)
+  console.log('payload.action', payload.action)
   if (['opened', 'reopened', 'synchronize'].includes(payload.action)) {
     events.emit('deploy-staging-frontend-sevice', event, payload)
   } else if (payload.action === 'closed') {
