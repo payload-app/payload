@@ -747,6 +747,9 @@ events.on('destroy-staging-frontend-service', async (event, payload) => {
 })
 
 events.on('push', async (event, payload) => {
+  console.log('event', event)
+  console.log('payload', payload)
+  console.log('payload.action', payload.action)
   if (event.revision.ref === 'refs/heads/master') {
     events.emit('update-production-services', event, payload)
   }
