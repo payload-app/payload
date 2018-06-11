@@ -720,7 +720,7 @@ const getPRAction = ({ event }) => {
   return JSON.parse(event.payload).action
 }
 
-events.on('deploy-staging-frontend-sevice', async (event, payload) => {
+events.on('deploy-staging-frontend-service', async (event, payload) => {
   const branchName = getPRBranchName({ event })
   if (branchName === 'master') {
     throw new Error('Cannot deploy staging with master branch')
@@ -760,8 +760,8 @@ events.on('push', async (event, payload) => {
 events.on('pull_request', async (event, payload) => {
   const action = getPRAction({ event })
   if (['opened', 'reopened', 'synchronize'].includes(action)) {
-    events.emit('deploy-staging-frontend-sevice', event, payload)
+    events.emit('deploy-staging-frontend-service', event, payload)
   } else if (action === 'closed') {
-    events.emit('destroy-staging-frontend-sevice', event, payload)
+    events.emit('destroy-staging-frontend-service', event, payload)
   }
 })
