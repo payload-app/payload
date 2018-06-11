@@ -712,11 +712,16 @@ events.on('update-production-services', async (event, payload) => {
   })
 })
 
-const getBranchName = ({ event }) =>
-  event.revision.ref.replace('refs/heads/', '')
+const getPRBranchName = ({ event }) => {
+  return JSON.parse(event.payload).pull_request.head.ref
+}
+
+const getPRAction = ({ event }) => {
+  return JSON.parse(event.payload).action
+}
 
 events.on('deploy-staging-frontend-sevice', async (event, payload) => {
-  const branchName = getBranchName({ event })
+  const branchName = getPRBranchName({ event })
   if (branchName === 'master') {
     throw new Error('Cannot deploy staging with master branch')
   }
@@ -733,7 +738,7 @@ events.on('deploy-staging-frontend-sevice', async (event, payload) => {
 })
 
 events.on('destroy-staging-frontend-service', async (event, payload) => {
-  const branchName = getBranchName({ event })
+  const branchName = getPRBranchName({ event })
   if (branchName === 'master') {
     throw new Error('Cannot deploy staging with master branch')
   }
@@ -755,7 +760,7 @@ events.on('push', async (event, payload) => {
 events.on('pull_request', async (event, payload) => {
   console.log('event', event)
   console.log('payload', payload)
-  const parsedPayload = JSON.parse(event.payload)
+  const parsedPayload = getPRAction({ event })
   console.log('parsedPayload.action', parsedPayload.action)
   if (['opened', 'reopened', 'synchronize'].includes(parsedPayload.action)) {
     events.emit('deploy-staging-frontend-sevice', event, payload)
