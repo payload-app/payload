@@ -747,9 +747,6 @@ events.on('destroy-staging-frontend-service', async (event, payload) => {
 })
 
 events.on('push', async (event, payload) => {
-  console.log('event', event)
-  console.log('payload', payload)
-  console.log('payload.action', payload.action)
   if (event.revision.ref === 'refs/heads/master') {
     events.emit('update-production-services', event, payload)
   }
@@ -759,9 +756,10 @@ events.on('pull_request', async (event, payload) => {
   console.log('event', event)
   console.log('payload', payload)
   console.log('payload.action', payload.action)
-  if (['opened', 'reopened', 'synchronize'].includes(payload.action)) {
+  console.log('parsedPayload.action', parsedPayload.action)
+  if (['opened', 'reopened', 'synchronize'].includes(parsedPayload.action)) {
     events.emit('deploy-staging-frontend-sevice', event, payload)
-  } else if (payload.action === 'closed') {
+  } else if (parsedPayload.action === 'closed') {
     events.emit('destroy-staging-frontend-sevice', event, payload)
   }
 })
