@@ -716,7 +716,10 @@ const getBranchName = ({ event }) =>
   event.revision.ref.replace('refs/heads/', '')
 
 events.on('deploy-staging-frontend-sevice', async (event, payload) => {
-  // TODO: detect branch name
+  const branchName = getBranchName({ event })
+  if (branchName === 'master') {
+    throw new Error('Cannot deploy staging with master branch')
+  }
   deployService({
     event,
     payload,
@@ -724,19 +727,22 @@ events.on('deploy-staging-frontend-sevice', async (event, payload) => {
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
-    branchName: 'my-pr',
+    branchName,
     stagingBackendEnabled: true,
   })
 })
 
 events.on('destroy-staging-frontend-service', async (event, payload) => {
-  // TODO: detect branch name
+  const branchName = getBranchName({ event })
+  if (branchName === 'master') {
+    throw new Error('Cannot deploy staging with master branch')
+  }
   destroyService({
     event,
     payload,
     valuesFile: 'values.yaml',
     baseDir: 'frontend',
-    branchName: 'my-pr',
+    branchName,
   })
 })
 
@@ -747,5 +753,10 @@ events.on('push', async (event, payload) => {
   // }
 })
 
-// TODO: do staging deployment on PR sync and create
-// TODO: do a staging destroy when PR closes
+events.on('pull_request', async (event, payload) => {
+  if (['opened', 'reopened', 'synchronize'].includes(payload.action)) {
+    events.emit('deploy-staging-frontend-sevice', event, payload)
+  } else if (payload.action === 'closed') {
+    events.emit('destroy-staging-frontend-sevice', event, payload)
+  }
+})
