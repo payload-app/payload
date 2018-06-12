@@ -429,6 +429,10 @@ const deployBackendService = async (event, payload) =>
     namespace: 'payload',
     envVars: [
       {
+        name: 'APP_HOST',
+        value: payload.secrets.APP_HOST,
+      },
+      {
         name: 'WEBHOOK_BASE_URL',
         value: payload.secrets.WEBHOOK_BASE_URL,
       },
@@ -463,8 +467,12 @@ const deployGithubAuthService = async (event, payload) =>
         value: payload.secrets.GH_CLIENT_SECRET,
       },
       {
-        name: 'REDIRECT_URL',
-        value: payload.secrets.REDIRECT_URL,
+        name: 'APP_HOST',
+        value: payload.secrets.APP_HOST,
+      },
+      {
+        name: 'APP_PROTOCOL',
+        value: payload.secrets.APP_PROTOCOL,
       },
     ],
   })
@@ -479,8 +487,12 @@ const deployWorker = async (event, payload) => {
     namespace: 'payload',
     envVars: [
       {
-        name: 'BASE_RUN_URL',
-        value: payload.secrets.REDIRECT_URL,
+        name: 'APP_HOST',
+        value: payload.secrets.APP_HOST,
+      },
+      {
+        name: 'APP_PROTOCOL',
+        value: payload.secrets.APP_PROTOCOL,
       },
       {
         name: 'WORKER_QUEUE',
@@ -517,8 +529,12 @@ const deployWebhookCollectorService = async (event, payload) => {
     namespace: 'payload',
     envVars: [
       {
-        name: 'BASE_RUN_URL',
-        value: payload.secrets.REDIRECT_URL,
+        name: 'APP_HOST',
+        value: payload.secrets.APP_HOST,
+      },
+      {
+        name: 'APP_PROTOCOL',
+        value: payload.secrets.APP_PROTOCOL,
       },
       {
         name: 'WORKER_QUEUE',

@@ -8,7 +8,9 @@ service:
   enabled: false
 env:
   # HACK: put placeholder values so WORKER_NAME does not get overwritten
-  - name: BASE_RUN_URL
+  - name: APP_HOST
+    value: ''
+  - name: APP_PROTOCOL
     value: ''
   - name: WORKER_QUEUE
     value: ''

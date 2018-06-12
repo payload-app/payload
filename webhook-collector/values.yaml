@@ -3,11 +3,13 @@ image:
   repository: payloadapp/webhook-collector
 ingress:
   enabled: true
-  host: local.payloadapp.com
+  host: payload.app
   paths:
   - /webhook
 env:
-  - name: BASE_RUN_URL
+  - name: APP_HOST
+    value: ''
+  - name: APP_PROTOCOL
     value: ''
   - name: WORKER_QUEUE
     value: ''

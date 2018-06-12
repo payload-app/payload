@@ -3,6 +3,6 @@ image:
   repository: payloadapp/backend
 ingress:
   enabled: true
-  host: local.payloadapp.com
+  host: payload.app
   paths:
   - /api

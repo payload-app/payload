@@ -3,7 +3,7 @@ image:
   repository: payloadapp/github-auth
 ingress:
   enabled: true
-  host: local.payloadapp.com
+  host: payload.app
   paths:
   - /login
   - /callback

@@ -6,6 +6,9 @@ const redirect = require('micro-redirect')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const createSession = require('./createSession')
 
+const appHost = process.env.APP_HOST
+const appRootUrl = `${process.env.APP_PROTOCOL}://${appHost}`
+
 const githubUrl = process.env.GH_HOST || 'github.com'
 
 const githubServiceClient = new RPCClient({
@@ -22,7 +25,7 @@ const randomStateServiceClient = new RPCClient({
 })
 
 const redirectWithQueryString = (res, data) => {
-  const location = `${process.env.REDIRECT_URL}?${querystring.stringify(data)}`
+  const location = `${appRootUrl}?${querystring.stringify(data)}`
   redirect(res, 302, location)
 }
 
@@ -78,12 +81,9 @@ const callback = async (req, res) => {
             githubServiceClient,
             accessToken: qs.access_token,
             res,
+            appHost,
           })
-          redirect(
-            res,
-            302,
-            `${process.env.REDIRECT_URL}${created ? '/init/' : ''}`,
-          )
+          redirect(res, 302, `${appRootUrl}${created ? '/init/' : ''}`)
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })

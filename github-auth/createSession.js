@@ -8,6 +8,7 @@ module.exports = async ({
   githubServiceClient,
   accessToken,
   res,
+  appHost,
 }) => {
   const { userId, created } = await updateOrCreateUser({
     userServiceClient,
@@ -19,10 +20,9 @@ module.exports = async ({
   })
   res.setHeader(
     'Set-Cookie',
-    // TODO: detect env for local vs prod cookies -- env var
     cookie.serialize('local_payload_session', token, {
       maxAge: ms('30 days') / 1000,
-      domain: '.local.payloadapp.com',
+      domain: `.${appHost}`,
       path: '/',
       httpOnly: true,
     }),
