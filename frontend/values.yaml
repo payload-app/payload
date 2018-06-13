@@ -3,7 +3,6 @@ image:
   repository: payloadapp/frontend
 ingress:
   enabled: true
-  host: local.payloadapp.com
   paths:
   - /
 service:

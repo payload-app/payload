@@ -7,7 +7,7 @@ Install docker for mac: https://www.docker.com/docker-mac
 Add the following line to your `/etc/hosts` file:
 
 ```
-127.0.0.1       local.payloadapp.com
+127.0.0.1       payload.local
 ```
 
 Start the frontend and backend services
@@ -16,7 +16,7 @@ Start the frontend and backend services
 docker-compose up -d
 ```
 
-Navigate to http://local.payloadapp.com
+Navigate to http://payload.local
 
 Stop all the services (quickly)
 

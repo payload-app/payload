@@ -4,10 +4,10 @@ const statusBroadcasterClient = new RPCClient({
   url: 'http://status-broadcaster:3000/rpc',
 })
 
-const baseRunUrl = process.env.BASE_RUN_URL
+const appRootUrl = `${process.env.APP_PROTOCOL}://${process.env.APP_HOST}`
 
 const generateTargetUrl = ({ type, ownerType, owner, repo, branch, sha }) =>
-  `${baseRunUrl}/type/${type}/ownertype/${ownerType}/owner/${owner}/repo/${repo}/branch/${branch}/sha/${sha}/`
+  `${appRootUrl}/type/${type}/ownertype/${ownerType}/owner/${owner}/repo/${repo}/branch/${branch}/sha/${sha}/`
 
 const broadcastStart = async ({
   files,

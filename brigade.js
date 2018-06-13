@@ -120,8 +120,8 @@ const generateHelmEnvVars = ({ existingEnvVars = [], envVars = [] }) => {
     .join(' ')
 }
 
-const generateHostOverride = ({ hostOverride }) => {
-  return hostOverride ? `--set-string ingress.host=${hostOverride}` : ''
+const generateHost = ({ host }) => {
+  return host ? `--set-string ingress.host=${host}` : ''
 }
 
 const helmDeployerJob = async ({
@@ -150,16 +150,16 @@ const helmDeployerJob = async ({
     } ${generateHelmEnvVars({
       existingEnvVars: values.env,
       envVars,
-    })} ${generateHostOverride({
-      hostOverride,
+    })} ${generateHost({
+      host: hostOverride,
     })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} --debug --dry-run`,
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
     } ${generateHelmEnvVars({
       existingEnvVars: values.env,
       envVars,
-    })} ${generateHostOverride({
-      hostOverride,
+    })} ${generateHost({
+      host: hostOverride,
     })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption}`,
   ])
   await helmDeployer.run()
@@ -202,18 +202,18 @@ const deployService = async ({
       baseDir,
       valuesFile,
     })
-    const {
-      name,
-      image: { repository: dockerImage },
-      ingress: { host },
-    } = values
+    const { name, image: { repository: dockerImage }, ingress } = values
+    const host = ingress ? ingress.host : undefined
     const deploymentName = branchName
       ? `${formattedBranchName({ branchName })}-${name}`
       : name
-    const hostOverride =
-      branchName && host
-        ? `${formattedBranchName({ branchName })}.${host}`
-        : undefined
+    // if branchName is defined prefix with the branch name
+    // other wise use the host from values.yaml
+    // and lastly fall back on the APP_HOST defined in secrets
+    const hostOverride = branchName
+      ? `${formattedBranchName({ branchName })}.${host ||
+          payload.secrets.APP_HOST}`
+      : host || payload.secrets.APP_HOST
 
     await dockerBuilderJob({
       event,
@@ -429,6 +429,10 @@ const deployBackendService = async (event, payload) =>
     namespace: 'payload',
     envVars: [
       {
+        name: 'APP_HOST',
+        value: payload.secrets.APP_HOST,
+      },
+      {
         name: 'WEBHOOK_BASE_URL',
         value: payload.secrets.WEBHOOK_BASE_URL,
       },
@@ -463,8 +467,12 @@ const deployGithubAuthService = async (event, payload) =>
         value: payload.secrets.GH_CLIENT_SECRET,
       },
       {
-        name: 'REDIRECT_URL',
-        value: payload.secrets.REDIRECT_URL,
+        name: 'APP_HOST',
+        value: payload.secrets.APP_HOST,
+      },
+      {
+        name: 'APP_PROTOCOL',
+        value: payload.secrets.APP_PROTOCOL,
       },
     ],
   })
@@ -479,8 +487,12 @@ const deployWorker = async (event, payload) => {
     namespace: 'payload',
     envVars: [
       {
-        name: 'BASE_RUN_URL',
-        value: payload.secrets.REDIRECT_URL,
+        name: 'APP_HOST',
+        value: payload.secrets.APP_HOST,
+      },
+      {
+        name: 'APP_PROTOCOL',
+        value: payload.secrets.APP_PROTOCOL,
       },
       {
         name: 'WORKER_QUEUE',
@@ -517,8 +529,12 @@ const deployWebhookCollectorService = async (event, payload) => {
     namespace: 'payload',
     envVars: [
       {
-        name: 'BASE_RUN_URL',
-        value: payload.secrets.REDIRECT_URL,
+        name: 'APP_HOST',
+        value: payload.secrets.APP_HOST,
+      },
+      {
+        name: 'APP_PROTOCOL',
+        value: payload.secrets.APP_PROTOCOL,
       },
       {
         name: 'WORKER_QUEUE',
