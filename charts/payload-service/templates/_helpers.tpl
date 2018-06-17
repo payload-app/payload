@@ -16,9 +16,12 @@ Create a default fully qualified app name.
 Use NodePort if GCE global static ip name is defined
 */}}
 {{- define "servicetype" -}}
-{{- $name := default "ClusterIP" -}}
+{{- if .Values.ingress.enabled -}}
 {{- if .Values.ingress.globalStaticIpName -}}
 {{- printf "NodePort" -}}
+{{- else -}}
+{{- printf "ClusterIP" -}}
+{{- end -}}
 {{- else -}}
 {{- printf "ClusterIP" -}}
 {{- end -}}
