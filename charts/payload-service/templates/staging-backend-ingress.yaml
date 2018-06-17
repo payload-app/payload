@@ -14,7 +14,16 @@ metadata:
     {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
+    {{- if .Values.ingress.globalStaticIpName }}
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.globalStaticIpName }}
+    {{- end }}
 spec:
+  {{- if .Values.ingress.tlsSecret }}
+  tls:
+    - hosts:
+      - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tlsSecret }}
+  {{- end }}
   rules:
     # use the same host as staging frontend
     - host: {{ .Values.ingress.host }}

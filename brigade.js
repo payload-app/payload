@@ -131,6 +131,15 @@ const generateTLSSecretName = ({ payload }) => {
   return ''
 }
 
+const generateGlobalStaticIpName = ({ payload }) => {
+  if (payload.secrets.GLOBAL_STATIC_IP_NAME) {
+    return `--set-string ingress.globalStaticIpName=${
+      payload.secrets.GLOBAL_STATIC_IP_NAME
+    }`
+  }
+  return ''
+}
+
 const helmDeployerJob = async ({
   event,
   payload,
@@ -162,7 +171,7 @@ const helmDeployerJob = async ({
       host: hostOverride,
     })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} ${generateTLSSecretName(
       { payload },
-    )} --debug --dry-run`,
+    )} ${generateGlobalStaticIpName({ payload })} --debug --dry-run`,
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
     } ${generateHelmEnvVars({
@@ -172,7 +181,7 @@ const helmDeployerJob = async ({
       host: hostOverride,
     })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} ${generateTLSSecretName(
       { payload },
-    )}`,
+    )} ${generateGlobalStaticIpName({ payload })}`,
   ])
   await helmDeployer.run()
 }

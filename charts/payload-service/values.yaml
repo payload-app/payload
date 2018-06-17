@@ -44,3 +44,5 @@ ingress:
 #   stagingBackend:
 #     # set to true to create an ingress to the backend
 #     enabled: true
+#   globalStaticIpName: 'some-global-ip-name'
+#   tlsSecret: 'some-tls-secret'
