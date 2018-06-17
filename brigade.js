@@ -124,8 +124,16 @@ const generateHost = ({ host }) => {
   return host ? `--set-string ingress.host=${host}` : ''
 }
 
+const generateTLSSecretName = ({ payload }) => {
+  if (payload.secrets.TLS_SECRET_NAME) {
+    return `--set-string ingress.tlsSecret=${payload.secrets.TLS_SECRET_NAME}`
+  }
+  return ''
+}
+
 const helmDeployerJob = async ({
   event,
+  payload,
   baseDir,
   valuesFile,
   name,
@@ -152,7 +160,9 @@ const helmDeployerJob = async ({
       envVars,
     })} ${generateHost({
       host: hostOverride,
-    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} --debug --dry-run`,
+    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} ${generateTLSSecretName(
+      { payload },
+    )} --debug --dry-run`,
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
     } ${generateHelmEnvVars({
@@ -160,7 +170,9 @@ const helmDeployerJob = async ({
       envVars,
     })} ${generateHost({
       host: hostOverride,
-    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption}`,
+    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} ${generateTLSSecretName(
+      { payload },
+    )}`,
   ])
   await helmDeployer.run()
 }
@@ -224,6 +236,7 @@ const deployService = async ({
 
     await helmDeployerJob({
       event,
+      payload,
       baseDir,
       valuesFile,
       name: deploymentName,
