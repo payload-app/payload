@@ -324,6 +324,16 @@ const deployQueueService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
+    envVars: [
+      {
+        name: 'REDIS_HOST',
+        value: payload.secrets.REDIS_HOST,
+      },
+      {
+        name: 'REDIS_PASSWORD',
+        value: payload.secrets.REDIS_PASSWORD,
+      },
+    ],
   })
 
 const deployRandomStateService = async (event, payload) =>
@@ -334,6 +344,16 @@ const deployRandomStateService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
+    envVars: [
+      {
+        name: 'REDIS_HOST',
+        value: payload.secrets.REDIS_HOST,
+      },
+      {
+        name: 'REDIS_PASSWORD',
+        value: payload.secrets.REDIS_PASSWORD,
+      },
+    ],
   })
 
 const deployGithubService = async (event, payload) =>
@@ -545,7 +565,7 @@ const deployWebhookCollectorService = async (event, payload) => {
 }
 
 const deployDevRedis = async ({ namespace }) => {
-  const redisDeployer = new Job(`redis-deployer`, 'linkyard/docker-helm:2.8.2')
+  const redisDeployer = new Job(`redis-deployer`, 'linkyard/docker-helm:2.9.1')
   redisDeployer.tasks = echoedTasks([
     'helm init --client-only',
     `helm upgrade --install redis stable/redis --namespace ${namespace} --set usePassword=false --debug --dry-run`,
@@ -557,7 +577,7 @@ const deployDevRedis = async ({ namespace }) => {
 const deployDevMongodb = async ({ payload, namespace }) => {
   const mongodbDeployer = new Job(
     `mongodb-deployer`,
-    'linkyard/docker-helm:latest',
+    'linkyard/docker-helm:2.9.1',
   )
   mongodbDeployer.tasks = echoedTasks([
     'helm init --client-only',
