@@ -3,7 +3,8 @@ image:
   repository: payloadapp/github-auth
 ingress:
   enabled: true
-  globalStaticIpName: payload-github-auth-ip
+  annotations:
+    kubernetes.io/ingress.class: nginx
   paths:
   - /login
   - /login/*

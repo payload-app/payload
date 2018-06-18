@@ -11,18 +11,3 @@ Create a default fully qualified app name.
 {{- $name := default .Values.name -}}
 {{- printf "%s-%s-%s" .Chart.Name .Values.name .Values.track | trimSuffix "-" -}}
 {{- end -}}
-
-{{/*
-Use NodePort if GCE global static ip name is defined
-*/}}
-{{- define "servicetype" -}}
-{{- if .Values.ingress.enabled -}}
-{{- if .Values.ingress.globalStaticIpName -}}
-{{- printf "NodePort" -}}
-{{- else -}}
-{{- printf "ClusterIP" -}}
-{{- end -}}
-{{- else -}}
-{{- printf "ClusterIP" -}}
-{{- end -}}
-{{- end -}}

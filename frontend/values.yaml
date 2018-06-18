@@ -3,7 +3,8 @@ image:
   repository: payloadapp/frontend
 ingress:
   enabled: true
-  globalStaticIpName: payload-frontend-ip
+  annotations:
+    kubernetes.io/ingress.class: nginx
   paths:
   - "/*"
 service:

@@ -13,9 +13,6 @@ metadata:
     {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
-    {{- if .Values.ingress.globalStaticIpName }}
-    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.globalStaticIpName }}
-    {{- end }}
 spec:
   {{- if .Values.ingress.tlsSecret }}
   tls:

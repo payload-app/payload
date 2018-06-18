@@ -3,7 +3,8 @@ image:
   repository: payloadapp/webhook-collector
 ingress:
   enabled: true
-  globalStaticIpName: payload-webhook-collector-ip
+  annotations:
+    kubernetes.io/ingress.class: nginx
   paths:
   - "/webhook/*"
 env:
