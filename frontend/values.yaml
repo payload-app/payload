@@ -3,6 +3,7 @@ image:
   repository: payloadapp/frontend
 ingress:
   enabled: true
+  globalStaticIpName: payload-frontend-ip
   paths:
   - "/*"
 service:

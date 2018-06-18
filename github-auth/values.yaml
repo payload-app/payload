@@ -3,6 +3,7 @@ image:
   repository: payloadapp/github-auth
 ingress:
   enabled: true
+  globalStaticIpName: payload-github-auth-ip
   paths:
   - /login
   - /login/*

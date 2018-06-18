@@ -3,6 +3,7 @@ image:
   repository: payloadapp/webhook-collector
 ingress:
   enabled: true
+  globalStaticIpName: payload-webhook-collector-ip
   paths:
   - "/webhook/*"
 env:
