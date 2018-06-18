@@ -4,4 +4,4 @@ image:
 ingress:
   enabled: true
   paths:
-  - /api
+  - /api/*
