@@ -6,7 +6,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
   paths:
-  - "/*"
+  - /
 service:
   enabled: true
   externalPort: 80
