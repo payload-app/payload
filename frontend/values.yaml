@@ -4,7 +4,7 @@ image:
 ingress:
   enabled: true
   paths:
-  - /
+  - "/*"
 service:
   enabled: true
   externalPort: 80

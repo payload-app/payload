@@ -101,6 +101,7 @@ const callback = async (req, res) => {
 const healthHandler = () => 'OK'
 
 module.exports = router(
+  get('/', healthHandler),
   get('/healthz', healthHandler),
   get('/login', login),
   get('/callback', callback),
