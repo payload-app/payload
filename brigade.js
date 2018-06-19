@@ -266,7 +266,7 @@ const deployService = async ({
       state: 'success',
       status: 'Deploy Complete',
       context: baseDir,
-      target: hostOverride | host,
+      target: hostOverride || host,
     })
   } catch (error) {
     await githubStatusJob({
