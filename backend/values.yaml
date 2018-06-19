@@ -6,4 +6,4 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
   paths:
-  - /api/*
+  - /api/

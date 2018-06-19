@@ -28,7 +28,7 @@ spec:
         paths:
         # hardcode the path to the backend service
         # TODO: decouple this or spin up a backend service
-        - path: "/api/rpc/*"
+        - path: /api/
           backend:
             serviceName: backend
             servicePort: 3000
