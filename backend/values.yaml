@@ -3,5 +3,7 @@ image:
   repository: payloadapp/backend
 ingress:
   enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
   paths:
-  - /api
+  - /api/

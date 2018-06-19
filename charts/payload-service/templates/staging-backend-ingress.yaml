@@ -15,6 +15,12 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
+  {{- if .Values.ingress.tlsSecret }}
+  tls:
+    - hosts:
+      - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tlsSecret }}
+  {{- end }}
   rules:
     # use the same host as staging frontend
     - host: {{ .Values.ingress.host }}
@@ -22,7 +28,7 @@ spec:
         paths:
         # hardcode the path to the backend service
         # TODO: decouple this or spin up a backend service
-        - path: /api/rpc
+        - path: /api/
           backend:
             serviceName: backend
             servicePort: 3000

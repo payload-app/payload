@@ -74,27 +74,31 @@ const generateMongodbEnvVars = ({ payload }) => [
   },
 ]
 
-const dockerBuilderJob = async ({ event, payload, dockerImage, baseDir }) => {
-  // build docker image
-  const dockerBuilder = new Job(
-    formatJobName({ name: `docker-builder-${baseDir}` }),
-    'docker:stable-dind',
+const dockerImageName = ({ gceProjectId, dockerImage }) =>
+  `gcr.io/${gceProjectId}/${dockerImage}`
+
+const gclouldBuilderJob = async ({
+  event,
+  payload,
+  dockerImage,
+  baseDir,
+  keyFile,
+}) => {
+  const gcloudBuilder = new Job(
+    formatJobName({ name: `gcloud-builder-${baseDir}` }),
+    'google/cloud-sdk:latest',
   )
-  dockerBuilder.privileged = true
-  dockerBuilder.env = {
-    DOCKER_DRIVER: payload.secrets.DOCKER_DRIVER || 'overlay',
-  }
-  dockerBuilder.tasks = echoedTasks([
-    'dockerd-entrypoint.sh &',
-    'sleep 20',
+  gcloudBuilder.tasks = echoedTasks([
     `cd /src/${baseDir}`,
-    `docker login -u ${payload.secrets.DOCKER_USER} -p '${
-      payload.secrets.DOCKER_PASS
-    }' ${payload.secrets.DOCKER_REGISTRY}`,
-    `docker build -t ${dockerImage}:${event.revision.commit} .`,
-    `docker push ${dockerImage}:${event.revision.commit}`,
+    `echo '${keyFile}' > /tmp/service-account.json`,
+    'cat /tmp/service-account.json',
+    'gcloud auth activate-service-account --key-file /tmp/service-account.json',
+    `gcloud container builds submit --tag ${dockerImageName({
+      gceProjectId: payload.secrets.GCE_PROJECT_ID,
+      dockerImage,
+    })}:${event.revision.commit} .`,
   ])
-  await dockerBuilder.run()
+  await gcloudBuilder.run()
 }
 
 const generateHelmEnvVars = ({ existingEnvVars = [], envVars = [] }) => {
@@ -124,8 +128,16 @@ const generateHost = ({ host }) => {
   return host ? `--set-string ingress.host=${host}` : ''
 }
 
+const generateTLSSecretName = ({ payload }) => {
+  if (payload.secrets.TLS_SECRET_NAME) {
+    return `--set-string ingress.tlsSecret=${payload.secrets.TLS_SECRET_NAME}`
+  }
+  return ''
+}
+
 const helmDeployerJob = async ({
   event,
+  payload,
   baseDir,
   valuesFile,
   name,
@@ -135,6 +147,7 @@ const helmDeployerJob = async ({
   values,
   hostOverride,
   stagingBackendEnabled,
+  dockerImage,
 }) => {
   const stagingBackendEnabledOption = stagingBackendEnabled || false
   // do helm deploy
@@ -147,20 +160,30 @@ const helmDeployerJob = async ({
     'helm init --client-only',
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
-    } ${generateHelmEnvVars({
+    } --set image.repository=${dockerImageName({
+      gceProjectId: payload.secrets.GCE_PROJECT_ID,
+      dockerImage,
+    })} ${generateHelmEnvVars({
       existingEnvVars: values.env,
       envVars,
     })} ${generateHost({
       host: hostOverride,
-    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} --debug --dry-run`,
+    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} ${generateTLSSecretName(
+      { payload },
+    )} --debug --dry-run`,
     `helm upgrade --install ${name} ../charts/${chart} --namespace ${namespace} --values ${valuesFile} --set image.tag=${
       event.revision.commit
-    } ${generateHelmEnvVars({
+    } --set image.repository=${dockerImageName({
+      gceProjectId: payload.secrets.GCE_PROJECT_ID,
+      dockerImage,
+    })} ${generateHelmEnvVars({
       existingEnvVars: values.env,
       envVars,
     })} ${generateHost({
       host: hostOverride,
-    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption}`,
+    })} --set name=${name} --set ingress.stagingBackend.enabled=${stagingBackendEnabledOption} ${generateTLSSecretName(
+      { payload },
+    )}`,
   ])
   await helmDeployer.run()
 }
@@ -215,15 +238,17 @@ const deployService = async ({
           payload.secrets.APP_HOST}`
       : host || payload.secrets.APP_HOST
 
-    await dockerBuilderJob({
+    await gclouldBuilderJob({
       event,
       payload,
       dockerImage,
       baseDir,
+      keyFile: payload.secrets.GCE_BUILDER_SERVICE_KEY,
     })
 
     await helmDeployerJob({
       event,
+      payload,
       baseDir,
       valuesFile,
       name: deploymentName,
@@ -233,6 +258,7 @@ const deployService = async ({
       values,
       hostOverride,
       stagingBackendEnabled,
+      dockerImage,
     })
     await githubStatusJob({
       event,
@@ -240,7 +266,7 @@ const deployService = async ({
       state: 'success',
       status: 'Deploy Complete',
       context: baseDir,
-      target: hostOverride | host,
+      target: `https://${hostOverride}`,
     })
   } catch (error) {
     await githubStatusJob({
