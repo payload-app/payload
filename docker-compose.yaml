@@ -33,7 +33,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile.development
     environment:
-     - APP_HOST=payload.local
+     - COOKIE_DOMAIN=.payload.local
      # WEBHOOK_BASE_URL supplied in .env file
     volumes:
      - ./backend:/usr/src/app/
@@ -84,6 +84,7 @@ services:
     environment:
      - APP_HOST=payload.local
      - APP_PROTOCOL=http
+     - COOKIE_DOMAIN=.payload.local
      # supplied in .env file
      # GH_CLIENT_ID
      # GH_CLIENT_SECRET

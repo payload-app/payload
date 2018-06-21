@@ -8,6 +8,7 @@ const createSession = require('./createSession')
 
 const appHost = process.env.APP_HOST
 const appRootUrl = `${process.env.APP_PROTOCOL}://${appHost}`
+const cookieDomain = process.env.COOKIE_DOMAIN
 
 const githubUrl = process.env.GH_HOST || 'github.com'
 
@@ -81,7 +82,7 @@ const callback = async (req, res) => {
             githubServiceClient,
             accessToken: qs.access_token,
             res,
-            appHost,
+            cookieDomain,
           })
           redirect(res, 302, `${appRootUrl}${created ? '/init/' : ''}`)
         }

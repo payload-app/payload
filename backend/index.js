@@ -12,7 +12,7 @@ const syncRepos = require('./syncRepos')
 const logout = require('./logout')
 const getUser = require('./getUser')
 
-const appHost = process.env.APP_HOST
+const cookieDomain = process.env.COOKIE_DOMAIN
 
 const githubServiceClient = new RPCClient({
   url: 'http://github-service:3000/rpc',
@@ -70,7 +70,7 @@ const rpcHandler = setSession(
         organizationServiceClient,
       }),
     ),
-    method('logout', logout({ sessionServiceClient, appHost })),
+    method('logout', logout({ sessionServiceClient, cookieDomain })),
     method('getUser', getUser),
   ),
 )

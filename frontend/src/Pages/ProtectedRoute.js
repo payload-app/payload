@@ -10,8 +10,7 @@ export default ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props => {
-      // TODO: detect env for local vs prod cookies -- webpack flag
-      const sessionCookie = Cookies.get('local_payload_session')
+      const sessionCookie = Cookies.get('payload_session_token')
       if (sessionCookie) {
         return <Component {...props} />
       }
