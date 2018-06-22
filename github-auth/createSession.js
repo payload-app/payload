@@ -8,7 +8,7 @@ module.exports = async ({
   githubServiceClient,
   accessToken,
   res,
-  appHost,
+  cookieDomain,
 }) => {
   const { userId, created } = await updateOrCreateUser({
     userServiceClient,
@@ -20,9 +20,9 @@ module.exports = async ({
   })
   res.setHeader(
     'Set-Cookie',
-    cookie.serialize('local_payload_session', token, {
+    cookie.serialize('payload_session_token', token, {
       maxAge: ms('30 days') / 1000,
-      domain: `.${appHost}`,
+      domain: cookieDomain,
       path: '/',
       httpOnly: true,
     }),

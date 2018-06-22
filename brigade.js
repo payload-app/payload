@@ -482,6 +482,10 @@ const deployBackendService = async (event, payload) =>
         name: 'WEBHOOK_BASE_URL',
         value: payload.secrets.WEBHOOK_BASE_URL,
       },
+      {
+        name: 'COOKIE_DOMAIN',
+        value: payload.secrets.COOKIE_DOMAIN,
+      },
     ],
   })
 
@@ -519,6 +523,10 @@ const deployGithubAuthService = async (event, payload) =>
       {
         name: 'APP_PROTOCOL',
         value: payload.secrets.APP_PROTOCOL,
+      },
+      {
+        name: 'COOKIE_DOMAIN',
+        value: payload.secrets.COOKIE_DOMAIN,
       },
     ],
   })

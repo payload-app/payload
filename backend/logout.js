@@ -1,17 +1,20 @@
 const { parse, serialize } = require('cookie')
 
-module.exports = ({ sessionServiceClient, appHost }) => async (_, req, res) => {
+module.exports = ({ sessionServiceClient, cookieDomain }) => async (
+  _,
+  req,
+  res,
+) => {
   const cookies = parse((req.headers && req.headers.cookie) || '')
-  if (cookies.local_payload_session) {
+  if (cookies.payload_session_token) {
     await sessionServiceClient.call('destroySession', {
-      token: cookies.local_payload_session,
+      token: cookies.payload_session_token,
     })
     res.setHeader(
       'Set-Cookie',
-      // TODO: detect env for local vs prod cookies -- env var
-      serialize('local_payload_session', cookies.local_payload_session, {
+      serialize('payload_session_token', cookies.payload_session_token, {
         maxAge: 0,
-        domain: `.${appHost}`,
+        domain: cookieDomain,
         path: '/',
         httpOnly: true,
       }),
