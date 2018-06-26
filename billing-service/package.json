@@ -1,0 +1,15 @@
+{
+  "name": "payload-billing-service",
+  "version": "0.0.1",
+  "description": "A service to manage billing",
+  "main": "index.js",
+  "scripts": {
+    "start": "micro"
+  },
+  "author": "hharnisc@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "micro": "^9.1.0",
+    "microrouter": "^3.0.0"
+  }
+}

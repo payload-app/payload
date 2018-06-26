@@ -296,3 +296,11 @@ services:
      - redis
     networks:
      - main
+  billing:
+    build:
+      context: ./billing-service
+      dockerfile: Dockerfile.development
+    volumes:
+     - ./billing-service:/usr/src/app/
+    networks:
+     - main
