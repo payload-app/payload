@@ -1,1 +1,1 @@
-module.exports = async () => 'startTrial'
+module.exports = ({ collectionClient }) => async () => 'startTrial'
