@@ -296,7 +296,7 @@ services:
      - redis
     networks:
      - main
-  billing:
+  billing-service:
     build:
       context: ./billing-service
       dockerfile: Dockerfile.development
@@ -311,6 +311,8 @@ services:
       - 3000:3000
     links:
      - mongodb
+     - organization-service
+     - user-service
     depends_on:
       mongodb:
         condition: service_healthy
