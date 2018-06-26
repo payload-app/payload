@@ -1,9 +1,12 @@
+require('dotenv').config()
 const { promisify } = require('util')
+const stripe = require('stripe')
 const { router, get, post } = require('microrouter')
 const { MongoClient } = require('mongodb')
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const startTrial = require('./startTrial')
+const createCustomer = require('./createCustomer')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -26,8 +29,10 @@ const init = async handler => {
   const userServiceClient = new RPCClient({
     url: 'http://user-service:3000/rpc',
   })
+  const stripeClient = stripe(process.env.STRIPE_SECRET_KEY)
   return handler({
     collectionClient,
+    stripeClient,
     organizationServiceClient,
     userServiceClient,
   })
@@ -35,6 +40,7 @@ const init = async handler => {
 
 const rpcHandler = ({
   collectionClient,
+  stripeClient,
   organizationServiceClient,
   userServiceClient,
 }) =>
@@ -47,18 +53,33 @@ const rpcHandler = ({
         userServiceClient,
       }),
     ),
+    method(
+      'createCustomer',
+      createCustomer({
+        stripeClient,
+        collectionClient,
+        userServiceClient,
+        organizationServiceClient,
+      }),
+    ),
   )
 
 const healthHandler = () => 'OK'
 
 module.exports = init(
-  ({ collectionClient, organizationServiceClient, userServiceClient }) =>
+  ({
+    collectionClient,
+    stripeClient,
+    organizationServiceClient,
+    userServiceClient,
+  }) =>
     router(
       get('/healthz', healthHandler),
       post(
         '/rpc',
         rpcHandler({
           collectionClient,
+          stripeClient,
           organizationServiceClient,
           userServiceClient,
         }),

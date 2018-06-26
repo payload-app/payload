@@ -11,9 +11,11 @@
   "dependencies": {
     "@hharnisc/micro-rpc": "^0.1.0",
     "@hharnisc/micro-rpc-client": "^0.1.2",
+    "dotenv": "^5.0.0",
     "joi": "^13.1.1",
     "micro": "^9.1.0",
     "microrouter": "^3.0.0",
-    "mongodb": "^3.0.1"
+    "mongodb": "^3.0.1",
+    "stripe": "^6.1.1"
   }
 }
