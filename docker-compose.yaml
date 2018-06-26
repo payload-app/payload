@@ -302,5 +302,7 @@ services:
       dockerfile: Dockerfile.development
     volumes:
      - ./billing-service:/usr/src/app/
+    ports:
+      - 3000:3000
     networks:
      - main

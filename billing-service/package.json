@@ -9,6 +9,7 @@
   "author": "hharnisc@gmail.com",
   "license": "MIT",
   "dependencies": {
+    "@hharnisc/micro-rpc": "^0.1.0",
     "micro": "^9.1.0",
     "microrouter": "^3.0.0"
   }
