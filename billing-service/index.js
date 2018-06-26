@@ -56,8 +56,8 @@ const rpcHandler = ({
     method(
       'createCustomer',
       createCustomer({
-        stripeClient,
         collectionClient,
+        stripeClient,
         userServiceClient,
         organizationServiceClient,
       }),
