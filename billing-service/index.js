@@ -10,6 +10,7 @@ const createCustomer = require('./createCustomer')
 const createSubscription = require('./createSubscription')
 const cancelSubscription = require('./cancelSubscription')
 const setPaymentSource = require('./setPaymentSource')
+const repoIsActive = require('./repoIsActive')
 const listPlans = require('./listPlans')
 
 const promisifiedMongoClient = promisify(MongoClient)
@@ -91,6 +92,12 @@ const rpcHandler = ({
       setPaymentSource({
         collectionClient,
         stripeClient,
+      }),
+    ),
+    method(
+      'repoIsActive',
+      repoIsActive({
+        collectionClient,
       }),
     ),
     method(
