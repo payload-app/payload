@@ -313,6 +313,7 @@ services:
      - mongodb
      - organization-service
      - user-service
+     - repo-service
     depends_on:
       mongodb:
         condition: service_healthy

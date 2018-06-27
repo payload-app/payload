@@ -48,6 +48,7 @@ module.exports = ({
       userId,
       trialEnd: new Date(isNaN(trialEnd) ? trialEnd : parseInt(trialEnd, 10)),
       paymentSourceSet: false,
+      subscriptions: [],
     })
     return {
       id: insertedId,
