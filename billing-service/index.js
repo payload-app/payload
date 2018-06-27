@@ -9,6 +9,7 @@ const startTrial = require('./startTrial')
 const createCustomer = require('./createCustomer')
 const createSubscription = require('./createSubscription')
 const cancelSubscription = require('./cancelSubscription')
+const setPaymentSource = require('./setPaymentSource')
 const listPlans = require('./listPlans')
 
 const promisifiedMongoClient = promisify(MongoClient)
@@ -81,6 +82,13 @@ const rpcHandler = ({
     method(
       'cancelSubscription',
       cancelSubscription({
+        collectionClient,
+        stripeClient,
+      }),
+    ),
+    method(
+      'setPaymentSource',
+      setPaymentSource({
         collectionClient,
         stripeClient,
       }),
