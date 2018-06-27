@@ -8,6 +8,7 @@ const RPCClient = require('@hharnisc/micro-rpc-client')
 const startTrial = require('./startTrial')
 const createCustomer = require('./createCustomer')
 const createSubscription = require('./createSubscription')
+const cancelSubscription = require('./cancelSubscription')
 const listPlans = require('./listPlans')
 
 const promisifiedMongoClient = promisify(MongoClient)
@@ -75,6 +76,13 @@ const rpcHandler = ({
         collectionClient,
         stripeClient,
         repoServiceClient,
+      }),
+    ),
+    method(
+      'cancelSubscription',
+      cancelSubscription({
+        collectionClient,
+        stripeClient,
       }),
     ),
     method(
