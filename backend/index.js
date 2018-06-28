@@ -13,7 +13,6 @@ const logout = require('./logout')
 const getUser = require('./getUser')
 
 const cookieDomain = process.env.COOKIE_DOMAIN
-const trialDays = parseInt(process.env.TRIAL_DAYS, 10)
 
 const githubServiceClient = new RPCClient({
   url: 'http://github-service:3000/rpc',
@@ -66,7 +65,6 @@ const rpcHandler = setSession(
         organizationServiceClient,
         githubServiceClient,
         billingServiceClient,
-        trialDays,
       }),
     ),
     method(

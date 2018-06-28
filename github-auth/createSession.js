@@ -6,6 +6,7 @@ module.exports = async ({
   userServiceClient,
   sessionServiceClient,
   githubServiceClient,
+  billingServiceClient,
   accessToken,
   res,
   cookieDomain,
@@ -13,6 +14,7 @@ module.exports = async ({
   const { userId, created } = await updateOrCreateUser({
     userServiceClient,
     githubServiceClient,
+    billingServiceClient,
     accessToken,
   })
   const token = await sessionServiceClient.call('createSession', {

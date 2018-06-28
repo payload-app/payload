@@ -34,7 +34,6 @@ services:
       dockerfile: Dockerfile.development
     environment:
      - COOKIE_DOMAIN=.payload.local
-     - TRIAL_DAYS=14
      # WEBHOOK_BASE_URL supplied in .env file
     volumes:
      - ./backend:/usr/src/app/
@@ -95,6 +94,7 @@ services:
       - session-service
       - github-service
       - random-state-service
+      - billing-service
     networks:
      - main
   queue-service:
@@ -307,6 +307,7 @@ services:
      - MONGODB_USERNAME=payloaduser
      - MONGODB_PASSWORD=password
      - MONGODB_DATABASE=payload
+     - TRIAL_DAYS=14
     volumes:
      - ./billing-service:/usr/src/app/
     ports:

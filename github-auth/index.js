@@ -24,6 +24,9 @@ const sessionServiceClient = new RPCClient({
 const randomStateServiceClient = new RPCClient({
   url: 'http://random-state-service:3000/rpc',
 })
+const billingServiceClient = new RPCClient({
+  url: 'http://billing-service:3000/rpc',
+})
 
 const redirectWithQueryString = (res, data) => {
   const location = `${appRootUrl}?${querystring.stringify(data)}`
@@ -80,6 +83,7 @@ const callback = async (req, res) => {
             userServiceClient,
             sessionServiceClient,
             githubServiceClient,
+            billingServiceClient,
             accessToken: qs.access_token,
             res,
             cookieDomain,
