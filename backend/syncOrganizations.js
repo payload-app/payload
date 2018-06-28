@@ -65,7 +65,8 @@ module.exports = ({
   for (let organizationId of organizationIds) {
     try {
       await billingServiceClient.call('startTrial', {
-        organizationId,
+        ownerId: organizationId,
+        ownerType: 'organization',
         userId,
         trialEnd,
       })
