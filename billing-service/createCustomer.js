@@ -3,7 +3,10 @@ const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
 
 const schema = Joi.object().keys({
-  organizationId: Joi.string().required(),
+  ownerId: Joi.string().required(),
+  ownerType: Joi.string()
+    .required()
+    .valid(['user', 'organization']),
 })
 
 module.exports = ({
@@ -11,11 +14,12 @@ module.exports = ({
   stripeClient,
   userServiceClient,
   organizationServiceClient,
-}) => async ({ organizationId }) => {
+}) => async ({ ownerId, ownerType }) => {
   try {
     await validate({
       value: {
-        organizationId,
+        ownerId,
+        ownerType,
       },
       schema,
     })
@@ -27,11 +31,12 @@ module.exports = ({
 
   try {
     const billingObject = await collectionClient.findOne({
-      organizationId,
+      ownerId,
+      ownerType,
     })
     if (!billingObject) {
       throw new Error(
-        `Could not find billing object for organization with id ${organizationId}`,
+        `Could not find billing object for ${ownerType} with id ${ownerId}`,
       )
     }
     if (billingObject.customerId) {
@@ -41,22 +46,33 @@ module.exports = ({
         }`,
       )
     }
-    const organization = await organizationServiceClient.call(
-      'getOrganization',
-      {
-        id: organizationId,
-      },
-    )
+
+    let stripeDescription
+    // if customer is org use the organization name for the description
+    if (ownerType === 'organization') {
+      const organization = await organizationServiceClient.call(
+        'getOrganization',
+        {
+          id: ownerId,
+        },
+      )
+      stripeDescription = organization.name
+      // otherwise describe it as personal account
+    } else {
+      stripeDescription = 'personal'
+    }
+
     const user = await userServiceClient.call('getUser', {
       id: billingObject.userId,
     })
     const customer = await stripeClient.customers.create({
       email: user.email,
-      description: organization.name,
+      description: stripeDescription,
     })
     await collectionClient.updateOne(
       {
-        organizationId,
+        ownerId,
+        ownerType,
       },
       {
         $set: {

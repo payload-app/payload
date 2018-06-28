@@ -3,18 +3,23 @@ const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
 
 const schema = Joi.object().keys({
-  organizationId: Joi.string().required(),
+  ownerId: Joi.string().required(),
+  ownerType: Joi.string()
+    .required()
+    .valid(['user', 'organization']),
   paymentSource: Joi.string().required(),
 })
 
 module.exports = ({ collectionClient, stripeClient }) => async ({
-  organizationId,
+  ownerId,
+  ownerType,
   paymentSource,
 }) => {
   try {
     await validate({
       value: {
-        organizationId,
+        ownerId,
+        ownerType,
         paymentSource,
       },
       schema,
@@ -27,16 +32,17 @@ module.exports = ({ collectionClient, stripeClient }) => async ({
 
   try {
     const billingObject = await collectionClient.findOne({
-      organizationId,
+      ownerId,
+      ownerType,
     })
     if (!billingObject) {
       throw new Error(
-        `Could not find billing object for organization with id ${organizationId}`,
+        `Could not find billing object for ${ownerType} with id ${ownerId}`,
       )
     }
     if (!billingObject.customerId) {
       throw new Error(
-        `A customer has not be been created for organization with id ${organizationId}`,
+        `A customer has not be been created for ${ownerType} with id ${ownerId}`,
       )
     }
 
@@ -51,7 +57,8 @@ module.exports = ({ collectionClient, stripeClient }) => async ({
     }
     await collectionClient.updateOne(
       {
-        organizationId,
+        ownerId,
+        ownerType,
       },
       updateData,
     )

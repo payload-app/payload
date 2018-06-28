@@ -3,7 +3,10 @@ const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
 
 const schema = Joi.object().keys({
-  organizationId: Joi.string().required(),
+  ownerId: Joi.string().required(),
+  ownerType: Joi.string()
+    .required()
+    .valid(['user', 'organization']),
   userId: Joi.string().required(),
   trialEnd: Joi.date()
     .min('now')
@@ -14,11 +17,12 @@ module.exports = ({
   collectionClient,
   organizationServiceClient,
   userServiceClient,
-}) => async ({ organizationId, userId, trialEnd }) => {
+}) => async ({ ownerId, ownerType, userId, trialEnd }) => {
   try {
     await validate({
       value: {
-        organizationId,
+        ownerId,
+        ownerType,
         trialEnd,
         userId,
       },
@@ -31,20 +35,31 @@ module.exports = ({
   }
   try {
     // ensure organization exists
-    await organizationServiceClient.call('getOrganization', {
-      id: organizationId,
-    })
+    if (ownerType === 'organization') {
+      await organizationServiceClient.call('getOrganization', {
+        id: ownerId,
+      })
+    } else if (ownerId !== userId) {
+      throw new Error(
+        `userId ${userId} must match ownerId ${ownerId} if ownerType=${ownerType}`,
+      )
+    }
+
     // ensure user exists
     const user = await userServiceClient.call('getUser', {
       id: userId,
     })
-    if (!user.organizationIds.includes(organizationId)) {
+    if (
+      ownerType === 'organization' &&
+      !user.organizationIds.includes(ownerId)
+    ) {
       throw new Error(
-        `User with id ${userId} does not belong to organization with id ${organizationId}`,
+        `User with id ${userId} does not belong to organization with id ${ownerId}`,
       )
     }
     const { insertedId } = await collectionClient.insertOne({
-      organizationId,
+      ownerId,
+      ownerType,
       userId,
       trialEnd: new Date(isNaN(trialEnd) ? trialEnd : parseInt(trialEnd, 10)),
       paymentSourceSet: false,

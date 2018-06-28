@@ -51,7 +51,7 @@ const initBillingCollection = async ({ dbClient }) => {
   await dbClient.createCollection('billing')
   await dbClient
     .collection('billing')
-    .createIndex({ organizationId: 1 }, { unique: 1 })
+    .createIndex({ ownerId: 1, ownerType: 1 }, { unique: 1 })
   await dbClient.collection('billing').createIndex({ userId: 1 })
   await dbClient.collection('billing').createIndex({ trialEnd: 1 })
   console.log('Init Billing Collection...Done')

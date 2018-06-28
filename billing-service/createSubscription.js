@@ -4,7 +4,10 @@ const { createError } = require('@hharnisc/micro-rpc')
 const listPlans = require('./listPlans')
 
 const schema = Joi.object().keys({
-  organizationId: Joi.string().required(),
+  ownerId: Joi.string().required(),
+  ownerType: Joi.string()
+    .required()
+    .valid(['user', 'organization']),
   repoId: Joi.string().required(),
   planType: Joi.string().required(),
 })
@@ -13,11 +16,12 @@ module.exports = ({
   collectionClient,
   stripeClient,
   repoServiceClient,
-}) => async ({ organizationId, repoId, planType }) => {
+}) => async ({ ownerId, ownerType, repoId, planType }) => {
   try {
     await validate({
       value: {
-        organizationId,
+        ownerId,
+        ownerType,
         repoId,
         planType,
       },
@@ -31,11 +35,12 @@ module.exports = ({
 
   try {
     const billingObject = await collectionClient.findOne({
-      organizationId,
+      ownerId,
+      ownerType,
     })
     if (!billingObject) {
       throw new Error(
-        `Could not find billing object for organization with id ${organizationId}`,
+        `Could not find billing object for ${ownerType} with id ${ownerId}`,
       )
     }
 
@@ -91,7 +96,8 @@ module.exports = ({
 
     await collectionClient.updateOne(
       {
-        organizationId,
+        ownerId,
+        ownerType,
       },
       updateData,
     )

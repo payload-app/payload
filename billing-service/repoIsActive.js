@@ -3,20 +3,25 @@ const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
 
 const schema = Joi.object().keys({
-  organizationId: Joi.string().required(),
+  ownerId: Joi.string().required(),
+  ownerType: Joi.string()
+    .required()
+    .valid(['user', 'organization']),
   repoId: Joi.string().required(),
 })
 
 const trialActive = ({ trialEnd }) => trialEnd.getTime() > new Date().getTime()
 
 module.exports = ({ collectionClient }) => async ({
-  organizationId,
+  ownerId,
+  ownerType,
   repoId,
 }) => {
   try {
     await validate({
       value: {
-        organizationId,
+        ownerId,
+        ownerType,
         repoId,
       },
       schema,
@@ -29,11 +34,12 @@ module.exports = ({ collectionClient }) => async ({
 
   try {
     const billingObject = await collectionClient.findOne({
-      organizationId,
+      ownerId,
+      ownerType,
     })
     if (!billingObject) {
       throw new Error(
-        `Could not find billing object for organization with id ${organizationId}`,
+        `Could not find billing object for ${ownerType} with id ${ownerId}`,
       )
     }
     return (
