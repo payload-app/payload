@@ -34,6 +34,7 @@ services:
       dockerfile: Dockerfile.development
     environment:
      - COOKIE_DOMAIN=.payload.local
+     - TRIAL_DAYS=14
      # WEBHOOK_BASE_URL supplied in .env file
     volumes:
      - ./backend:/usr/src/app/
@@ -44,6 +45,7 @@ services:
      - run-service
      - user-service
      - session-service
+     - billing-service
     networks:
       - main
   status-broadcaster:

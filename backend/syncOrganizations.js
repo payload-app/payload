@@ -4,6 +4,8 @@ module.exports = ({
   userServiceClient,
   organizationServiceClient,
   githubServiceClient,
+  billingServiceClient,
+  trialDays,
 }) => async (_, { session }) => {
   const accessToken = parseGithubTokenFromSession({ session })
   const userId = session.user._id
@@ -56,6 +58,24 @@ module.exports = ({
     id: userId,
     organizationIds,
   })
+  // attempt to start a trial for all organizations sync'd
+  // trial end is now + trial days
+  const now = new Date()
+  const trialEnd = now.setDate(now.getDate() + trialDays)
+  for (let organizationId of organizationIds) {
+    try {
+      await billingServiceClient.call('startTrial', {
+        organizationId,
+        userId,
+        trialEnd,
+      })
+    } catch (error) {
+      // if not a duplicate key error -- rethrow the error
+      if (!error.message.includes('E11000')) {
+        throw error
+      }
+    }
+  }
   return {
     organizations,
   }

@@ -13,6 +13,7 @@ const logout = require('./logout')
 const getUser = require('./getUser')
 
 const cookieDomain = process.env.COOKIE_DOMAIN
+const trialDays = parseInt(process.env.TRIAL_DAYS, 10)
 
 const githubServiceClient = new RPCClient({
   url: 'http://github-service:3000/rpc',
@@ -38,6 +39,10 @@ const sessionServiceClient = new RPCClient({
   url: 'http://session-service:3000/rpc',
 })
 
+const billingServiceClient = new RPCClient({
+  url: 'http://billing-service:3000/rpc',
+})
+
 const webhookBaseUrl = process.env.WEBHOOK_BASE_URL
 
 if (webhookBaseUrl === undefined) {
@@ -60,6 +65,8 @@ const rpcHandler = setSession(
         userServiceClient,
         organizationServiceClient,
         githubServiceClient,
+        billingServiceClient,
+        trialDays,
       }),
     ),
     method(
