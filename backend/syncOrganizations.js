@@ -5,7 +5,6 @@ module.exports = ({
   organizationServiceClient,
   githubServiceClient,
   billingServiceClient,
-  trialDays,
 }) => async (_, { session }) => {
   const accessToken = parseGithubTokenFromSession({ session })
   const userId = session.user._id

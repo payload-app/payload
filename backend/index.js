@@ -52,7 +52,13 @@ const rpcHandler = setSession(
   rpc(
     method(
       'activateRepo',
-      activateRepo({ repoServiceClient, githubServiceClient, webhookBaseUrl }),
+      activateRepo({
+        repoServiceClient,
+        githubServiceClient,
+        organizationServiceClient,
+        billingServiceClient,
+        webhookBaseUrl,
+      }),
     ),
     method('deactivateRepo', () => 'OK'),
     method('repoOwners', repoOwners({ organizationServiceClient })),

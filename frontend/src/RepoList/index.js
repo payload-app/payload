@@ -18,6 +18,7 @@ export default connect(
             owner: repo.owner,
             repo: repo.repo,
             type: repo.type,
+            planType: 'basic_20_usd', // TODO: we'll want a way to select this at some point
           },
         }),
       ),

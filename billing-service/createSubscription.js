@@ -72,7 +72,7 @@ module.exports = ({
         customer: billingObject.customerId,
         plan: plan.planId,
         quantity: 1,
-        trial_end: billingObject.trialEnd.getTime() / 1000,
+        trial_end: Math.round(billingObject.trialEnd.getTime() / 1000),
       })
       subscriptionId = subscription.id
     } else {
