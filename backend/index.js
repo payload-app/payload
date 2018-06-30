@@ -11,6 +11,7 @@ const syncOrganizations = require('./syncOrganizations')
 const syncRepos = require('./syncRepos')
 const logout = require('./logout')
 const getUser = require('./getUser')
+const getBillingCustomer = require('./getBillingCustomer')
 
 const cookieDomain = process.env.COOKIE_DOMAIN
 
@@ -79,6 +80,12 @@ const rpcHandler = setSession(
         githubServiceClient,
         repoServiceClient,
         organizationServiceClient,
+      }),
+    ),
+    method(
+      'getBillingCustomer',
+      getBillingCustomer({
+        billingServiceClient,
       }),
     ),
     method('logout', logout({ sessionServiceClient, cookieDomain })),

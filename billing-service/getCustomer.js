@@ -34,12 +34,18 @@ module.exports = ({ collectionClient }) => async ({ ownerId, ownerType }) => {
         `Could not find billing object for ${ownerType} with id ${ownerId}`,
       )
     }
-    return billingObject.subscriptions.map(sub => ({
-      repoId: sub.repoId,
-      planId: sub.planId,
-      amount: sub.amount,
-      currency: sub.currency,
-    }))
+    return {
+      ...billingObject,
+      // filter stripe customerId
+      customerId: undefined,
+      // filter subscriptions of stripe subscription id
+      subscriptions: billingObject.subscriptions.map(sub => ({
+        repoId: sub.repoId,
+        planId: sub.planId,
+        amount: sub.amount,
+        currency: sub.currency,
+      })),
+    }
   } catch (error) {
     throw createError({
       message: error.message,

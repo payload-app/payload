@@ -1,4 +1,5 @@
 export { default as AnimateText } from './AnimateText'
+export { default as Banner } from './Banner'
 export { default as Button } from './Button'
 export { default as FadeInChildren } from './FadeInChildren'
 export { default as Icon } from './Icon'

@@ -1,8 +1,8 @@
-import React from 'react'
-import { FadeInChildren } from '../../../components'
+import React, { Fragment } from 'react'
+import { FadeInChildren, Banner } from '../../../components'
 import RepoListItem from '../RepoListItem'
 
-export default ({ owner, repos, onActivateClick, onRunClick }) =>
+const RepoList = ({ owner, repos, onActivateClick, onRunClick }) =>
   repos.length ? (
     <FadeInChildren speed={100} key={owner}>
       {repos.map(repo => (
@@ -16,3 +16,15 @@ export default ({ owner, repos, onActivateClick, onRunClick }) =>
       ))}
     </FadeInChildren>
   ) : null
+
+export default ({ owner, repos, onActivateClick, onRunClick }) => (
+  <Fragment>
+    <Banner>Your trial will expire</Banner>
+    <RepoList
+      owner={owner}
+      repos={repos}
+      onActivateClick={onActivateClick}
+      onRunClick={onRunClick}
+    />
+  </Fragment>
+)

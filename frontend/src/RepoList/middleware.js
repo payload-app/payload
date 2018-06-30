@@ -19,6 +19,15 @@ export default ({ dispatch, getState }) => next => action => {
             },
           }),
         )
+        dispatch(
+          dataFetchActions.fetch({
+            name: 'getBillingCustomer',
+            args: {
+              ownerId: repoOwners[action.selection].id,
+              ownerType: repoOwners[action.selection].ownerType,
+            },
+          }),
+        )
       }
       break
     default:
