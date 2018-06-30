@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  text,
-  background as backgroundColor,
-  invertedText,
-  invertedBackground,
-} from '../style/color'
+import { invertedText, invertedBackground } from '../style/color'
 import { calculateStyles } from '../utils/calculateStyles'
 import { fontFamily } from '../style/font'
 
@@ -77,7 +72,7 @@ export default ({
     )}
   >
     {Icon ? (
-      <Icon color={backgroundColor} height={fontSize} width={fontSize} />
+      <Icon color={invertedText} height={fontSize} width={fontSize} />
     ) : null}
     <span
       style={{
