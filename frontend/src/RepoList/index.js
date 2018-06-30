@@ -37,6 +37,7 @@ export default connect(
           }),
         ),
       ),
+    onBillingActionClick: () => console.log('OPEN STRIPE PAYMENT MODAL'),
   }),
 )(RepoList)
 

@@ -15,14 +15,33 @@ const MarginBottom = ({ children }) => (
   <div style={{ marginBottom: '1rem' }}> {children}</div>
 )
 
-const BillingBanner = ({ loading, paymentSourceSet, trialEnd }) => {
+const actionButtonSettings = ({ text, onClick }) => ({
+  text,
+  onClick: e => {
+    e.preventDefault()
+    onClick()
+  },
+})
+
+const BillingBanner = ({
+  loading,
+  paymentSourceSet,
+  trialEnd,
+  onBillingActionClick,
+  owner,
+}) => {
   const expireDays = calculateDaysFromToday({ date: trialEnd })
   if (loading === undefined || loading || paymentSourceSet) {
     return null
   } else if (expireDays > 3.0) {
     return (
       <MarginBottom>
-        <Banner>{`Trial Expires In ${expireDays} Days`}</Banner>
+        <Banner
+          actionButton={actionButtonSettings({
+            text: 'Set Payment Source',
+            onClick: onBillingActionClick,
+          })}
+        >{`Trial For ${owner.toUpperCase()} Expires In ${expireDays} Days`}</Banner>
       </MarginBottom>
     )
   } else if (expireDays < 3.0 && expireDays > 0.0) {
@@ -30,13 +49,23 @@ const BillingBanner = ({ loading, paymentSourceSet, trialEnd }) => {
       <MarginBottom>
         <Banner
           type={'warning'}
-        >{`Trial Expires In ${expireDays} Days`}</Banner>
+          actionButton={actionButtonSettings({
+            text: 'Set Payment Source',
+            onClick: onBillingActionClick,
+          })}
+        >{`Trial For ${owner.toUpperCase()} Expires In ${expireDays} Days`}</Banner>
       </MarginBottom>
     )
   } else {
     return (
       <MarginBottom>
-        <Banner type={'error'}>{`Trial Has Expired`}</Banner>
+        <Banner
+          type={'error'}
+          actionButton={actionButtonSettings({
+            text: 'Set Payment Source',
+            onClick: onBillingActionClick,
+          })}
+        >{`Trial For ${owner.toUpperCase()} Has Expired`}</Banner>
       </MarginBottom>
     )
   }
@@ -63,9 +92,14 @@ export default ({
   repos,
   onActivateClick,
   onRunClick,
+  onBillingActionClick,
 }) => (
   <Fragment>
-    <BillingBanner {...billingCustomer} />
+    <BillingBanner
+      {...billingCustomer}
+      owner={owner}
+      onBillingActionClick={onBillingActionClick}
+    />
     <RepoList
       owner={owner}
       repos={repos}
