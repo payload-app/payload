@@ -20,17 +20,23 @@ const updateMenu = ({ dispatch, menu, selection }) =>
   )
 
 const updateRepoOwnersMenu = ({ dispatch, getState, menu }) => {
-  const { router: { location: { pathname } } } = getState()
+  const {
+    router: { location: { pathname } },
+    [selector]: { selection: currentSelection },
+  } = getState()
   const selection = menu.findIndex(item => item.url === pathname)
   updateMenu({
     dispatch,
     menu,
   })
-  dispatch(
-    actions.select({
-      selection: selection === -1 ? 0 : selection,
-    }),
-  )
+
+  if (currentSelection !== selection) {
+    dispatch(
+      actions.select({
+        selection: selection === -1 ? 0 : selection,
+      }),
+    )
+  }
 }
 
 export default ({ dispatch, getState }) => next => action => {
