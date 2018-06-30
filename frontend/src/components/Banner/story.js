@@ -17,29 +17,27 @@ storiesOf('Banner', module)
       Something is about to happen that you should know about
     </Banner>
   ))
-  .add('w/ actionLink', () => (
+  .add('w/ actionButton', () => (
     <Banner
-      actionLink={{
+      actionButton={{
         text: 'Do Something About It',
-        href: '#',
         onClick: e => {
           e.preventDefault()
-          action('actionLinkClick')(e)
+          action('actionButtonClick')(e)
         },
       }}
     >
       Something is about to happen that you should know about
     </Banner>
   ))
-  .add('type=warning, w/ actionLink', () => (
+  .add('type=warning, w/ actionButton', () => (
     <Banner
       type={'warning'}
-      actionLink={{
+      actionButton={{
         text: 'Do Something About It',
-        href: '#',
         onClick: e => {
           e.preventDefault()
-          action('actionLinkClick')(e)
+          action('actionButtonClick')(e)
         },
       }}
     >
@@ -47,15 +45,14 @@ storiesOf('Banner', module)
     </Banner>
   ))
 
-  .add('type=error, w/ actionLink', () => (
+  .add('type=error, w/ actionButton', () => (
     <Banner
       type={'error'}
-      actionLink={{
+      actionButton={{
         text: 'Do Something About It',
-        href: '#',
         onClick: e => {
           e.preventDefault()
-          action('actionLinkClick')(e)
+          action('actionButtonClick')(e)
         },
       }}
     >

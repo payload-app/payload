@@ -37,3 +37,16 @@ storiesOf('Button', module)
       {"I'm HUGE"}
     </Button>
   ))
+  .add('customized color and background', () => (
+    <div
+      style={{ background: 'white', padding: '20rem', display: 'inline-block' }}
+    >
+      <Button
+        onClick={action('Button Click')}
+        color={'red'}
+        background={'grey'}
+      >
+        Activate?
+      </Button>
+    </div>
+  ))

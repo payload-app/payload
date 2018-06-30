@@ -1,26 +1,27 @@
 import React from 'react'
 import { calculateStyles } from '../utils/calculateStyles'
 import Text from '../Text'
-import Link from '../Link'
+import Button from '../Button'
 import Pulse from '../Pulse'
 import {
   invertedBackground,
+  background,
   invertedText,
   brightRed,
   text,
 } from '../style/color'
 
-const ActionLink = ({ type, text: childrenText, href, onClick }) => (
-  <Link
-    href={href}
+const ActionButton = ({ type, text: childrenText, onClick }) => (
+  <Button
     onClick={onClick}
-    color={type === 'warning' || type === 'error' ? text : invertedText}
+    color={type === 'default' ? text : brightRed}
+    background={type === 'default' ? background : invertedBackground}
   >
     {childrenText}
-  </Link>
+  </Button>
 )
 
-const BannerContent = ({ type, children, actionLink }) => (
+const BannerContent = ({ type, children, actionButton }) => (
   <div
     style={calculateStyles(
       {
@@ -56,19 +57,19 @@ const BannerContent = ({ type, children, actionLink }) => (
         {children}
       </Text>
     </div>
-    {actionLink ? <ActionLink {...actionLink} type={type} /> : null}
+    {actionButton ? <ActionButton {...actionButton} type={type} /> : null}
   </div>
 )
 
-const Banner = ({ type, children, actionLink }) =>
+const Banner = ({ type = 'default', children, actionButton }) =>
   type === 'error' ? (
     <Pulse backgroundColor={brightRed} display={'block'} speed={1000}>
-      <BannerContent type={type} actionLink={actionLink}>
+      <BannerContent type={type} actionButton={actionButton}>
         {children}
       </BannerContent>
     </Pulse>
   ) : (
-    <BannerContent type={type} actionLink={actionLink}>
+    <BannerContent type={type} actionButton={actionButton}>
       {children}
     </BannerContent>
   )
