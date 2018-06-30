@@ -43,6 +43,7 @@ import {
   selector as sidebarSelector,
   reducer as sidebarReducer,
 } from '../Sidebar'
+import { middleware as billingMiddleware } from '../Billing'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -82,6 +83,7 @@ const store = createStore(
       loadingMiddleware,
       userMenuItemMiddleware,
       sidebarMiddleware,
+      billingMiddleware,
       logger,
     ),
   ),
