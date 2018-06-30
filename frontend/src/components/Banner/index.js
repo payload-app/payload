@@ -8,7 +8,6 @@ import {
   invertedText,
   brightRed,
   text,
-  background,
 } from '../style/color'
 
 const ActionLink = ({ type, text: childrenText, href, onClick }) => (
