@@ -1,10 +1,28 @@
 import React from 'react'
+import { calculateStyles } from '../utils/calculateStyles'
 import Text from '../Text'
-import { invertedBackground, invertedText } from '../style/color'
+import {
+  invertedBackground,
+  invertedText,
+  brightRed,
+  text,
+} from '../style/color'
 
-const Banner = ({ children }) => (
-  <div style={{ background: invertedBackground, padding: '1rem' }}>
-    <Text size={2} color={invertedText}>
+const Banner = ({ type, children }) => (
+  <div
+    style={calculateStyles(
+      {
+        default: { background: invertedBackground, padding: '1rem' },
+        error: {
+          background: brightRed,
+        },
+      },
+      {
+        error: type === 'error',
+      },
+    )}
+  >
+    <Text size={2} color={type === 'error' ? text : invertedText}>
       {children}
     </Text>
   </div>
