@@ -1,5 +1,11 @@
 import React, { Fragment } from 'react'
-import { FadeInChildren, Banner } from '../../../components'
+import {
+  FadeInChildren,
+  Banner,
+  Popover,
+  PaymentForm,
+  Overlay,
+} from '../../../components'
 import RepoListItem from '../RepoListItem'
 
 const calculateDaysFromToday = ({ date }) =>
@@ -86,13 +92,37 @@ const RepoList = ({ owner, repos, onActivateClick, onRunClick }) =>
     </FadeInChildren>
   ) : null
 
+const PaymentOverlay = ({
+  owner,
+  stripePublicKey,
+  onPaymentOverlayClick,
+  onBillingCancelClick,
+  onBillingSubmit,
+}) => (
+  <Fragment>
+    <Popover anchor={'none'}>
+      <PaymentForm
+        apiKey={stripePublicKey}
+        onCancelClick={onBillingCancelClick}
+        onSubmit={onBillingSubmit}
+        customerName={owner}
+      />
+    </Popover>
+    <Overlay onClick={onPaymentOverlayClick} />
+  </Fragment>
+)
 export default ({
   billingCustomer,
   owner,
   repos,
+  stripePublicKey,
   onActivateClick,
   onRunClick,
   onBillingActionClick,
+  showPaymentOverlay,
+  onPaymentOverlayClick,
+  onBillingCancelClick,
+  onBillingSubmit,
 }) => (
   <Fragment>
     <BillingBanner
@@ -106,5 +136,14 @@ export default ({
       onActivateClick={onActivateClick}
       onRunClick={onRunClick}
     />
+    {showPaymentOverlay ? (
+      <PaymentOverlay
+        onPaymentOverlayClick={onPaymentOverlayClick}
+        onBillingCancelClick={onBillingCancelClick}
+        onBillingSubmit={onBillingSubmit}
+        owner={owner}
+        stripePublicKey={stripePublicKey}
+      />
+    ) : null}
   </Fragment>
 )

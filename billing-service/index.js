@@ -15,6 +15,7 @@ const getCustomer = require('./getCustomer')
 const listPlans = require('./listPlans')
 
 const promisifiedMongoClient = promisify(MongoClient)
+const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
 
 const init = async handler => {
   const client = await promisifiedMongoClient.connect(
@@ -113,6 +114,7 @@ const rpcHandler = ({
         stripeClient,
       }),
     ),
+    method('getStripePublicKey', () => stripePublicKey),
   )
 
 const healthHandler = () => 'OK'

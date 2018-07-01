@@ -73,6 +73,12 @@ const calcPosition = ({ anchor }) => {
       right: 0,
       transform: 'translateY(calc(100% + 2rem))',
     }
+  } else if (anchor === 'none') {
+    return {
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%,-50%)',
+    }
   }
 }
 

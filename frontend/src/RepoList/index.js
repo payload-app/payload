@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { actions as dataFetchActions } from '@hharnisc/async-data-fetch'
 import RepoList from './components/RepoList'
-import { selector } from './reducer'
+import { selector, actions } from './reducer'
 import { generateRunRoute } from '../Routing'
 import { selector as billingSelector } from '../Billing'
 
@@ -10,6 +10,8 @@ export default connect(
   state => ({
     repos: state[selector].repos,
     billingCustomer: state[billingSelector],
+    showPaymentOverlay: state[selector].showPaymentOverlay,
+    stripePublicKey: state[billingSelector].stripePublicKey,
   }),
   dispatch => ({
     onActivateClick: ({ repo }) =>
@@ -37,7 +39,13 @@ export default connect(
           }),
         ),
       ),
-    onBillingActionClick: () => console.log('OPEN STRIPE PAYMENT MODAL'),
+    onBillingActionClick: () =>
+      dispatch(actions.togglePaymentOverlay({ visible: true })),
+    onPaymentOverlayClick: () =>
+      dispatch(actions.togglePaymentOverlay({ visible: false })),
+    onBillingCancelClick: () =>
+      dispatch(actions.togglePaymentOverlay({ visible: false })),
+    onBillingSubmit: result => console.log(result),
   }),
 )(RepoList)
 

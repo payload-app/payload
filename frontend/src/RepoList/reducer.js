@@ -4,6 +4,11 @@ export const selector = 'RepoList'
 
 const initialState = {
   repos: [],
+  showPaymentOverlay: false,
+}
+
+export const actionTypes = {
+  TOGGLE_PAYMENT_OVERLAY: `${selector}/TOGGLE_PAYMENT_OVERLAY`,
 }
 
 const repoReducer = (state, action) => {
@@ -52,7 +57,19 @@ export default (state = initialState, action) => {
           return repo
         }),
       }
+    case actionTypes.TOGGLE_PAYMENT_OVERLAY:
+      return {
+        ...state,
+        showPaymentOverlay: action.visible,
+      }
     default:
       return state
   }
+}
+
+export const actions = {
+  togglePaymentOverlay: ({ visible }) => ({
+    type: actionTypes.TOGGLE_PAYMENT_OVERLAY,
+    visible,
+  }),
 }
