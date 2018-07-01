@@ -13,8 +13,10 @@ export default ({
   fillContainer,
   color,
   background,
+  type,
 }) => (
   <button
+    type={type}
     disabled={disabled}
     onClick={onClick}
     style={calculateStyles(

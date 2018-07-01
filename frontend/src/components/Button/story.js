@@ -50,3 +50,8 @@ storiesOf('Button', module)
       </Button>
     </div>
   ))
+  .add('type=submit', () => (
+    <Button type={'submit'} onClick={action('Button Click')}>
+      Submit?
+    </Button>
+  ))
