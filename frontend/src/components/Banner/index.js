@@ -53,6 +53,7 @@ const BannerContent = ({ type, children, actionButton }) => (
       <Text
         size={2}
         color={type === 'warning' || type === 'error' ? text : invertedText}
+        capitalize
       >
         {children}
       </Text>

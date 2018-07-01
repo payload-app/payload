@@ -47,7 +47,7 @@ const BillingBanner = ({
             text: 'Set Payment Source',
             onClick: onBillingActionClick,
           })}
-        >{`Trial For ${owner.toUpperCase()} Expires In ${expireDays} Days`}</Banner>
+        >{`Trial For ${owner} Expires In ${expireDays} Days`}</Banner>
       </MarginBottom>
     )
   } else if (expireDays < 3.0 && expireDays > 0.0) {
@@ -59,7 +59,7 @@ const BillingBanner = ({
             text: 'Set Payment Source',
             onClick: onBillingActionClick,
           })}
-        >{`Trial For ${owner.toUpperCase()} Expires In ${expireDays} Days`}</Banner>
+        >{`Trial For ${owner} Expires In ${expireDays} Days`}</Banner>
       </MarginBottom>
     )
   } else {
@@ -71,7 +71,7 @@ const BillingBanner = ({
             text: 'Set Payment Source',
             onClick: onBillingActionClick,
           })}
-        >{`Trial For ${owner.toUpperCase()} Has Expired`}</Banner>
+        >{`Trial For ${owner} Has Expired`}</Banner>
       </MarginBottom>
     )
   }
