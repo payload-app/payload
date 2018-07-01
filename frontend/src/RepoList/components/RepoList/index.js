@@ -93,6 +93,7 @@ const RepoList = ({ owner, repos, onActivateClick, onRunClick }) =>
   ) : null
 
 const PaymentOverlay = ({
+  billingCustomer,
   owner,
   stripePublicKey,
   onPaymentOverlayClick,
@@ -104,7 +105,13 @@ const PaymentOverlay = ({
       <PaymentForm
         apiKey={stripePublicKey}
         onCancelClick={onBillingCancelClick}
-        onSubmit={onBillingSubmit}
+        onSubmit={({ id }) =>
+          onBillingSubmit({
+            ownerId: billingCustomer.ownerId,
+            ownerType: billingCustomer.ownerType,
+            paymentSource: id,
+          })
+        }
         customerName={owner}
       />
     </Popover>
@@ -138,6 +145,7 @@ export default ({
     />
     {showPaymentOverlay ? (
       <PaymentOverlay
+        billingCustomer={billingCustomer}
         onPaymentOverlayClick={onPaymentOverlayClick}
         onBillingCancelClick={onBillingCancelClick}
         onBillingSubmit={onBillingSubmit}

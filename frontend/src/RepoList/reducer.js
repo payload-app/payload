@@ -62,6 +62,12 @@ export default (state = initialState, action) => {
         ...state,
         showPaymentOverlay: action.visible,
       }
+    case `setPaymentSource_${dataFetchActionTypes.FETCH_START}`:
+      return {
+        ...state,
+        showPaymentOverlay: false,
+      }
+    // TODO: display an error if setting the payment source failed on the backend
     default:
       return state
   }

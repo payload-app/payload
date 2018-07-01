@@ -1,4 +1,7 @@
-import { actions as dataFetchActions } from '@hharnisc/async-data-fetch'
+import {
+  actions as dataFetchActions,
+  actionTypes as dataFetchActionTypes,
+} from '@hharnisc/async-data-fetch'
 import {
   actionTypes as sidebarActionTypes,
   selector as sidebarSelector,
@@ -30,6 +33,17 @@ export default ({ dispatch, getState }) => next => action => {
           }),
         )
       }
+      break
+    case `setPaymentSource_${dataFetchActionTypes.FETCH_SUCCESS}`:
+      dispatch(
+        dataFetchActions.fetch({
+          name: 'getBillingCustomer',
+          args: {
+            ownerId: action.args.ownerId,
+            ownerType: action.args.ownerType,
+          },
+        }),
+      )
       break
     default:
       break

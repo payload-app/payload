@@ -45,7 +45,17 @@ export default connect(
       dispatch(actions.togglePaymentOverlay({ visible: false })),
     onBillingCancelClick: () =>
       dispatch(actions.togglePaymentOverlay({ visible: false })),
-    onBillingSubmit: result => console.log(result),
+    onBillingSubmit: ({ ownerId, ownerType, paymentSource }) =>
+      dispatch(
+        dataFetchActions.fetch({
+          name: 'setPaymentSource',
+          args: {
+            ownerId,
+            ownerType,
+            paymentSource,
+          },
+        }),
+      ),
   }),
 )(RepoList)
 
