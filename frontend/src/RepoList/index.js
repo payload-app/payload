@@ -60,4 +60,4 @@ export default connect(
 )(RepoList)
 
 export { default as middleware } from './middleware'
-export { default as reducer, selector } from './reducer'
+export { default as reducer, selector, actionTypes, actions } from './reducer'
