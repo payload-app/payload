@@ -5,11 +5,24 @@ import RepoList from './components/RepoList'
 import { selector, actions } from './reducer'
 import { generateRunRoute } from '../Routing'
 import { selector as billingSelector } from '../Billing'
+import { selector as sidebarSelector } from '../Sidebar'
+
+const selectedBillingCustomer = ({ state }) => {
+  const owner =
+    state[sidebarSelector].repoOwners[state[sidebarSelector].selection]
+  if (!owner) {
+    return
+  }
+  return state[billingSelector].customers.find(
+    customer =>
+      customer.ownerId === owner.id && customer.ownerType === owner.ownerType,
+  )
+}
 
 export default connect(
   state => ({
     repos: state[selector].repos,
-    billingCustomer: state[billingSelector],
+    billingCustomer: selectedBillingCustomer({ state }),
     showPaymentOverlay: state[selector].showPaymentOverlay,
     stripePublicKey: state[billingSelector].stripePublicKey,
   }),
