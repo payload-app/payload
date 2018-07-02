@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
-
+import { selector } from './reducer'
 import PageBilling from './components/PageBilling'
 
 export default connect(state => ({
-  stripeKey: process.env.STRIPE_API_KEY,
+  customers: state[selector].customers,
 }))(PageBilling)
 
 export { default as middleware } from './middleware'
