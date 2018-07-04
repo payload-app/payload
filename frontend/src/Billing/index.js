@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import { selector } from './reducer'
-import PageBilling from './components/PageBilling'
+import BillingList from './components/BillingList'
 
 export default connect(state => ({
   customers: state[selector].customers,
-}))(PageBilling)
+}))(BillingList)
 
 export { default as middleware } from './middleware'
 export { default as reducer, selector } from './reducer'
