@@ -28,39 +28,35 @@ module.exports = ({ collectionClient }) => async ({ owners }) => {
       message: parseValidationErrorMessage({ error }),
     })
   }
-  console.log('owners', owners)
   try {
-    const billingObjects = await collectionClient.find({
-      $or: owners.map(owner => ({
-        ownerId: owner.ownerId,
-        ownerType: owner.ownerType,
+    const cleanedOwners = owners.map(owner => ({
+      ownerId: owner.ownerId,
+      ownerType: owner.ownerType,
+    }))
+    const billingObjects = await collectionClient
+      .find({
+        $or: cleanedOwners,
+      })
+      .toArray()
+    if (billingObjects.length !== owners.length) {
+      throw new Error(
+        `Could not find all billing objects billing all billing objects for ${JSON.stringify(
+          cleanedOwners,
+        )}`,
+      )
+    }
+    return billingObjects.map(billingObject => ({
+      ...billingObject,
+      // filter stripe customerId
+      customerId: undefined,
+      // filter subscriptions of stripe subscription id
+      subscriptions: billingObject.subscriptions.map(sub => ({
+        repoId: sub.repoId,
+        planId: sub.planId,
+        amount: sub.amount,
+        currency: sub.currency,
       })),
-    })
-    console.log(
-      owners.map(owner => ({
-        ownerId: owner.ownerId,
-        ownerType: owner.ownerType,
-      })),
-    )
-    console.log('billingObjects.toArray()', billingObjects.toArray())
-    // if (!billingObject) {
-    //   throw new Error(
-    //     `Could not find billing object for ${ownerType} with id ${ownerId}`,
-    //   )
-    // }
-    return 'OK'
-    // return {
-    //   ...billingObject,
-    //   // filter stripe customerId
-    //   customerId: undefined,
-    //   // filter subscriptions of stripe subscription id
-    //   subscriptions: billingObject.subscriptions.map(sub => ({
-    //     repoId: sub.repoId,
-    //     planId: sub.planId,
-    //     amount: sub.amount,
-    //     currency: sub.currency,
-    //   })),
-    // }
+    }))
   } catch (error) {
     throw createError({
       message: error.message,
