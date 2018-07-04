@@ -9,11 +9,13 @@ const initialState = {
 const billingCustomerReducer = (state = {}, action) => {
   switch (action.type) {
     case `getBillingCustomer_${dataFetchActionTypes.FETCH_START}`:
+    case `getBillingCustomers_${dataFetchActionTypes.FETCH_START}`:
       return {
         ...state,
         loading: true,
       }
     case `getBillingCustomer_${dataFetchActionTypes.FETCH_SUCCESS}`:
+    case `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`:
       return {
         ...state,
         ...action.result,
@@ -48,6 +50,20 @@ export default (state = initialState, action) => {
           ),
           billingCustomerReducer(customer, action),
         ],
+      }
+    case `getBillingCustomers_${dataFetchActionTypes.FETCH_START}`:
+      return {
+        ...state,
+        customers: state.customers.map(customer =>
+          billingCustomerReducer(customer, action),
+        ),
+      }
+    case `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`:
+      return {
+        ...state,
+        customers: action.result.map(customer =>
+          billingCustomerReducer(customer, action),
+        ),
       }
     default:
       return state
