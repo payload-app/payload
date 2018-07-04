@@ -29,18 +29,12 @@ export default ({ dispatch, getState }) => next => action => {
         route === routes.OWNER_SETTINGS &&
         params.settingsType === 'billing'
       ) {
-        console.log(
-          repoOwners.map(owner => ({
-            ownerId: owner.ownerId,
-            ownerType: owner.ownerType,
-          })),
-        )
         dispatch(
           dataFetchActions.fetch({
             name: 'getBillingCustomers',
             args: {
               owners: repoOwners.map(owner => ({
-                ownerId: owner.ownerId,
+                ownerId: owner.id,
                 ownerType: owner.ownerType,
               })),
             },
