@@ -14,6 +14,7 @@ const getUser = require('./getUser')
 const getBillingCustomer = require('./getBillingCustomer')
 const getStripePublicKey = require('./getStripePublicKey')
 const setPaymentSource = require('./setPaymentSource')
+const getBillingCustomers = require('./getBillingCustomers')
 
 const cookieDomain = process.env.COOKIE_DOMAIN
 
@@ -99,6 +100,12 @@ const rpcHandler = setSession(
     method(
       'setPaymentSource',
       setPaymentSource({
+        billingServiceClient,
+      }),
+    ),
+    method(
+      'getBillingCustomers',
+      getBillingCustomers({
         billingServiceClient,
       }),
     ),

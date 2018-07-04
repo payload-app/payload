@@ -12,6 +12,7 @@ const cancelSubscription = require('./cancelSubscription')
 const setPaymentSource = require('./setPaymentSource')
 const repoIsActive = require('./repoIsActive')
 const getCustomer = require('./getCustomer')
+const getCustomers = require('./getCustomers')
 const listPlans = require('./listPlans')
 
 const promisifiedMongoClient = promisify(MongoClient)
@@ -105,6 +106,12 @@ const rpcHandler = ({
     method(
       'getCustomer',
       getCustomer({
+        collectionClient,
+      }),
+    ),
+    method(
+      'getCustomers',
+      getCustomers({
         collectionClient,
       }),
     ),

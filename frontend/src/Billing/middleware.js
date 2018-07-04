@@ -11,17 +11,10 @@ import { selector as routingSelector, routes } from '../Routing'
 export default ({ dispatch, getState }) => next => action => {
   next(action)
   switch (action.type) {
-    case 'Store/APP_INIT':
-      dispatch(
-        dataFetchActions.fetch({
-          name: 'getStripePublicKey',
-        }),
-      )
-      break
     case sidebarActionTypes.SELECT:
       const state = getState()
       const { repoOwners } = state[sidebarSelector]
-      const { route } = state[routingSelector]
+      const { route, params } = state[routingSelector]
       if (route === routes.REPO_LIST) {
         dispatch(
           dataFetchActions.fetch({
@@ -29,6 +22,27 @@ export default ({ dispatch, getState }) => next => action => {
             args: {
               ownerId: repoOwners[action.selection].id,
               ownerType: repoOwners[action.selection].ownerType,
+            },
+          }),
+        )
+      } else if (
+        route === routes.OWNER_SETTINGS &&
+        params.settingsType === 'billing'
+      ) {
+        console.log(
+          repoOwners.map(owner => ({
+            ownerId: owner.ownerId,
+            ownerType: owner.ownerType,
+          })),
+        )
+        dispatch(
+          dataFetchActions.fetch({
+            name: 'getBillingCustomers',
+            args: {
+              owners: repoOwners.map(owner => ({
+                ownerId: owner.ownerId,
+                ownerType: owner.ownerType,
+              })),
             },
           }),
         )
