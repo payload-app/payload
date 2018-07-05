@@ -7,12 +7,12 @@ import {
   storeKey as asyncDataFetchStoreKey,
   middleware as asyncDataFetchMiddleware,
 } from '@hharnisc/async-data-fetch'
-import storeMiddleware from './middleware'
 import {
-  default as storeReducer,
+  reducer as storeReducer,
   actions as storeActions,
   selector as storeSelector,
-} from './reducer'
+  middleware as storeMiddleware,
+} from '../StorePackage'
 import {
   reducer as repoListReducer,
   selector as repoListSelector,
@@ -62,7 +62,9 @@ const composeEnhancers =
     : compose
 
 export const history = createHistory()
-
+console.log('repoListSelector', repoListSelector)
+console.log('repoListReducer', repoListReducer)
+console.log('repoListMiddleware', repoListMiddleware)
 const store = createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
@@ -105,4 +107,3 @@ const store = createStore(
 store.dispatch(storeActions.appInit())
 
 export default store
-export { default as reducer, selector, actions, actionTypes } from './reducer'

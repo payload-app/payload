@@ -3,7 +3,7 @@ import { matchRoute } from './routes'
 import {
   selector as storeSelector,
   actionTypes as storeActionTypes,
-} from '../store'
+} from '../StorePackage'
 
 export default ({ dispatch, getState }) => next => action => {
   const state = getState()
