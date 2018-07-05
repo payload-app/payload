@@ -25,7 +25,7 @@ const SubscriptionListItem = ({ subscription, repos, onDeactivateClick }) => {
       >
         <Text size={2}>{`${currencySymbolMap(subscription.currency)}${(
           subscription.amount / 100.0
-        ).toFixed(2)}`}</Text>
+        ).toFixed(2)}/Mo`}</Text>
       </div>
       <div>
         <Button onClick={onDeactivateClick}>Deactivate</Button>
