@@ -4,7 +4,7 @@ import React from 'react'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import { Pulse, Text, Button, Link, Panel } from '../../../components'
-import { red, mutedWhite } from '../../../components/style/color'
+import { red } from '../../../components/style/color'
 
 type Props = {
   repo: Repo,
