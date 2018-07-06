@@ -15,6 +15,7 @@ const getBillingCustomer = require('./getBillingCustomer')
 const getStripePublicKey = require('./getStripePublicKey')
 const setPaymentSource = require('./setPaymentSource')
 const getBillingCustomers = require('./getBillingCustomers')
+const getRepos = require('./getRepos')
 
 const cookieDomain = process.env.COOKIE_DOMAIN
 
@@ -109,6 +110,7 @@ const rpcHandler = setSession(
         billingServiceClient,
       }),
     ),
+    method('getRepos', getRepos({ repoServiceClient })),
     method('logout', logout({ sessionServiceClient, cookieDomain })),
     method('getUser', getUser),
   ),

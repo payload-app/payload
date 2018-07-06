@@ -1,8 +1,8 @@
 const { createError } = require('@hharnisc/micro-rpc')
 
-module.exports = ({ billingServiceClient }) => async () => {
+module.exports = ({ repoServiceClient }) => async ({ ids }) => {
   try {
-    return await billingServiceClient.call('getStripePublicKey')
+    return await repoServiceClient.call('getRepos', { ids })
   } catch (error) {
     throw createError({
       message: error.message,

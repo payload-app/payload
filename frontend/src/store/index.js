@@ -62,9 +62,6 @@ const composeEnhancers =
     : compose
 
 export const history = createHistory()
-console.log('repoListSelector', repoListSelector)
-console.log('repoListReducer', repoListReducer)
-console.log('repoListMiddleware', repoListMiddleware)
 const store = createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,

@@ -6,6 +6,7 @@ import BillingList from './components/BillingList'
 export default connect(state => ({
   billingCustomers: state[selector].customers,
   repoOwners: state[sidebarSelector].repoOwners,
+  repos: state[selector].repos,
   loading: state[selector].loadingActiveRepos,
 }))(BillingList)
 

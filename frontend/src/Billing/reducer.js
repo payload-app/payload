@@ -4,6 +4,7 @@ export const selector = 'Billing'
 const initialState = {
   stripePublicKey: null,
   customers: [],
+  repos: [],
   loadingActiveRepos: true,
 }
 
@@ -65,6 +66,17 @@ export default (state = initialState, action) => {
         customers: action.result.map(customer =>
           billingCustomerReducer(customer, action),
         ),
+      }
+    case `getRepos_${dataFetchActionTypes.FETCH_START}`:
+      return {
+        ...state,
+        loadingActiveRepos: true,
+      }
+    case `getRepos_${dataFetchActionTypes.FETCH_SUCCESS}`:
+      return {
+        ...state,
+        loadingActiveRepos: false,
+        repos: action.result,
       }
     default:
       return state

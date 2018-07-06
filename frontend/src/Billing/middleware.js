@@ -53,6 +53,19 @@ export default ({ dispatch, getState }) => next => action => {
         }),
       )
       break
+    case `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`:
+      const ids = action.result
+        .map(customer => customer.subscriptions.map(sub => sub.repoId))
+        .reduce((idArray, newRepoIds) => [...idArray, ...newRepoIds], [])
+      dispatch(
+        dataFetchActions.fetch({
+          name: 'getRepos',
+          args: {
+            ids,
+          },
+        }),
+      )
+      break
     default:
       break
   }
