@@ -23,3 +23,14 @@ storiesOf('BillingListItem', module)
       repoOwners={repoOwners}
     />
   ))
+  .add('loading', () => (
+    <BillingListItem
+      billingCustomer={{
+        ...billingCustomer,
+        paymentSourceSet: false,
+      }}
+      repos={repos}
+      repoOwners={repoOwners}
+      loading={true}
+    />
+  ))

@@ -4,6 +4,7 @@ export const selector = 'Billing'
 const initialState = {
   stripePublicKey: null,
   customers: [],
+  loadingActiveRepos: true,
 }
 
 const billingCustomerReducer = (state = {}, action) => {

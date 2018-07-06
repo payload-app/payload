@@ -86,7 +86,7 @@ const PaymentSource = ({
   </Panel>
 )
 
-const BillingListItem = ({ billingCustomer, repos, repoOwners }) => (
+const BillingListItem = ({ billingCustomer, repos, repoOwners, loading }) => (
   <Panel
     TitleComponent={
       <Text size={3} capitalize>
@@ -100,23 +100,29 @@ const BillingListItem = ({ billingCustomer, repos, repoOwners }) => (
       </Text>
     }
   >
-    <SubscriptionList
-      subscriptions={billingCustomer.subscriptions}
-      repos={repos}
-    />
-    <div
-      style={{
-        display: 'flex',
-        marginTop: '2rem',
-        alignItems: 'center',
-      }}
-    >
-      <PaymentSource {...billingCustomer} />
-      <div style={{ flexGrow: 1 }} />
-      {billingCustomer.subscriptions.length ? (
-        <Total subscriptions={billingCustomer.subscriptions} />
-      ) : null}
-    </div>
+    {loading ? (
+      <Text size={2}>Loading...</Text>
+    ) : (
+      <div>
+        <SubscriptionList
+          subscriptions={billingCustomer.subscriptions}
+          repos={repos}
+        />
+        <div
+          style={{
+            display: 'flex',
+            marginTop: '2rem',
+            alignItems: 'center',
+          }}
+        >
+          <PaymentSource {...billingCustomer} />
+          <div style={{ flexGrow: 1 }} />
+          {billingCustomer.subscriptions.length ? (
+            <Total subscriptions={billingCustomer.subscriptions} />
+          ) : null}
+        </div>
+      </div>
+    )}
   </Panel>
 )
 

@@ -1,9 +1,12 @@
 import { connect } from 'react-redux'
 import { selector } from './reducer'
+import { selector as sidebarSelector } from '../Sidebar'
 import BillingList from './components/BillingList'
 
 export default connect(state => ({
-  customers: state[selector].customers,
+  billingCustomers: state[selector].customers,
+  repoOwners: state[sidebarSelector].repoOwners,
+  loading: state[selector].loadingActiveRepos,
 }))(BillingList)
 
 export { default as middleware } from './middleware'
