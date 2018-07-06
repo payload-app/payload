@@ -1,8 +1,14 @@
 import React from 'react'
-import { Text } from '../../../components'
+import BillingListItem from '../BillingListItem'
 
-const BillingList = () => {
-  return <Text>Billing</Text>
-}
+const BillingList = ({ billingCustomers, repos, repoOwners }) =>
+  billingCustomers.map(billingCustomer => (
+    <BillingListItem
+      key={billingCustomer._id}
+      billingCustomer={billingCustomer}
+      repos={repos}
+      repoOwners={repoOwners}
+    />
+  ))
 
 export default BillingList

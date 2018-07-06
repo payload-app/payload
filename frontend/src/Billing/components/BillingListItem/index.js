@@ -1,7 +1,29 @@
 import React, { Fragment } from 'react'
 import currencySymbolMap from 'currency-symbol-map'
-import { Text, Panel, Button } from '../../../components'
+import { Text, Panel, Button, Banner } from '../../../components'
 import SubscriptionList from '../SubscriptionList'
+
+const calculateDaysFromToday = ({ date }) =>
+  (
+    (new Date(date).getTime() - new Date().getTime()) /
+    1000 /
+    60 /
+    60 /
+    24
+  ).toFixed(3)
+
+const BillingBanner = ({ trialEnd }) => {
+  const expireDays = calculateDaysFromToday({ date: trialEnd })
+  if (expireDays > 3.0) {
+    return <Banner>{`Trial Expires In ${expireDays} Days`}</Banner>
+  } else if (expireDays < 3.0 && expireDays > 0.0) {
+    return (
+      <Banner type={'warning'}>{`Trial Expires In ${expireDays} Days`}</Banner>
+    )
+  } else {
+    return <Banner type={'error'}>{`Trial Has Expired`}</Banner>
+  }
+}
 
 const Total = ({ subscriptions }) => (
   <div>
@@ -13,7 +35,11 @@ const Total = ({ subscriptions }) => (
   </div>
 )
 
-const PaymentSource = ({ paymentSourceLastFour, paymentSourceSet }) => (
+const PaymentSource = ({
+  paymentSourceLastFour,
+  paymentSourceSet,
+  trialEnd,
+}) => (
   <Panel
     TitleComponent={
       <Text size={2} capitalize>
@@ -46,7 +72,7 @@ const PaymentSource = ({ paymentSourceLastFour, paymentSourceSet }) => (
     ) : (
       <Fragment>
         <div>
-          <Text size={3} weight={400} capitalize>{`N/A`}</Text>
+          <BillingBanner trialEnd={trialEnd} />
         </div>
         <div
           style={{
