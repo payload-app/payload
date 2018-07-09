@@ -13,6 +13,7 @@ storiesOf('BillingListItem', module)
       repos={repos}
       repoOwners={repoOwners}
       onDeactivateClick={action('onDeactivateClick')}
+      onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
     />
   ))
   .add('no payment source set', () => (
@@ -24,6 +25,7 @@ storiesOf('BillingListItem', module)
       repos={repos}
       repoOwners={repoOwners}
       onDeactivateClick={action('onDeactivateClick')}
+      onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
     />
   ))
   .add('loading', () => (
@@ -36,5 +38,6 @@ storiesOf('BillingListItem', module)
       repoOwners={repoOwners}
       loading={true}
       onDeactivateClick={action('onDeactivateClick')}
+      onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
     />
   ))

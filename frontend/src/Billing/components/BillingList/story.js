@@ -13,6 +13,7 @@ storiesOf('BillingList', module)
       repos={repos}
       repoOwners={repoOwners}
       onDeactivateClick={action('onDeactivateClick')}
+      onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
     />
   ))
   .add('loading', () => (
@@ -22,5 +23,6 @@ storiesOf('BillingList', module)
       repoOwners={repoOwners}
       loading={true}
       onDeactivateClick={action('onDeactivateClick')}
+      onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
     />
   ))

@@ -7,6 +7,7 @@ const BillingList = ({
   repoOwners,
   loading,
   onDeactivateClick,
+  onSetPaymentSourceClick,
 }) =>
   billingCustomers.map(billingCustomer => (
     <BillingListItem
@@ -16,6 +17,7 @@ const BillingList = ({
       repoOwners={repoOwners}
       loading={loading}
       onDeactivateClick={onDeactivateClick}
+      onSetPaymentSourceClick={onSetPaymentSourceClick}
     />
   ))
 

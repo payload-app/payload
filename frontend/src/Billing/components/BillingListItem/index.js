@@ -35,11 +35,7 @@ const Total = ({ subscriptions }) => (
   </div>
 )
 
-const PaymentSource = ({
-  paymentSourceLastFour,
-  paymentSourceSet,
-  trialEnd,
-}) => (
+const PaymentSource = ({ billingCustomer, onSetPaymentSourceClick }) => (
   <Panel
     TitleComponent={
       <Text size={2} capitalize>
@@ -47,7 +43,7 @@ const PaymentSource = ({
       </Text>
     }
   >
-    {paymentSourceSet ? (
+    {billingCustomer.paymentSourceSet ? (
       <div
         style={{
           display: 'flex',
@@ -55,31 +51,33 @@ const PaymentSource = ({
         }}
       >
         <div>
-          <Text
-            size={3}
-            weight={400}
-            capitalize
-          >{`****-****-****-${paymentSourceLastFour}`}</Text>
+          <Text size={3} weight={400} capitalize>{`****-****-****-${
+            billingCustomer.paymentSourceLastFour
+          }`}</Text>
         </div>
         <div
           style={{
             marginTop: '1rem',
           }}
         >
-          <Button>Update Payment Source</Button>
+          <Button onClick={() => onSetPaymentSourceClick({ billingCustomer })}>
+            Update Payment Source
+          </Button>
         </div>
       </div>
     ) : (
       <Fragment>
         <div>
-          <BillingBanner trialEnd={trialEnd} />
+          <BillingBanner trialEnd={billingCustomer.trialEnd} />
         </div>
         <div
           style={{
             marginTop: '1rem',
           }}
         >
-          <Button>Set Payment Source</Button>
+          <Button onClick={() => onSetPaymentSourceClick({ billingCustomer })}>
+            Set Payment Source
+          </Button>
         </div>
       </Fragment>
     )}
@@ -92,6 +90,7 @@ const BillingListItem = ({
   repoOwners,
   loading,
   onDeactivateClick,
+  onSetPaymentSourceClick,
 }) => (
   <Panel
     TitleComponent={
@@ -124,7 +123,10 @@ const BillingListItem = ({
             alignItems: 'center',
           }}
         >
-          <PaymentSource {...billingCustomer} />
+          <PaymentSource
+            billingCustomer={billingCustomer}
+            onSetPaymentSourceClick={onSetPaymentSourceClick}
+          />
           <div style={{ flexGrow: 1 }} />
           {billingCustomer.subscriptions.length ? (
             <Total subscriptions={billingCustomer.subscriptions} />
