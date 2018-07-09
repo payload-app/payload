@@ -1,7 +1,7 @@
 import React from 'react'
 import SubscriptionListItem from '../SubscriptionListItem'
 
-const SubscriptionList = ({ subscriptions, repos }) =>
+const SubscriptionList = ({ subscriptions, repos, onDeactivateClick }) =>
   subscriptions.map(subscription => (
     <div
       key={subscription.repoId}
@@ -9,7 +9,11 @@ const SubscriptionList = ({ subscriptions, repos }) =>
         marginBottom: '1rem',
       }}
     >
-      <SubscriptionListItem subscription={subscription} repos={repos} />
+      <SubscriptionListItem
+        subscription={subscription}
+        repos={repos}
+        onDeactivateClick={() => onDeactivateClick({ subscription })}
+      />
     </div>
   ))
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import BillingListItem from './'
 import billingCustomer from './sampleData'
 import repos from '../sampleRepoData'
@@ -11,6 +12,7 @@ storiesOf('BillingListItem', module)
       billingCustomer={billingCustomer}
       repos={repos}
       repoOwners={repoOwners}
+      onDeactivateClick={action('onDeactivateClick')}
     />
   ))
   .add('no payment source set', () => (
@@ -21,6 +23,7 @@ storiesOf('BillingListItem', module)
       }}
       repos={repos}
       repoOwners={repoOwners}
+      onDeactivateClick={action('onDeactivateClick')}
     />
   ))
   .add('loading', () => (
@@ -32,5 +35,6 @@ storiesOf('BillingListItem', module)
       repos={repos}
       repoOwners={repoOwners}
       loading={true}
+      onDeactivateClick={action('onDeactivateClick')}
     />
   ))

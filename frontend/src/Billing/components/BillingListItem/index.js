@@ -86,7 +86,13 @@ const PaymentSource = ({
   </Panel>
 )
 
-const BillingListItem = ({ billingCustomer, repos, repoOwners, loading }) => (
+const BillingListItem = ({
+  billingCustomer,
+  repos,
+  repoOwners,
+  loading,
+  onDeactivateClick,
+}) => (
   <Panel
     TitleComponent={
       <Text size={3} capitalize>
@@ -107,6 +113,9 @@ const BillingListItem = ({ billingCustomer, repos, repoOwners, loading }) => (
         <SubscriptionList
           subscriptions={billingCustomer.subscriptions}
           repos={repos}
+          onDeactivateClick={result =>
+            onDeactivateClick({ ...result, billingCustomer })
+          }
         />
         <div
           style={{

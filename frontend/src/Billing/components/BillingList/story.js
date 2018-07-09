@@ -1,5 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import BillingList from './'
 import billingCustomers from './sampleData'
 import repos from '../sampleRepoData'
@@ -11,6 +12,7 @@ storiesOf('BillingList', module)
       billingCustomers={billingCustomers}
       repos={repos}
       repoOwners={repoOwners}
+      onDeactivateClick={action('onDeactivateClick')}
     />
   ))
   .add('loading', () => (
@@ -19,5 +21,6 @@ storiesOf('BillingList', module)
       repos={repos}
       repoOwners={repoOwners}
       loading={true}
+      onDeactivateClick={action('onDeactivateClick')}
     />
   ))

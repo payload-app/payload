@@ -1,7 +1,13 @@
 import React from 'react'
 import BillingListItem from '../BillingListItem'
 
-const BillingList = ({ billingCustomers, repos, repoOwners, loading }) =>
+const BillingList = ({
+  billingCustomers,
+  repos,
+  repoOwners,
+  loading,
+  onDeactivateClick,
+}) =>
   billingCustomers.map(billingCustomer => (
     <BillingListItem
       key={billingCustomer._id}
@@ -9,6 +15,7 @@ const BillingList = ({ billingCustomers, repos, repoOwners, loading }) =>
       repos={repos}
       repoOwners={repoOwners}
       loading={loading}
+      onDeactivateClick={onDeactivateClick}
     />
   ))
 
