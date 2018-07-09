@@ -11,16 +11,26 @@ const initialState = {
 const billingCustomerReducer = (state = {}, action) => {
   switch (action.type) {
     case `getBillingCustomer_${dataFetchActionTypes.FETCH_START}`:
+      return {
+        ...state,
+        ownerId: action.args.ownerId,
+        ownerType: action.args.ownerType,
+        loading: true,
+      }
     case `getBillingCustomers_${dataFetchActionTypes.FETCH_START}`:
       return {
         ...state,
         loading: true,
       }
     case `getBillingCustomer_${dataFetchActionTypes.FETCH_SUCCESS}`:
-    case `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`:
       return {
         ...state,
         ...action.result,
+        loading: false,
+      }
+    case `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`:
+      return {
+        ...state,
         loading: false,
       }
     default:
@@ -47,8 +57,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         customers: [
-          ...state.customers.filter(customer =>
-            compareCustomerToAction({ customer, action }),
+          ...state.customers.filter(
+            customer => !compareCustomerToAction({ customer, action }),
           ),
           billingCustomerReducer(customer, action),
         ],
