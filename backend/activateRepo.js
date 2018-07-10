@@ -12,6 +12,7 @@ const schema = Joi.object().keys({
   type: Joi.string()
     .valid(['github'])
     .required(),
+  planType: Joi.string().required(),
 })
 
 const generateWebhookToken = async ({
@@ -109,14 +110,17 @@ const createWebhook = async ({
 module.exports = ({
   repoServiceClient,
   githubServiceClient,
+  organizationServiceClient,
+  billingServiceClient,
   webhookBaseUrl,
-}) => async ({ owner, repo, type }, { session }) => {
+}) => async ({ owner, repo, type, planType }, { session }) => {
   try {
     await validate({
       value: {
         owner,
         repo,
         type,
+        planType,
       },
       schema,
     })
@@ -127,6 +131,14 @@ module.exports = ({
   }
   const appName = 'payload'
   const accessToken = parseGithubTokenFromSession({ session })
+
+  // ensure repo exists
+  const repoData = await repoServiceClient.call('getRepo', {
+    owner,
+    repo,
+    type,
+  })
+
   await cleanupExistingWebooks({
     githubServiceClient,
     appName,
@@ -152,6 +164,51 @@ module.exports = ({
     accessToken,
     webhookToken,
   })
+
+  let organization
+  try {
+    organization = await organizationServiceClient.call('getOrganization', {
+      name: owner,
+      type,
+    })
+  } catch (error) {
+    if (!error.message.startsWith('Could not find organization with name')) {
+      throw error
+    }
+  }
+
+  let ownerId
+  let ownerType
+  if (organization) {
+    ownerId = organization._id
+    ownerType = 'organization'
+  } else {
+    ownerId = session.user._id
+    ownerType = 'user'
+  }
+
+  // ensure a customer exists
+  try {
+    await billingServiceClient.call('createCustomer', {
+      ownerId,
+      ownerType,
+    })
+  } catch (error) {
+    if (
+      !error.message.startsWith('A customer has already been created with id')
+    ) {
+      throw error
+    }
+  }
+
+  // create a stripe subscription
+  await billingServiceClient.call('createSubscription', {
+    ownerId,
+    ownerType,
+    repoId: repoData._id,
+    planType,
+  })
+
   return await repoServiceClient.call('activateRepo', {
     owner,
     repo,

@@ -598,6 +598,27 @@ const deployWebhookCollectorService = async (event, payload) => {
   })
 }
 
+const deployBillingService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'billing-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+    envVars: [
+      ...generateMongodbEnvVars({ payload }),
+      {
+        name: 'STRIPE_SECRET_KEY',
+        value: payload.secrets.STRIPE_SECRET_KEY,
+      },
+      {
+        name: 'STRIPE_PUBLIC_KEY',
+        value: payload.secrets.STRIPE_PUBLIC_KEY,
+      },
+    ],
+  })
+
 const deployDevRedis = async ({ namespace }) => {
   const redisDeployer = new Job(`redis-deployer`, 'linkyard/docker-helm:2.9.1')
   redisDeployer.tasks = echoedTasks([
@@ -655,6 +676,7 @@ events.on('deploy-github-auth-service', deployGithubAuthService)
 events.on('deploy-worker', deployWorker)
 events.on('deploy-queue-garbage-collector', deployQueueGarbageCollector)
 events.on('deploy-webhook-collector-service', deployWebhookCollectorService)
+events.on('deploy-billing-service', deployBillingService)
 
 events.on('deploy-dev-dbs', async (event, payload) => {
   await Promise.all([
@@ -682,6 +704,7 @@ events.on('deploy-all-services', async (event, payload) => {
     deployUserService(event, payload),
     deployRunService(event, payload),
     deployRepoService(event, payload),
+    deployBillingService(event, payload),
   ])
 
   await Promise.all([
@@ -774,6 +797,9 @@ events.on('update-production-services', async (event, payload) => {
         break
       case 'webhook-collector':
         events.emit('deploy-webhook-collector-service', event, payload)
+        break
+      case 'billing-service':
+        events.emit('deploy-billing-service', event, payload)
         break
       default:
         console.log(`unknown change path: ${diffPath}`)

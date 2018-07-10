@@ -1,0 +1,6 @@
+name: billing-service
+image:
+  repository: payloadapp/billing-service
+env:
+  - name: TRIAL_DAYS
+    value: 14

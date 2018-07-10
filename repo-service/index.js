@@ -7,6 +7,7 @@ const createRepo = require('./createRepo')
 const activateRepo = require('./activateRepo')
 const deactivateRepo = require('./deactivateRepo')
 const getRepo = require('./getRepo')
+const getRepos = require('./getRepos')
 const getOwnerRepos = require('./getOwnerRepos')
 const createRepos = require('./createRepos')
 const generateWebhookToken = require('./generateWebhookToken')
@@ -64,6 +65,7 @@ const rpcHandler = ({
     method('activateRepo', activateRepo({ collectionClient })),
     method('deactivateRepo', deactivateRepo({ collectionClient })),
     method('getRepo', getRepo({ collectionClient })),
+    method('getRepos', getRepos({ collectionClient })),
     method('getOwnerRepos', getOwnerRepos({ collectionClient })),
     method('generateWebhookToken', generateWebhookToken({ collectionClient })),
   )

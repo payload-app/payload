@@ -1,5 +1,5 @@
 import React from 'react'
-import { text, background as backgroundColor } from '../style/color'
+import { invertedText, invertedBackground } from '../style/color'
 import { calculateStyles } from '../utils/calculateStyles'
 import { fontFamily } from '../style/font'
 
@@ -11,8 +11,12 @@ export default ({
   Icon,
   noStyle,
   fillContainer,
+  color,
+  background,
+  type,
 }) => (
   <button
+    type={type}
     disabled={disabled}
     onClick={onClick}
     style={calculateStyles(
@@ -21,8 +25,8 @@ export default ({
           cursor: 'pointer',
         },
         standard: {
-          background: text,
-          color: backgroundColor,
+          background: invertedBackground,
+          color: invertedText,
           fontSize: `${fontSize}rem`,
           fontFamily,
           fontWeight: 400,
@@ -52,17 +56,25 @@ export default ({
         fillContainer: {
           width: '100%',
         },
+        color: {
+          color,
+        },
+        background: {
+          background,
+        },
       },
       {
         standard: !noStyle,
         noStyle,
         disabled,
         fillContainer,
+        color: !!color,
+        background: !!background,
       },
     )}
   >
     {Icon ? (
-      <Icon color={backgroundColor} height={fontSize} width={fontSize} />
+      <Icon color={invertedText} height={fontSize} width={fontSize} />
     ) : null}
     <span
       style={{

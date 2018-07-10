@@ -58,6 +58,14 @@ export default ({ dispatch, getState }) => next => action => {
               }),
             )
           }
+          if (action.params.settingsType === 'billing') {
+            dispatch(headerActions.setTitle({ title: 'Billing Settings' }))
+            dispatch(
+              headerActions.setSubtitle({
+                subtitle: 'Reloading Fuel Cells...',
+              }),
+            )
+          }
         default:
           break
       }

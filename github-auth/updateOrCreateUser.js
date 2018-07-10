@@ -1,6 +1,7 @@
 module.exports = async ({
   userServiceClient,
   githubServiceClient,
+  billingServiceClient,
   accessToken,
 }) => {
   const { status, data } = await githubServiceClient.call('githubRequest', {
@@ -32,6 +33,18 @@ module.exports = async ({
     const { id } = await userServiceClient.call('createUser', user)
     userId = id
     created = true
+  }
+  try {
+    await billingServiceClient.call('startTrial', {
+      ownerId: userId,
+      ownerType: 'user',
+      userId,
+    })
+  } catch (error) {
+    // if not a duplicate key error -- rethrow the error
+    if (!error.message.includes('E11000')) {
+      throw error
+    }
   }
   return {
     userId,

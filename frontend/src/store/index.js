@@ -8,6 +8,12 @@ import {
   middleware as asyncDataFetchMiddleware,
 } from '@hharnisc/async-data-fetch'
 import {
+  reducer as storeReducer,
+  actions as storeActions,
+  selector as storeSelector,
+  middleware as storeMiddleware,
+} from '../StorePackage'
+import {
   reducer as repoListReducer,
   selector as repoListSelector,
   middleware as repoListMiddleware,
@@ -43,6 +49,11 @@ import {
   selector as sidebarSelector,
   reducer as sidebarReducer,
 } from '../Sidebar'
+import {
+  middleware as billingMiddleware,
+  selector as billingSelector,
+  reducer as billingReducer,
+} from '../Billing'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -51,7 +62,6 @@ const composeEnhancers =
     : compose
 
 export const history = createHistory()
-
 const store = createStore(
   combineReducers({
     [asyncDataFetchStoreKey]: asyncDataFetchReducer,
@@ -62,6 +72,8 @@ const store = createStore(
     [routingSelector]: routingReducer,
     [userMenuItemSelector]: userMenuItemReducer,
     [sidebarSelector]: sidebarReducer,
+    [billingSelector]: billingReducer,
+    [storeSelector]: storeReducer,
     router: routerReducer,
   }),
   {},
@@ -82,11 +94,13 @@ const store = createStore(
       loadingMiddleware,
       userMenuItemMiddleware,
       sidebarMiddleware,
+      billingMiddleware,
+      storeMiddleware,
       logger,
     ),
   ),
 )
 
-store.dispatch({ type: 'Store/APP_INIT' })
+store.dispatch(storeActions.appInit())
 
 export default store

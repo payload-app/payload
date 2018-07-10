@@ -30,7 +30,7 @@ module.exports = ({ collectionClient }) => async ({ owner, ownerType }) => {
         ownerType,
       })
       .sort({
-        active: 1,
+        active: -1,
       })
       .toArray()
   } catch (error) {

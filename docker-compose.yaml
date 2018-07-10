@@ -44,6 +44,7 @@ services:
      - run-service
      - user-service
      - session-service
+     - billing-service
     networks:
       - main
   status-broadcaster:
@@ -93,6 +94,7 @@ services:
       - session-service
       - github-service
       - random-state-service
+      - billing-service
     networks:
      - main
   queue-service:
@@ -294,5 +296,29 @@ services:
      - ./random-state-service:/usr/src/app/
     links:
      - redis
+    networks:
+     - main
+  billing-service:
+    build:
+      context: ./billing-service
+      dockerfile: Dockerfile.development
+    environment:
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
+     - TRIAL_DAYS=14
+    volumes:
+     - ./billing-service:/usr/src/app/
+    ports:
+      - 3000:3000
+    links:
+     - mongodb
+     - organization-service
+     - user-service
+     - repo-service
+    depends_on:
+      mongodb:
+        condition: service_healthy
     networks:
      - main

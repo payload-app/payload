@@ -5,3 +5,5 @@ export const brightRed = '#b73135'
 export const white = '#fff'
 export const mutedWhite = '#666'
 export const softLighten = 'rgba(255,200,200,0.03)'
+export const invertedText = background
+export const invertedBackground = text

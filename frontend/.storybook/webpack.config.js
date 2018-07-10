@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 // you can use this file to add your custom webpack plugins, loaders and anything you like.
 // This is just the basic way to add additional webpack configurations.
 // For more information refer the docs: https://storybook.js.org/configurations/custom-webpack-config
@@ -7,8 +8,12 @@
 // to "React Create App". This only has babel loader to load JavaScript.
 
 module.exports = {
+  // STRIPE_PUBLIC_KEY=pk_test_... npm run storybook
+  // Needed to render the PaymentForm story
   plugins: [
-    // your custom plugins
+    new webpack.DefinePlugin({
+      __STRIPE_PUBLIC_KEY__: process.env.STRIPE_PUBLIC_KEY,
+    }),
   ],
   module: {
     rules: [

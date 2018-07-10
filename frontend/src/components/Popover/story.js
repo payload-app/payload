@@ -141,3 +141,8 @@ storiesOf('Popover', module)
       </Popover>
     </PopoverContainer>
   ))
+  .add('anchor=none', () => (
+    <Popover anchor={'none'}>
+      <DemoPopover>Popover</DemoPopover>
+    </Popover>
+  ))

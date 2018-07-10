@@ -18,3 +18,10 @@ storiesOf('Pulse', module)
       </Text>
     </Pulse>
   ))
+  .add('display=block', () => (
+    <Pulse backgroundColor={'yellow'} display={'block'}>
+      <Text color={'#fff'} capitalize>
+        Warning
+      </Text>
+    </Pulse>
+  ))

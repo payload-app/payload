@@ -11,6 +11,12 @@ const syncOrganizations = require('./syncOrganizations')
 const syncRepos = require('./syncRepos')
 const logout = require('./logout')
 const getUser = require('./getUser')
+const getBillingCustomer = require('./getBillingCustomer')
+const getStripePublicKey = require('./getStripePublicKey')
+const setPaymentSource = require('./setPaymentSource')
+const getBillingCustomers = require('./getBillingCustomers')
+const getRepos = require('./getRepos')
+const deactivateRepo = require('./deactivateRepo')
 
 const cookieDomain = process.env.COOKIE_DOMAIN
 
@@ -38,6 +44,10 @@ const sessionServiceClient = new RPCClient({
   url: 'http://session-service:3000/rpc',
 })
 
+const billingServiceClient = new RPCClient({
+  url: 'http://billing-service:3000/rpc',
+})
+
 const webhookBaseUrl = process.env.WEBHOOK_BASE_URL
 
 if (webhookBaseUrl === undefined) {
@@ -48,9 +58,14 @@ const rpcHandler = setSession(
   rpc(
     method(
       'activateRepo',
-      activateRepo({ repoServiceClient, githubServiceClient, webhookBaseUrl }),
+      activateRepo({
+        repoServiceClient,
+        githubServiceClient,
+        organizationServiceClient,
+        billingServiceClient,
+        webhookBaseUrl,
+      }),
     ),
-    method('deactivateRepo', () => 'OK'),
     method('repoOwners', repoOwners({ organizationServiceClient })),
     method('repos', repos({ repoServiceClient, runServiceClient })),
     method('getRun', getRun({ runServiceClient, repoServiceClient })),
@@ -60,6 +75,7 @@ const rpcHandler = setSession(
         userServiceClient,
         organizationServiceClient,
         githubServiceClient,
+        billingServiceClient,
       }),
     ),
     method(
@@ -69,6 +85,35 @@ const rpcHandler = setSession(
         repoServiceClient,
         organizationServiceClient,
       }),
+    ),
+    method(
+      'getBillingCustomer',
+      getBillingCustomer({
+        billingServiceClient,
+      }),
+    ),
+    method(
+      'getStripePublicKey',
+      getStripePublicKey({
+        billingServiceClient,
+      }),
+    ),
+    method(
+      'setPaymentSource',
+      setPaymentSource({
+        billingServiceClient,
+      }),
+    ),
+    method(
+      'getBillingCustomers',
+      getBillingCustomers({
+        billingServiceClient,
+      }),
+    ),
+    method('getRepos', getRepos({ repoServiceClient })),
+    method(
+      'deactivateRepo',
+      deactivateRepo({ billingServiceClient, repoServiceClient }),
     ),
     method('logout', logout({ sessionServiceClient, cookieDomain })),
     method('getUser', getUser),
