@@ -1,5 +1,5 @@
 import { actions, selector } from './reducer'
-import { matchRoute } from './routes'
+import { matchRoute, routes } from './routes'
 import {
   selector as storeSelector,
   actionTypes as storeActionTypes,
@@ -26,7 +26,7 @@ export default ({ dispatch, getState }) => next => action => {
           route !== curRoute ||
           JSON.stringify(params) !== JSON.stringify(curParams)
         ) {
-          if (initialized) {
+          if (initialized || route === routes.INIT || route === routes.AUTH) {
             dispatch(
               actions.emit({
                 route,
