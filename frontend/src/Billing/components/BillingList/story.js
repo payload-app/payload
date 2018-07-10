@@ -26,3 +26,18 @@ storiesOf('BillingList', module)
       onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
     />
   ))
+  .add('showPaymentOverlay', () => (
+    <BillingList
+      billingCustomers={billingCustomers}
+      repos={repos}
+      repoOwners={repoOwners}
+      selectedBillingCustomer={billingCustomers[0]._id}
+      showPaymentOverlay={true}
+      onDeactivateClick={action('onDeactivateClick')}
+      onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
+      onPaymentOverlayClick={action('onPaymentOverlayClick')}
+      onBillingCancelClick={action('onBillingCancelClick')}
+      onBillingSubmit={action('onBillingSubmit')}
+      stripePublicKey={'__STRIPE_PUBLIC_KEY__'}
+    />
+  ))

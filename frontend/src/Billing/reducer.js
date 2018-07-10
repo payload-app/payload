@@ -1,6 +1,11 @@
 import { actionTypes as dataFetchActionTypes } from '@hharnisc/async-data-fetch'
 export const selector = 'Billing'
 
+export const actionTypes = {
+  TOGGLE_PAYMENT_OVERLAY: `${selector}/TOGGLE_PAYMENT_OVERLAY`,
+  SELECT_BILLING_CUSTOMER: `${selector}/SELECT_BILLING_CUSTOMER`,
+}
+
 const initialState = {
   stripePublicKey: null,
   customers: [],
@@ -88,7 +93,28 @@ export default (state = initialState, action) => {
         loadingActiveRepos: false,
         repos: action.result,
       }
+    case actionTypes.TOGGLE_PAYMENT_OVERLAY:
+      return {
+        ...state,
+        showPaymentOverlay: action.visible,
+      }
+    case actionTypes.SELECT_BILLING_CUSTOMER:
+      return {
+        ...state,
+        selectedBillingCustomer: action.id,
+      }
     default:
       return state
   }
+}
+
+export const actions = {
+  togglePaymentOverlay: ({ visible }) => ({
+    type: actionTypes.TOGGLE_PAYMENT_OVERLAY,
+    visible,
+  }),
+  selectBillingCustomer: ({ id }) => ({
+    type: actionTypes.SELECT_BILLING_CUSTOMER,
+    id,
+  }),
 }
