@@ -46,7 +46,7 @@ const BillingList = ({
     {showPaymentOverlay ? (
       <PaymentOverlay
         billingCustomer={billingCustomers.find(
-          customer => customer.id === selectedBillingCustomer,
+          customer => customer._id === selectedBillingCustomer,
         )}
         onPaymentOverlayClick={onPaymentOverlayClick}
         onBillingCancelClick={onBillingCancelClick}

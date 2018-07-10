@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { actions as dataFetchActions } from '@hharnisc/async-data-fetch'
 import { selector, actions } from './reducer'
 import { selector as sidebarSelector } from '../Sidebar'
 import { selector as billingSelector } from '../Billing'
@@ -23,7 +24,7 @@ export default connect(
       dispatch(actions.togglePaymentOverlay({ visible: false })),
     onBillingCancelClick: () =>
       dispatch(actions.togglePaymentOverlay({ visible: false })),
-    onBillingSubmit: ({ ownerId, ownerType, paymentSource }) =>
+    onBillingSubmit: ({ ownerId, ownerType, paymentSource, lastFour }) =>
       dispatch(
         dataFetchActions.fetch({
           name: 'setPaymentSource',
@@ -31,6 +32,7 @@ export default connect(
             ownerId,
             ownerType,
             paymentSource,
+            lastFour,
           },
         }),
       ),

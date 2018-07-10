@@ -8,7 +8,7 @@ export default [
     userId: '000000000000000000000003',
     trialEnd: '2018-07-12T16:37:57.793Z',
     paymentSourceSet: true,
-    paymentSourceLastFour: 5555,
+    lastFour: 5555,
     subscriptions: [
       {
         repoId: '000000000000000000000004',

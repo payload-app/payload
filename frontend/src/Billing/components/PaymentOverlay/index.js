@@ -14,11 +14,12 @@ const PaymentOverlay = ({
       <PaymentForm
         apiKey={stripePublicKey}
         onCancelClick={onBillingCancelClick}
-        onSubmit={({ id }) =>
+        onSubmit={({ id: paymentSource, card: { last4: lastFour } }) =>
           onBillingSubmit({
             ownerId: billingCustomer.ownerId,
             ownerType: billingCustomer.ownerType,
-            paymentSource: id,
+            paymentSource,
+            lastFour,
           })
         }
         customerName={owner}

@@ -58,7 +58,7 @@ export default connect(
       dispatch(actions.togglePaymentOverlay({ visible: false })),
     onBillingCancelClick: () =>
       dispatch(actions.togglePaymentOverlay({ visible: false })),
-    onBillingSubmit: ({ ownerId, ownerType, paymentSource }) =>
+    onBillingSubmit: ({ ownerId, ownerType, paymentSource, lastFour }) =>
       dispatch(
         dataFetchActions.fetch({
           name: 'setPaymentSource',
@@ -66,6 +66,7 @@ export default connect(
             ownerId,
             ownerType,
             paymentSource,
+            lastFour,
           },
         }),
       ),

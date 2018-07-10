@@ -52,7 +52,7 @@ const PaymentSource = ({ billingCustomer, onSetPaymentSourceClick }) => (
       >
         <div>
           <Text size={3} weight={400} capitalize>{`****-****-****-${
-            billingCustomer.paymentSourceLastFour
+            billingCustomer.lastFour
           }`}</Text>
         </div>
         <div
@@ -105,7 +105,7 @@ const BillingListItem = ({
       </Text>
     }
   >
-    {loading ? (
+    {loading || billingCustomer.loading ? (
       <Text size={2}>Loading...</Text>
     ) : (
       <div>

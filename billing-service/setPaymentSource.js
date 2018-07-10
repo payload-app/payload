@@ -8,12 +8,14 @@ const schema = Joi.object().keys({
     .required()
     .valid(['user', 'organization']),
   paymentSource: Joi.string().required(),
+  lastFour: Joi.string().required(),
 })
 
 module.exports = ({ collectionClient, stripeClient }) => async ({
   ownerId,
   ownerType,
   paymentSource,
+  lastFour,
 }) => {
   try {
     await validate({
@@ -21,6 +23,7 @@ module.exports = ({ collectionClient, stripeClient }) => async ({
         ownerId,
         ownerType,
         paymentSource,
+        lastFour,
       },
       schema,
     })
@@ -53,6 +56,7 @@ module.exports = ({ collectionClient, stripeClient }) => async ({
     const updateData = {
       $set: {
         paymentSourceSet: true,
+        lastFour,
       },
     }
     await collectionClient.updateOne(
