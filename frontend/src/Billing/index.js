@@ -36,6 +36,20 @@ export default connect(
           },
         }),
       ),
+    onDeactivateClick: ({
+      billingCustomer: { ownerId, ownerType },
+      subscription: { repoId },
+    }) =>
+      dispatch(
+        dataFetchActions.fetch({
+          name: 'deactivateRepo',
+          args: {
+            ownerId,
+            ownerType,
+            repoId,
+          },
+        }),
+      ),
   }),
 )(BillingList)
 

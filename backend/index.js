@@ -16,6 +16,7 @@ const getStripePublicKey = require('./getStripePublicKey')
 const setPaymentSource = require('./setPaymentSource')
 const getBillingCustomers = require('./getBillingCustomers')
 const getRepos = require('./getRepos')
+const deactivateRepo = require('./deactivateRepo')
 
 const cookieDomain = process.env.COOKIE_DOMAIN
 
@@ -65,7 +66,6 @@ const rpcHandler = setSession(
         webhookBaseUrl,
       }),
     ),
-    method('deactivateRepo', () => 'OK'),
     method('repoOwners', repoOwners({ organizationServiceClient })),
     method('repos', repos({ repoServiceClient, runServiceClient })),
     method('getRun', getRun({ runServiceClient, repoServiceClient })),
@@ -111,6 +111,10 @@ const rpcHandler = setSession(
       }),
     ),
     method('getRepos', getRepos({ repoServiceClient })),
+    method(
+      'deactivateRepo',
+      deactivateRepo({ billingServiceClient, repoServiceClient }),
+    ),
     method('logout', logout({ sessionServiceClient, cookieDomain })),
     method('getUser', getUser),
   ),

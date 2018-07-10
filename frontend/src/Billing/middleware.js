@@ -54,6 +54,7 @@ export default ({ dispatch, getState }) => next => action => {
       }
       break
     }
+    case `deactivateRepo_${dataFetchActionTypes.FETCH_SUCCESS}`:
     case `setPaymentSource_${dataFetchActionTypes.FETCH_SUCCESS}`:
       dispatch(
         dataFetchActions.fetch({
