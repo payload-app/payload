@@ -10,17 +10,10 @@ const initialState = {
   stripePublicKey: null,
   customers: [],
   repos: [],
-  loadingActiveRepos: true,
+  loadingAllRepos: true,
 }
 
-const customerComparitor = (a, b) => {
-  if (a.subscriptions.length > b.subscriptions.length) {
-    return -1
-  } else if (a.subscriptions.length < b.subscriptions.length) {
-    return 1
-  }
-  return 0
-}
+const customerComparitor = (a, b) => a._id.localeCompare(b._id)
 
 const billingCustomerReducer = (state = {}, action) => {
   switch (action.type) {
@@ -83,6 +76,7 @@ export default (state = initialState, action) => {
         customers: state.customers
           .map(customer => billingCustomerReducer(customer, action))
           .sort(customerComparitor),
+        loadingAllRepos: true,
       }
     case `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`:
       return {
@@ -94,12 +88,11 @@ export default (state = initialState, action) => {
     case `getRepos_${dataFetchActionTypes.FETCH_START}`:
       return {
         ...state,
-        loadingActiveRepos: true,
       }
     case `getRepos_${dataFetchActionTypes.FETCH_SUCCESS}`:
       return {
         ...state,
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
         repos: action.result,
       }
     case actionTypes.TOGGLE_PAYMENT_OVERLAY:

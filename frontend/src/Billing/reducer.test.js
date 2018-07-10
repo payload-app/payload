@@ -12,7 +12,7 @@ describe('reducer', () => {
       stripePublicKey: null,
       customers: [],
       repos: [],
-      loadingActiveRepos: true,
+      loadingAllRepos: true,
     }
     expect(reducer(stateBefore, deepFreeze(action))).toEqual(stateAfter)
   })
@@ -23,7 +23,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: [],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getRepos_${dataFetchActionTypes.FETCH_START}`,
@@ -32,7 +32,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: [],
         repos: [],
-        loadingActiveRepos: true,
+        loadingAllRepos: true,
       }
       expect(reducer(deepFreeze(stateBefore), deepFreeze(action))).toEqual(
         stateAfter,
@@ -45,7 +45,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: [],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getRepos_${dataFetchActionTypes.FETCH_SUCCESS}`,
@@ -55,7 +55,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: [],
         repos: fakeResult,
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       expect(reducer(deepFreeze(stateBefore), deepFreeze(action))).toEqual(
         stateAfter,
@@ -70,7 +70,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: [],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getStripePublicKey_${dataFetchActionTypes.FETCH_SUCCESS}`,
@@ -80,7 +80,7 @@ describe('reducer', () => {
         stripePublicKey: fakeResult,
         customers: [],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       expect(reducer(deepFreeze(stateBefore), deepFreeze(action))).toEqual(
         stateAfter,
@@ -98,7 +98,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: [],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getBillingCustomer_${dataFetchActionTypes.FETCH_START}`,
@@ -113,7 +113,7 @@ describe('reducer', () => {
           },
         ],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       expect(reducer(deepFreeze(stateBefore), deepFreeze(action))).toEqual(
         stateAfter,
@@ -151,7 +151,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: fakeCustomers,
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getBillingCustomer_${dataFetchActionTypes.FETCH_START}`,
@@ -169,7 +169,7 @@ describe('reducer', () => {
           return customer
         }),
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const result = reducer(deepFreeze(stateBefore), deepFreeze(action))
       // sort the customers for easier equality comparison
@@ -193,7 +193,7 @@ describe('reducer', () => {
           },
         ],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getBillingCustomer_${dataFetchActionTypes.FETCH_SUCCESS}`,
@@ -208,7 +208,7 @@ describe('reducer', () => {
           },
         ],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       expect(reducer(deepFreeze(stateBefore), deepFreeze(action))).toEqual(
         stateAfter,
@@ -246,7 +246,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: fakeCustomers,
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getBillingCustomer_${dataFetchActionTypes.FETCH_SUCCESS}`,
@@ -264,7 +264,7 @@ describe('reducer', () => {
           return customer
         }),
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const result = reducer(deepFreeze(stateBefore), deepFreeze(action))
       // sort the customers for easier equality comparison
@@ -281,7 +281,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: [],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getBillingCustomers_${dataFetchActionTypes.FETCH_START}`,
@@ -290,7 +290,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: [],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       expect(reducer(deepFreeze(stateBefore), deepFreeze(action))).toEqual(
         stateAfter,
@@ -324,7 +324,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: fakeCustomers,
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getBillingCustomers_${dataFetchActionTypes.FETCH_START}`,
@@ -336,7 +336,7 @@ describe('reducer', () => {
           loading: true,
         })),
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const result = reducer(deepFreeze(stateBefore), deepFreeze(action))
       // sort the customers for easier equality comparison
@@ -371,7 +371,7 @@ describe('reducer', () => {
         stripePublicKey: null,
         customers: [],
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`,
@@ -384,7 +384,7 @@ describe('reducer', () => {
           loading: false,
         })),
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       expect(reducer(deepFreeze(stateBefore), deepFreeze(action))).toEqual(
         stateAfter,
@@ -419,7 +419,7 @@ describe('reducer', () => {
           loading: true,
         })),
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       const action = {
         type: `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`,
@@ -432,7 +432,7 @@ describe('reducer', () => {
           loading: false,
         })),
         repos: [],
-        loadingActiveRepos: false,
+        loadingAllRepos: false,
       }
       expect(reducer(deepFreeze(stateBefore), deepFreeze(action))).toEqual(
         stateAfter,

@@ -10,7 +10,7 @@ export default connect(
     billingCustomers: state[selector].customers,
     repoOwners: state[sidebarSelector].repoOwners,
     repos: state[selector].repos,
-    loading: state[selector].loadingActiveRepos,
+    loading: state[selector].loadingAllRepos,
     selectedBillingCustomer: state[selector].selectedBillingCustomer,
     showPaymentOverlay: state[selector].showPaymentOverlay,
     stripePublicKey: state[billingSelector].stripePublicKey,
