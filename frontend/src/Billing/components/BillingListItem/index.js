@@ -12,7 +12,7 @@ const calculateDaysFromToday = ({ date }) =>
     24
   ).toFixed(3)
 
-const BillingBanner = ({ trialEnd }) => {
+const BillingBanner = ({ trialEnd, subscriptions }) => {
   const expireDays = calculateDaysFromToday({ date: trialEnd })
   if (expireDays > 3.0) {
     return <Banner>{`Trial Expires In ${expireDays} Days`}</Banner>
@@ -20,6 +20,8 @@ const BillingBanner = ({ trialEnd }) => {
     return (
       <Banner type={'warning'}>{`Trial Expires In ${expireDays} Days`}</Banner>
     )
+  } else if (subscriptions.length === 0) {
+    return <Banner type={'warning'}>{`Trial Has Expired`}</Banner>
   } else {
     return <Banner type={'error'}>{`Trial Has Expired`}</Banner>
   }
@@ -68,7 +70,10 @@ const PaymentSource = ({ billingCustomer, onSetPaymentSourceClick }) => (
     ) : (
       <Fragment>
         <div>
-          <BillingBanner trialEnd={billingCustomer.trialEnd} />
+          <BillingBanner
+            trialEnd={billingCustomer.trialEnd}
+            subscriptions={billingCustomer.subscriptions}
+          />
         </div>
         <div
           style={{
@@ -109,13 +114,19 @@ const BillingListItem = ({
       <Text size={2}>Loading...</Text>
     ) : (
       <div>
-        <SubscriptionList
-          subscriptions={billingCustomer.subscriptions}
-          repos={repos}
-          onDeactivateClick={result =>
-            onDeactivateClick({ ...result, billingCustomer })
-          }
-        />
+        {billingCustomer.subscriptions.length ? (
+          <SubscriptionList
+            subscriptions={billingCustomer.subscriptions}
+            repos={repos}
+            onDeactivateClick={result =>
+              onDeactivateClick({ ...result, billingCustomer })
+            }
+          />
+        ) : (
+          <Text size={2} capitalize>
+            There Are No Active Repositories
+          </Text>
+        )}
         <div
           style={{
             display: 'flex',

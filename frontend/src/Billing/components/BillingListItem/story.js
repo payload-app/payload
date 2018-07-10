@@ -41,3 +41,30 @@ storiesOf('BillingListItem', module)
       onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
     />
   ))
+  .add('trial expired', () => (
+    <BillingListItem
+      billingCustomer={{
+        ...billingCustomer,
+        paymentSourceSet: false,
+        trialEnd: new Date(),
+      }}
+      repos={repos}
+      repoOwners={repoOwners}
+      onDeactivateClick={action('onDeactivateClick')}
+      onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
+    />
+  ))
+  .add('trial expired w/o subscriptions', () => (
+    <BillingListItem
+      billingCustomer={{
+        ...billingCustomer,
+        paymentSourceSet: false,
+        trialEnd: new Date(),
+        subscriptions: [],
+      }}
+      repos={repos}
+      repoOwners={repoOwners}
+      onDeactivateClick={action('onDeactivateClick')}
+      onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
+    />
+  ))

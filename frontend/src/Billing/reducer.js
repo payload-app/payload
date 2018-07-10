@@ -13,6 +13,15 @@ const initialState = {
   loadingActiveRepos: true,
 }
 
+const customerComparitor = (a, b) => {
+  if (a.subscriptions.length > b.subscriptions.length) {
+    return -1
+  } else if (a.subscriptions.length < b.subscriptions.length) {
+    return 1
+  }
+  return 0
+}
+
 const billingCustomerReducer = (state = {}, action) => {
   switch (action.type) {
     case `getBillingCustomer_${dataFetchActionTypes.FETCH_START}`:
@@ -66,21 +75,21 @@ export default (state = initialState, action) => {
             customer => !compareCustomerToAction({ customer, action }),
           ),
           billingCustomerReducer(customer, action),
-        ],
+        ].sort(customerComparitor),
       }
     case `getBillingCustomers_${dataFetchActionTypes.FETCH_START}`:
       return {
         ...state,
-        customers: state.customers.map(customer =>
-          billingCustomerReducer(customer, action),
-        ),
+        customers: state.customers
+          .map(customer => billingCustomerReducer(customer, action))
+          .sort(customerComparitor),
       }
     case `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`:
       return {
         ...state,
-        customers: action.result.map(customer =>
-          billingCustomerReducer(customer, action),
-        ),
+        customers: action.result
+          .map(customer => billingCustomerReducer(customer, action))
+          .sort(customerComparitor),
       }
     case `getRepos_${dataFetchActionTypes.FETCH_START}`:
       return {
