@@ -8,6 +8,7 @@ import {
   routes,
   baseRoute,
 } from '../Routing'
+import { actions as storeActions } from '../StorePackage'
 
 export default ({ dispatch }) => next => action => {
   next(action)
@@ -44,6 +45,8 @@ export default ({ dispatch }) => next => action => {
       break
     case `syncRepos_${dataFetchActionTypes.FETCH_SUCCESS}`:
       if (action.args.init) {
+        // re-init applicaton
+        dispatch(storeActions.appInit())
         dispatch(push(baseRoute()))
       }
       break
