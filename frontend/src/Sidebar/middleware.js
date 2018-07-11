@@ -1,5 +1,6 @@
 import { push } from 'react-router-redux'
 import {
+  selector as routingSelector,
   actionTypes as routingActionTypes,
   routes,
   generateListRoute,
@@ -112,6 +113,22 @@ export default ({ dispatch, getState }) => next => action => {
       if (value && value.url !== pathname) {
         dispatch(push(value.url))
       }
+      break
+    case actionTypes.BACK_BUTTON_CLICK:
+      // NOTE: for not we're always going to go back to REPO_LIST
+      //       in the future we'll probably want something like
+      //       bread crumbs to navigate repos/braches etc.
+      const { params: { type, ownerType, owner } } = getState()[routingSelector]
+      dispatch(
+        push(
+          generateListRoute({
+            type,
+            ownerType,
+            owner,
+            settingsType: 'sync',
+          }),
+        ),
+      )
       break
     default:
       break
