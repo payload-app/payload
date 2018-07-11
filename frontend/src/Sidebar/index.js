@@ -1,4 +1,3 @@
-import { goBack } from 'react-router-redux'
 import { connect } from 'react-redux'
 import Sidebar from './components/Sidebar'
 import { selector, actions } from './reducer'
@@ -15,7 +14,7 @@ export default connect(
     },
     onBackClick: e => {
       e.preventDefault()
-      dispatch(goBack())
+      dispatch(actions.backButtonClick())
     },
   }),
 )(Sidebar)

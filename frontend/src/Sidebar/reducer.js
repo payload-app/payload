@@ -5,6 +5,7 @@ export const actionTypes = {
   SET_MENU: `${selector}/SET_MENU`,
   SELECT: `${selector}/SELECT`,
   TOGGLE_BACK_BUTTON: `${selector}/TOGGLE_BACK_BUTTON`,
+  BACK_BUTTON_CLICK: `${selector}/BACK_BUTTON_CLICK`,
 }
 
 const initialState = {
@@ -53,5 +54,8 @@ export const actions = {
   toggleBackButton: ({ toggle }) => ({
     type: actionTypes.TOGGLE_BACK_BUTTON,
     toggle,
+  }),
+  backButtonClick: () => ({
+    type: actionTypes.BACK_BUTTON_CLICK,
   }),
 }
