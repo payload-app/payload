@@ -5,8 +5,8 @@ const { createError } = require('@hharnisc/micro-rpc')
 
 const schema = Joi.object().keys({
   ids: Joi.array()
-    .items(Joi.string().required())
-    .min(1),
+    .items(Joi.string())
+    .required(),
 })
 
 module.exports = ({ collectionClient }) => async ({ ids }) => {
