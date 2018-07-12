@@ -22,10 +22,17 @@ const statusBroadcasterClient = new RPCClient({
   url: 'http://status-broadcaster:3000/rpc',
 })
 
+const billingServiceClient = new RPCClient({
+  url: 'http://billing-service:3000/rpc',
+})
+
 const appRootUrl = `${process.env.APP_PROTOCOL}://${process.env.APP_HOST}`
 
 const generateTargetUrl = ({ type, ownerType, owner, repo, branch, sha }) =>
   `${appRootUrl}/type/${type}/ownertype/${ownerType}/owner/${owner}/repo/${repo}/branch/${branch}/sha/${sha}/`
+
+const generateTargetBillingUrl = ({ type, ownerType, owner }) =>
+  `${appRootUrl}/type/${type}/ownertype/${ownerType}/owner/${owner}/settings/billing/`
 
 const broadcastStart = async ({
   accessToken,
@@ -54,6 +61,29 @@ const broadcastStart = async ({
     }),
   })
 
+const broadcastRepoBillingInactive = async ({
+  accessToken,
+  type,
+  ownerType,
+  owner,
+  repo,
+  sha,
+}) =>
+  await statusBroadcasterClient.call('broadcastStatus', {
+    accessToken,
+    owner,
+    repo,
+    sha,
+    state: 'error',
+    description: 'Repository Is Not Active, Check Billing Settings',
+    context: 'Payload',
+    targetUrl: generateTargetBillingUrl({
+      type,
+      ownerType,
+      owner,
+    }),
+  })
+
 const getRepository = async ({ owner, repo }) =>
   await repoServiceClient.call('getRepo', {
     owner,
@@ -66,25 +96,55 @@ const throwHandledError = ({ message }) => {
   throw error
 }
 
-const validateRepository = async ({ repository, app, token }) => {
+const validateRepository = async ({
+  repository,
+  app,
+  token,
+  organization,
+  accessToken,
+  branch,
+  sha,
+}) => {
   if (!repository.active) {
     throwHandledError({ message: 'repository is not active' })
   }
   if (!(repository.webhooks[app] && repository.webhooks[app] === token)) {
     throwHandledError({ message: 'repository app token does not match' })
   }
+
+  const repoBillingIsActive = await billingServiceClient.call('repoIsActive', {
+    ownerId:
+      repository.ownerType === 'organization'
+        ? organization._id
+        : repository.userId,
+    ownerType: repository.ownerType,
+    repoId: repository._id,
+  })
+  if (!repoBillingIsActive) {
+    await broadcastRepoBillingInactive({
+      accessToken,
+      type: 'github',
+      ownerType: repository.ownerType,
+      owner: repository.owner,
+      repo: repository.repo,
+      branch,
+      sha,
+    })
+    throwHandledError({
+      message: `Repository Is Not Active, Check Billing Settings: ${generateTargetBillingUrl(
+        {
+          type: 'github',
+          ownerType: repository.ownerType,
+          owner: repository.owner,
+        },
+      )}`,
+    })
+  }
 }
 
-const getGithubAccessToken = async ({ repository }) => {
+const getGithubAccessToken = async ({ repository, organization }) => {
   let userId = repository.userId
   if (repository.ownerType === 'organization') {
-    const organization = await organizationServiceClient.call(
-      'getOrganization',
-      {
-        name: repository.owner,
-        type: 'github',
-      },
-    )
     // choose a random id to grab an access token from
     userId =
       organization.userIds[
@@ -130,12 +190,26 @@ const enqueuePullRequest = async ({ req, payload }) => {
   }
 
   const dbRepository = await getRepository({ owner, repo })
+  let dbOrganization
+  if (dbRepository.ownerType === 'organization') {
+    dbOrganization = await organizationServiceClient.call('getOrganization', {
+      name: dbRepository.owner,
+      type: 'github',
+    })
+  }
+  const accessToken = await getGithubAccessToken({
+    repository: dbRepository,
+    organization: dbOrganization,
+  })
   await validateRepository({
     repository: dbRepository,
     app: req.params.app,
     token: req.params.token,
+    organization: dbOrganization,
+    accessToken,
+    branch: head.branch,
+    sha: head.sha,
   })
-  const accessToken = await getGithubAccessToken({ repository: dbRepository })
 
   const task = {
     owner,
@@ -149,15 +223,6 @@ const enqueuePullRequest = async ({ req, payload }) => {
     type: 'github',
   }
   const { taskId } = await createTask({ task })
-  await broadcastStart({
-    accessToken,
-    type: 'github',
-    ownerType,
-    owner,
-    repo,
-    branch: head.branch,
-    sha: head.sha,
-  })
   try {
     await broadcastStart({
       accessToken,
@@ -197,12 +262,27 @@ const enqueuePush = async ({ req, payload }) => {
   }
 
   const dbRepository = await getRepository({ owner, repo })
+  let dbOrganization
+  if (dbRepository.ownerType === 'organization') {
+    dbOrganization = await organizationServiceClient.call('getOrganization', {
+      name: dbRepository.owner,
+      type: 'github',
+    })
+  }
+  const accessToken = await getGithubAccessToken({
+    repository: dbRepository,
+    organization: dbOrganization,
+  })
   await validateRepository({
     repository: dbRepository,
     app: req.params.app,
     token: req.params.token,
+    organization: dbOrganization,
+    accessToken,
+    branch: head.branch,
+    sha: head.sha,
   })
-  const accessToken = await getGithubAccessToken({ repository: dbRepository })
+
   const task = {
     owner,
     repo,
@@ -215,15 +295,6 @@ const enqueuePush = async ({ req, payload }) => {
     type: 'github',
   }
   const { taskId } = await createTask({ task })
-  await broadcastStart({
-    accessToken,
-    type: 'github',
-    ownerType,
-    owner,
-    repo,
-    branch: head.branch,
-    sha: head.sha,
-  })
   await broadcastStart({
     accessToken,
     type: 'github',

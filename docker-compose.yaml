@@ -74,6 +74,7 @@ services:
      - user-service
      - organization-service
      - status-broadcaster
+     - billing-service
     networks:
      - main
   github-auth:
