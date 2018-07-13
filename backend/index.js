@@ -113,7 +113,12 @@ const rpcHandler = setSession(
     method('getRepos', getRepos({ repoServiceClient })),
     method(
       'deactivateRepo',
-      deactivateRepo({ billingServiceClient, repoServiceClient }),
+      deactivateRepo({
+        billingServiceClient,
+        repoServiceClient,
+        githubServiceClient,
+        webhookBaseUrl,
+      }),
     ),
     method('logout', logout({ sessionServiceClient, cookieDomain })),
     method('getUser', getUser),
