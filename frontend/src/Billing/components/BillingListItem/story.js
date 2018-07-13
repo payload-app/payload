@@ -41,6 +41,19 @@ storiesOf('BillingListItem', module)
       onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
     />
   ))
+  .add('billing customer loading', () => (
+    <BillingListItem
+      billingCustomer={{
+        ...billingCustomer,
+        loading: true,
+        paymentSourceSet: false,
+      }}
+      repos={repos}
+      repoOwners={repoOwners}
+      onDeactivateClick={action('onDeactivateClick')}
+      onSetPaymentSourceClick={action('onSetPaymentSourceClick')}
+    />
+  ))
   .add('trial expired', () => (
     <BillingListItem
       billingCustomer={{

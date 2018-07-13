@@ -24,6 +24,7 @@ const billingCustomerReducer = (state = {}, action) => {
         ownerType: action.args.ownerType,
         loading: true,
       }
+    case `deactivateRepo_${dataFetchActionTypes.FETCH_START}`:
     case `getBillingCustomers_${dataFetchActionTypes.FETCH_START}`:
       return {
         ...state,
@@ -35,6 +36,7 @@ const billingCustomerReducer = (state = {}, action) => {
         ...action.result,
         loading: false,
       }
+    case `deactivateRepo_${dataFetchActionTypes.FETCH_SUCCESS}`:
     case `getBillingCustomers_${dataFetchActionTypes.FETCH_SUCCESS}`:
       return {
         ...state,
@@ -56,6 +58,8 @@ export default (state = initialState, action) => {
         ...state,
         stripePublicKey: action.result,
       }
+    case `deactivateRepo_${dataFetchActionTypes.FETCH_START}`:
+    case `deactivateRepo_${dataFetchActionTypes.FETCH_SUCCESS}`:
     case `getBillingCustomer_${dataFetchActionTypes.FETCH_START}`:
     case `getBillingCustomer_${dataFetchActionTypes.FETCH_SUCCESS}`:
       const customer = state.customers.find(customer =>
