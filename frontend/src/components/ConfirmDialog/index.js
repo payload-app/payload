@@ -4,8 +4,14 @@ import Text from '../Text'
 import Button from '../Button'
 import { invertedText, text, background } from '../style/color'
 
-const ConfirmDialog = ({ children, title, onConfirmClick, onCancelClick }) => (
-  <InvertedPanel padding={2}>
+const ConfirmDialog = ({
+  children,
+  title,
+  width,
+  onConfirmClick,
+  onCancelClick,
+}) => (
+  <InvertedPanel padding={2} width={width}>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div style={{ alignSelf: 'center', marginBottom: '2rem' }}>
         <Text color={invertedText} size={2} capitalize>
