@@ -3,6 +3,7 @@ import { FadeInChildren } from '../../../components'
 import PaymentOverlay from '../PaymentOverlay'
 import BillingBanner from '../BillingBanner'
 import RepoListItem from '../RepoListItem'
+import ActivateConfirmDialog from '../ActivateConfirmDialog'
 
 const RepoList = ({ owner, repos, onActivateClick, onRunClick }) =>
   repos.length ? (
@@ -28,7 +29,12 @@ export default ({
   onRunClick,
   onBillingActionClick,
   showPaymentOverlay,
+  showActivateConfirm,
   onPaymentOverlayClick,
+  onActivateConfirmDialogOverlayClick,
+  onActivateConfirmClick,
+  onActivateCancelClick,
+  activateConfirmDetails,
   onBillingCancelClick,
   onBillingSubmit,
 }) => (
@@ -44,6 +50,17 @@ export default ({
       onActivateClick={onActivateClick}
       onRunClick={onRunClick}
     />
+    {showActivateConfirm ? (
+      <ActivateConfirmDialog
+        repoName={activateConfirmDetails.repoName}
+        repoOwnerName={activateConfirmDetails.repoOwnerName}
+        currency={activateConfirmDetails.currency}
+        amount={activateConfirmDetails.amount}
+        onConfirmClick={() => onActivateConfirmClick(activateConfirmDetails)}
+        onCancelClick={onActivateCancelClick}
+        onOverlayClick={onActivateConfirmDialogOverlayClick}
+      />
+    ) : null}
     {showPaymentOverlay ? (
       <PaymentOverlay
         billingCustomer={billingCustomer}

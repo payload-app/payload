@@ -24,21 +24,40 @@ export default connect(
     repos: state[selector].repos,
     billingCustomer: selectedBillingCustomer({ state }),
     showPaymentOverlay: state[selector].showPaymentOverlay,
+    showActivateConfirm: state[selector].showActivateConfirm,
+    activateConfirmDetails: state[selector].activateConfirmDetails,
     stripePublicKey: state[billingSelector].stripePublicKey,
   }),
   dispatch => ({
     onActivateClick: ({ repo }) =>
       dispatch(
+        actions.toggleActivateConfirm({
+          visible: true,
+          repoName: repo.repo,
+          repoOwnerName: repo.owner,
+          repoType: repo.type,
+          currency: 'usd', // TODO: we'll want a way to select this at some point
+          amount: 2000, // TODO: we'll want a way to select this at some point
+        }),
+      ),
+    onActivateConfirmClick: ({ repoOwnerName, repoName, repoType }) => {
+      dispatch(
         dataFetchActions.fetch({
           name: 'activateRepo',
           args: {
-            owner: repo.owner,
-            repo: repo.repo,
-            type: repo.type,
+            owner: repoOwnerName,
+            repo: repoName,
+            type: repoType,
             planType: 'basic_20_usd', // TODO: we'll want a way to select this at some point
           },
         }),
-      ),
+      )
+      dispatch(actions.toggleActivateConfirm({ visible: false }))
+    },
+    onActivateCancelClick: () =>
+      dispatch(actions.toggleActivateConfirm({ visible: false })),
+    onActivateConfirmDialogOverlayClick: () =>
+      dispatch(actions.toggleActivateConfirm({ visible: false })),
     onRunClick: ({ repo }) =>
       dispatch(
         push(

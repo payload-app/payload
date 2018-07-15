@@ -16,7 +16,7 @@ const ActivateConfirmDialog = ({
     <Popover anchor={'none'}>
       <ConfirmDialog
         maxWidth={50}
-        title={`Activate ${repoName}/${repoOwnerName}?`}
+        title={`Activate ${repoOwnerName}/${repoName}?`}
         onConfirmClick={onConfirmClick}
         onCancelClick={onCancelClick}
       >

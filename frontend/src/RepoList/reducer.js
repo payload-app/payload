@@ -5,10 +5,13 @@ export const selector = 'RepoList'
 const initialState = {
   repos: [],
   showPaymentOverlay: false,
+  showActivateConfirm: false,
+  activateConfirmDetails: {},
 }
 
 export const actionTypes = {
   TOGGLE_PAYMENT_OVERLAY: `${selector}/TOGGLE_PAYMENT_OVERLAY`,
+  TOGGLE_ACTIVATE_CONFIRM: `${selector}/TOGGLE_ACTIVATE_CONFIRM`,
 }
 
 const repoReducer = (state, action) => {
@@ -62,6 +65,20 @@ export default (state = initialState, action) => {
         ...state,
         showPaymentOverlay: action.visible,
       }
+    case actionTypes.TOGGLE_ACTIVATE_CONFIRM:
+      return {
+        ...state,
+        showActivateConfirm: action.visible,
+        activateConfirmDetails: action.visible
+          ? {
+              repoName: action.repoName,
+              repoOwnerName: action.repoOwnerName,
+              repoType: action.repoType,
+              currency: action.currency,
+              amount: action.amount,
+            }
+          : {},
+      }
     case `setPaymentSource_${dataFetchActionTypes.FETCH_START}`:
       return {
         ...state,
@@ -77,5 +94,21 @@ export const actions = {
   togglePaymentOverlay: ({ visible }) => ({
     type: actionTypes.TOGGLE_PAYMENT_OVERLAY,
     visible,
+  }),
+  toggleActivateConfirm: ({
+    visible,
+    repoName,
+    repoOwnerName,
+    repoType,
+    currency,
+    amount,
+  }) => ({
+    type: actionTypes.TOGGLE_ACTIVATE_CONFIRM,
+    visible,
+    repoName,
+    repoOwnerName,
+    repoType,
+    currency,
+    amount,
   }),
 }
