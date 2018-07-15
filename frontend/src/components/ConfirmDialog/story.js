@@ -1,10 +1,14 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import Text from '../Text'
+import { action } from '@storybook/addon-actions'
 import ConfirmDialog from './index'
 
 storiesOf('ConfirmDialog', module).add('default', () => (
-  <ConfirmDialog title={'Are You Sure?'}>
+  <ConfirmDialog
+    title={'Are You Sure?'}
+    onConfirmClick={action('onConfirmClick')}
+    onCancelClick={action('onCancelClick')}
+  >
     Are you sure this is the way to go? It cannot be undone.
   </ConfirmDialog>
 ))
