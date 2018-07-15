@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import BillingListItem from '../BillingListItem'
 import PaymentOverlay from '../PaymentOverlay'
+import DeactivateConfirmDialog from '../DeactivateConfirmDialog'
 
 const getSelectedRepoOwner = ({
   billingCustomers,
@@ -23,6 +24,7 @@ const BillingList = ({
   repoOwners,
   selectedBillingCustomer,
   showPaymentOverlay,
+  showDeactivateConfirm,
   loading,
   onDeactivateClick,
   onSetPaymentSourceClick,
@@ -30,6 +32,10 @@ const BillingList = ({
   onBillingCancelClick,
   onBillingSubmit,
   stripePublicKey,
+  deactivateConfirmDetails,
+  onDeactivateConfirmClick,
+  onDeactivateCancelClick,
+  onDeactivateConfirmDialogOverlayClick,
 }) => (
   <Fragment>
     {billingCustomers.map(billingCustomer => (
@@ -43,6 +49,16 @@ const BillingList = ({
         onSetPaymentSourceClick={onSetPaymentSourceClick}
       />
     ))}
+    {showDeactivateConfirm ? (
+      <DeactivateConfirmDialog
+        {...deactivateConfirmDetails}
+        onConfirmClick={() =>
+          onDeactivateConfirmClick(deactivateConfirmDetails)
+        }
+        onCancelClick={onDeactivateCancelClick}
+        onOverlayClick={onDeactivateConfirmDialogOverlayClick}
+      />
+    ) : null}
     {showPaymentOverlay ? (
       <PaymentOverlay
         billingCustomer={billingCustomers.find(

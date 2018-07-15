@@ -5,9 +5,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}-backend-staging-ingress
+  name: {{ template "staging-ingress-fullname" . }}
   labels:
-    app: {{ template "name" . }}-backend-staging-ingress
+    app: {{ template "staging-ingress-name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
   annotations:

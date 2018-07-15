@@ -13,6 +13,8 @@ export default connect(
     loading: state[selector].loadingAllRepos,
     selectedBillingCustomer: state[selector].selectedBillingCustomer,
     showPaymentOverlay: state[selector].showPaymentOverlay,
+    showDeactivateConfirm: state[selector].showDeactivateConfirm,
+    deactivateConfirmDetails: state[selector].deactivateConfirmDetails,
     stripePublicKey: state[billingSelector].stripePublicKey,
   }),
   dispatch => ({
@@ -39,7 +41,19 @@ export default connect(
     onDeactivateClick: ({
       billingCustomer: { ownerId, ownerType },
       subscription: { repoId },
+      repo: { owner: repoOwnerName, repo: repoName },
     }) =>
+      dispatch(
+        actions.toggleDeactivateConfirm({
+          visible: true,
+          ownerId,
+          ownerType,
+          repoId,
+          repoName,
+          repoOwnerName,
+        }),
+      ),
+    onDeactivateConfirmClick: ({ ownerId, ownerType, repoId }) => {
       dispatch(
         dataFetchActions.fetch({
           name: 'deactivateRepo',
@@ -49,7 +63,13 @@ export default connect(
             repoId,
           },
         }),
-      ),
+      )
+      dispatch(actions.toggleDeactivateConfirm({ visible: false }))
+    },
+    onDeactivateCancelClick: () =>
+      dispatch(actions.toggleDeactivateConfirm({ visible: false })),
+    onDeactivateConfirmDialogOverlayClick: () =>
+      dispatch(actions.toggleDeactivateConfirm({ visible: false })),
   }),
 )(BillingList)
 

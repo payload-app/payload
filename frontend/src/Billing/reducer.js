@@ -4,6 +4,7 @@ export const selector = 'Billing'
 export const actionTypes = {
   TOGGLE_PAYMENT_OVERLAY: `${selector}/TOGGLE_PAYMENT_OVERLAY`,
   SELECT_BILLING_CUSTOMER: `${selector}/SELECT_BILLING_CUSTOMER`,
+  TOGGLE_DEACTIVATE_CONFIRM: `${selector}/TOGGLE_DEACTIVATE_CONFIRM`,
 }
 
 const initialState = {
@@ -11,6 +12,10 @@ const initialState = {
   customers: [],
   repos: [],
   loadingAllRepos: true,
+  showPaymentOverlay: false,
+  showDeactivateConfirm: false,
+  deactivateConfirmDetails: {},
+  selectedBillingCustomer: null,
 }
 
 const customerComparitor = (a, b) => a._id.localeCompare(b._id)
@@ -104,6 +109,20 @@ export default (state = initialState, action) => {
         ...state,
         showPaymentOverlay: action.visible,
       }
+    case actionTypes.TOGGLE_DEACTIVATE_CONFIRM:
+      return {
+        ...state,
+        showDeactivateConfirm: action.visible,
+        deactivateConfirmDetails: action.visible
+          ? {
+              repoName: action.repoName,
+              repoOwnerName: action.repoOwnerName,
+              ownerId: action.ownerId,
+              ownerType: action.ownerType,
+              repoId: action.repoId,
+            }
+          : {},
+      }
     case actionTypes.SELECT_BILLING_CUSTOMER:
       return {
         ...state,
@@ -128,5 +147,21 @@ export const actions = {
   selectBillingCustomer: ({ id }) => ({
     type: actionTypes.SELECT_BILLING_CUSTOMER,
     id,
+  }),
+  toggleDeactivateConfirm: ({
+    visible,
+    repoName,
+    repoOwnerName,
+    ownerId,
+    ownerType,
+    repoId,
+  }) => ({
+    type: actionTypes.TOGGLE_DEACTIVATE_CONFIRM,
+    visible,
+    repoName,
+    repoOwnerName,
+    ownerId,
+    ownerType,
+    repoId,
   }),
 }

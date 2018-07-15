@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import InvertedPanel from '../InvertedPanel'
 import Text from '../Text'
 import { IconPoweredByStripe } from '../Icons'
 import {
@@ -80,98 +81,97 @@ class StripePaymentForm extends Component {
 
   render() {
     return (
-      <form
-        style={{
-          background: invertedBackground,
-          width: '60rem',
-          padding: '3rem',
-        }}
-        onSubmit={this.handleSubmit}
-      >
-        <div
-          style={{
-            marginBottom: '1.5rem',
-            textAlign: 'center',
-          }}
-        >
-          <Text color={invertedText} size={3} capitalize>
-            {`Set Payment Source For ${this.props.customerName}`}
-          </Text>
-        </div>
-        <div
-          style={{
-            marginBottom: '3rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <div>
-            <Text color={invertedText} size={1.5} capitalize>
-              {`Credit and debit cards Accepted`}
-            </Text>
-          </div>
-          <div>
-            <IconPoweredByStripe color={invertedText} width={15} height={2.5} />
-          </div>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
+      <InvertedPanel padding={3} width={60}>
+        <form onSubmit={this.handleSubmit}>
           <div
             style={{
-              background: background,
-              padding: '1rem',
+              marginBottom: '1.5rem',
+              textAlign: 'center',
             }}
           >
-            <CardElement
-              style={{
-                base: {
-                  fontSize: '20px',
-                  color: text,
-                  iconColor: text,
-                  fontFamily,
-                  '::placeholder': {
-                    color: text,
-                  },
-                },
-                invalid: {
-                  color: brightRed,
-                  iconColor: brightRed,
-                  '::placeholder': {
-                    color: brightRed,
-                  },
-                },
-              }}
-              iconStyle={'solid'}
-              onChange={this.handleChange}
-            />
+            <Text color={invertedText} size={3} capitalize>
+              {`Set Payment Source For ${this.props.customerName}`}
+            </Text>
           </div>
-          {this.state.error ? <ErrorDisplay {...this.state} /> : null}
-          <div style={{ display: 'flex', marginTop: '2rem' }}>
-            <div style={{ flexGrow: 1 }}>
+          <div
+            style={{
+              marginBottom: '3rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <div>
+              <Text color={invertedText} size={1.5} capitalize>
+                {`Credit and debit cards Accepted`}
+              </Text>
+            </div>
+            <div>
+              <IconPoweredByStripe
+                color={invertedText}
+                width={15}
+                height={2.5}
+              />
+            </div>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <div
+              style={{
+                background: background,
+                padding: '1rem',
+              }}
+            >
+              <CardElement
+                style={{
+                  base: {
+                    fontSize: '20px',
+                    color: text,
+                    iconColor: text,
+                    fontFamily,
+                    '::placeholder': {
+                      color: text,
+                    },
+                  },
+                  invalid: {
+                    color: brightRed,
+                    iconColor: brightRed,
+                    '::placeholder': {
+                      color: brightRed,
+                    },
+                  },
+                }}
+                iconStyle={'solid'}
+                onChange={this.handleChange}
+              />
+            </div>
+            {this.state.error ? <ErrorDisplay {...this.state} /> : null}
+            <div style={{ display: 'flex', marginTop: '2rem' }}>
+              <div style={{ flexGrow: 1 }}>
+                <Button
+                  type={'button'}
+                  onClick={this.props.onCancelClick}
+                  disabled={this.state.submitting}
+                >
+                  Cancel?
+                </Button>
+              </div>
               <Button
-                type={'button'}
-                onClick={this.props.onCancelClick}
-                disabled={this.state.submitting}
+                disabled={!this.props.stripe || this.state.submitting}
+                type={'submit'}
+                color={text}
+                background={background}
               >
-                Cancel?
+                Confirm?
               </Button>
             </div>
-            <Button
-              disabled={!this.props.stripe || this.state.submitting}
-              type={'submit'}
-              color={text}
-              background={background}
-            >
-              Confirm?
-            </Button>
           </div>
-        </div>
-      </form>
+        </form>
+      </InvertedPanel>
     )
   }
 }

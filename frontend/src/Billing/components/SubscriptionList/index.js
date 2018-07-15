@@ -12,7 +12,12 @@ const SubscriptionList = ({ subscriptions, repos, onDeactivateClick }) =>
       <SubscriptionListItem
         subscription={subscription}
         repos={repos}
-        onDeactivateClick={() => onDeactivateClick({ subscription })}
+        onDeactivateClick={() =>
+          onDeactivateClick({
+            subscription,
+            repo: repos.find(repo => repo._id === subscription.repoId),
+          })
+        }
       />
     </div>
   ))
