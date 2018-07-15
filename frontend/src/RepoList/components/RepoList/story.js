@@ -27,6 +27,14 @@ const repos: Array<Repo> = [
   },
 ]
 
-storiesOf('RepoList', module).add('default', () => (
-  <RepoList repos={repos} onActivateClick={action('Activate Clicked')} />
-))
+storiesOf('RepoList', module)
+  .add('default', () => (
+    <RepoList repos={repos} onActivateClick={action('Activate Clicked')} />
+  ))
+  .add('showActivateConfirmDialog = true', () => (
+    <RepoList
+      repos={repos}
+      onActivateClick={action('Activate Clicked')}
+      showActivateConfirmDialog={true}
+    />
+  ))

@@ -8,18 +8,19 @@ const ConfirmDialog = ({
   children,
   title,
   width,
+  maxWidth,
   onConfirmClick,
   onCancelClick,
 }) => (
-  <InvertedPanel padding={2} width={width}>
+  <InvertedPanel padding={3} width={width} maxWidth={maxWidth}>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div style={{ alignSelf: 'center', marginBottom: '2rem' }}>
-        <Text color={invertedText} size={2} capitalize>
+        <Text color={invertedText} size={3} capitalize>
           {title}
         </Text>
       </div>
       <div style={{ marginBottom: '2rem', alignSelf: 'center' }}>
-        <Text color={invertedText} capitalize>
+        <Text color={invertedText} size={2} capitalize>
           {children}
         </Text>
       </div>

@@ -23,3 +23,13 @@ storiesOf('ConfirmDialog', module)
       Are you sure this is the way to go? It cannot be undone.
     </ConfirmDialog>
   ))
+  .add('maxWidth = 50 rem', () => (
+    <ConfirmDialog
+      title={'Are You Sure?'}
+      onConfirmClick={action('onConfirmClick')}
+      onCancelClick={action('onCancelClick')}
+      maxWidth={50}
+    >
+      Are you sure this is the way to go? It cannot be undone.
+    </ConfirmDialog>
+  ))

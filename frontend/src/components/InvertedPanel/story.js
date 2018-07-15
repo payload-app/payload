@@ -20,3 +20,10 @@ storiesOf('InvertedPanel', module)
       <Text color={invertedText}>This is an inverted panel</Text>
     </InvertedPanel>
   ))
+  .add('maxWidth = 60', () => (
+    <InvertedPanel maxWidth={60}>
+      <Text color={invertedText}>
+        This is an inverted panel with a max width of 60
+      </Text>
+    </InvertedPanel>
+  ))
