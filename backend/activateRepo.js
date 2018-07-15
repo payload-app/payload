@@ -85,6 +85,44 @@ module.exports = ({
       message: parseValidationErrorMessage({ error }),
     })
   }
+
+  let organization
+  try {
+    organization = await organizationServiceClient.call('getOrganization', {
+      name: owner,
+      type,
+    })
+  } catch (error) {
+    if (!error.message.startsWith('Could not find organization with name')) {
+      throw error
+    }
+  }
+
+  let ownerId
+  let ownerType
+  if (organization) {
+    ownerId = organization._id
+    ownerType = 'organization'
+  } else {
+    ownerId = session.user._id
+    ownerType = 'user'
+  }
+
+  const billingCustomer = await billingServiceClient.call('getCustomer', {
+    ownerId,
+    ownerType,
+  })
+  const now = new Date().getTime()
+  if (
+    billingCustomer &&
+    !billingCustomer.paymentSourceSet &&
+    new Date(billingCustomer.trialEnd).getTime() < now
+  ) {
+    throw createError({
+      message: 'Trial has expired',
+    })
+  }
+
   const appName = 'payload'
   const accessToken = parseGithubTokenFromSession({ session })
 
@@ -121,40 +159,12 @@ module.exports = ({
     webhookToken,
   })
 
-  let organization
-  try {
-    organization = await organizationServiceClient.call('getOrganization', {
-      name: owner,
-      type,
-    })
-  } catch (error) {
-    if (!error.message.startsWith('Could not find organization with name')) {
-      throw error
-    }
-  }
-
-  let ownerId
-  let ownerType
-  if (organization) {
-    ownerId = organization._id
-    ownerType = 'organization'
-  } else {
-    ownerId = session.user._id
-    ownerType = 'user'
-  }
-
   // ensure a customer exists
-  try {
+  if (!billingCustomer) {
     await billingServiceClient.call('createCustomer', {
       ownerId,
       ownerType,
     })
-  } catch (error) {
-    if (
-      !error.message.startsWith('A customer has already been created with id')
-    ) {
-      throw error
-    }
   }
 
   // create a stripe subscription
