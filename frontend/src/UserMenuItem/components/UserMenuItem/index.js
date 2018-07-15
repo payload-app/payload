@@ -6,24 +6,27 @@ import {
   HR,
   Button,
   PopoverContainer,
+  InvertedPanel,
 } from '../../../components'
-import { text, mutedWhite } from '../../../components/style/color'
+import { invertedText, mutedWhite } from '../../../components/style/color'
 
 const getAvatar = ({ user }) => user.accounts.github.avatar
 const getName = ({ user }) => user.accounts.github.name
 const getEmail = ({ user }) => user.email
 
 const PopoverComponent = ({ user, onSettingsClick, onLogoutClick }) => (
-  <div
-    style={{
-      border: `1px solid ${text}`,
-      padding: '1rem',
-    }}
-  >
-    <Text>{getEmail({ user })}</Text>
-    <HR />
-    <div>
+  <InvertedPanel>
+    <div style={{ marginBottom: '0.75rem' }}>
+      <Text size={1.5} color={invertedText} capitalize>
+        {getEmail({ user })}
+      </Text>
+    </div>
+    <HR color={invertedText} />
+    <div style={{ margin: '0.75rem 0' }}>
       <Link
+        size={1.5}
+        color={invertedText}
+        capitalize
         onClick={e => {
           e.preventDefault()
           onSettingsClick({ user })
@@ -32,8 +35,11 @@ const PopoverComponent = ({ user, onSettingsClick, onLogoutClick }) => (
         Settings
       </Link>
     </div>
-    <div>
+    <div style={{ marginBottom: '0.75rem' }}>
       <Link
+        size={1.5}
+        color={invertedText}
+        capitalize
         onClick={e => {
           e.preventDefault()
           onLogoutClick()
@@ -42,7 +48,7 @@ const PopoverComponent = ({ user, onSettingsClick, onLogoutClick }) => (
         Logout
       </Link>
     </div>
-  </div>
+  </InvertedPanel>
 )
 
 const AnchorComponent = ({ user, onShowPopover }) => (
