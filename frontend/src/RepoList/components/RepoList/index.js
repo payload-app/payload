@@ -5,7 +5,13 @@ import BillingBanner from '../BillingBanner'
 import RepoListItem from '../RepoListItem'
 import ActivateConfirmDialog from '../ActivateConfirmDialog'
 
-const RepoList = ({ owner, repos, onActivateClick, onRunClick }) =>
+const RepoList = ({
+  owner,
+  repos,
+  onActivateClick,
+  onRunClick,
+  billingCustomer,
+}) =>
   repos.length ? (
     <FadeInChildren speed={100} key={owner}>
       {repos.map(repo => (
@@ -14,6 +20,7 @@ const RepoList = ({ owner, repos, onActivateClick, onRunClick }) =>
             repo={repo}
             onActivateClick={() => onActivateClick({ repo })}
             onRunClick={() => onRunClick({ repo })}
+            billingCustomer={billingCustomer}
           />
         </div>
       ))}
@@ -49,6 +56,7 @@ export default ({
       repos={repos}
       onActivateClick={onActivateClick}
       onRunClick={onRunClick}
+      billingCustomer={billingCustomer}
     />
     {showActivateConfirm ? (
       <ActivateConfirmDialog

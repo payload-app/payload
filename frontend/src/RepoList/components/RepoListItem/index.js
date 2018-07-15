@@ -1,15 +1,9 @@
-// @flow
-import type { Repo } from 'api-types'
 import React from 'react'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
+import { calculateDaysFromToday } from '../../utils'
 import { Pulse, Text, Button, Link, Panel } from '../../../components'
 import { red } from '../../../components/style/color'
-
-type Props = {
-  repo: Repo,
-  onActivateClick: () => {},
-}
 
 const datetimeToMS = ({ datetime }) => new Date(datetime).getTime()
 
@@ -34,6 +28,10 @@ const CreateTime = ({ created }) => (
     <Text>Last Ran: {<TimeAgo date={created} />}</Text>
   </div>
 )
+
+const billingCustomerIsActive = ({ loading, trialEnd, paymentSourceSet }) =>
+  loading === false &&
+  (paymentSourceSet || calculateDaysFromToday({ date: trialEnd }) > 0.0)
 
 const SHA = ({ branch, sha, errorMessage, onRunClick }) => (
   <div style={{ flex: 2 }}>
@@ -83,7 +81,7 @@ const ActiveContents = ({ repo, onRunClick }) => {
   }
 }
 
-export default ({ repo, onActivateClick, onRunClick }: Props) => {
+export default ({ repo, onActivateClick, onRunClick, billingCustomer }) => {
   return (
     <Panel
       TitleComponent={
@@ -110,10 +108,11 @@ export default ({ repo, onActivateClick, onRunClick }: Props) => {
               Not Active
             </span>
           </Text>
-
-          <Button onClick={onActivateClick} disabled={repo.activating}>
-            {repo.activating ? 'Activating...' : 'Activate?'}
-          </Button>
+          {billingCustomer && billingCustomerIsActive(billingCustomer) ? (
+            <Button onClick={onActivateClick} disabled={repo.activating}>
+              {repo.activating ? 'Activating...' : 'Activate?'}
+            </Button>
+          ) : null}
         </div>
       )}
     </Panel>

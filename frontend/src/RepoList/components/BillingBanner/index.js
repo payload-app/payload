@@ -1,14 +1,6 @@
 import React from 'react'
 import { Banner } from '../../../components'
-
-const calculateDaysFromToday = ({ date }) =>
-  (
-    (new Date(date).getTime() - new Date().getTime()) /
-    1000 /
-    60 /
-    60 /
-    24
-  ).toFixed(3)
+import { calculateDaysFromToday } from '../../utils'
 
 const MarginBottom = ({ children }) => (
   <div style={{ marginBottom: '1rem' }}> {children}</div>
