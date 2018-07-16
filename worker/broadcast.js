@@ -136,13 +136,14 @@ const broadcastComplete = async ({
   repo,
   branch,
   sha,
+  processingHeadFailed,
 }) => {
   await statusBroadcasterClient.call('broadcastStatus', {
     accessToken,
     owner,
     repo,
     sha,
-    state: 'success',
+    state: processingHeadFailed ? 'error' : 'success',
     description: 'Complete',
     context: 'Payload',
     targetUrl: generateTargetUrl({

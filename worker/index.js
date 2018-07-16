@@ -18,6 +18,7 @@ let timeoutId
 const main = async () => {
   const queue = process.env.WORKER_QUEUE
   const workerName = process.env.WORKER_NAME
+  let processingHeadFailed = false
   logger.mergeLoggerMetadata({ metadata: { workerName, queue } })
   logger.info({ message: 'worker checking queue' })
 
@@ -152,6 +153,7 @@ const main = async () => {
       if (error.message === 'Another worker is processing this run') {
         logger.warn({ message: 'another worker is processing this run' })
       } else {
+        processingHeadFailed = true
         logger.error({
           message: 'error while processing head',
           data: {
@@ -190,7 +192,8 @@ const main = async () => {
       })
     } else {
       await broadcastComplete({
-        fileSizes: headFileSizes,
+        fileSizes: headFileSizes || [],
+        processingHeadFailed,
         ownerType,
         type,
         accessToken,

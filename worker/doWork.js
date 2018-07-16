@@ -156,6 +156,7 @@ module.exports = async ({
   await cleanup({
     sha,
     workingDirBase,
+    logger,
   })
   if (error) {
     throw error
