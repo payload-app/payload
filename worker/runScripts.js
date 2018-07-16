@@ -13,7 +13,9 @@ module.exports = async ({ scripts, sha, logger, workingDirBase, username }) => {
     const promise = spawn(script, {
       shell: '/bin/bash',
       cwd: join(workingDirBase, sha),
-      env: {},
+      env: {
+        PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+      },
       uid,
     })
     const { childProcess } = promise
