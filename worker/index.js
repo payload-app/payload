@@ -12,10 +12,10 @@ const queueServiceClient = new RPCClient({
 })
 
 const workingDirBase = '/home/sandbox'
+let leaseExtendId
+let timeoutId
 
 const main = async () => {
-  let leaseExtendId
-  let timeoutId
   const queue = process.env.WORKER_QUEUE
   const workerName = process.env.WORKER_NAME
   logger.mergeLoggerMetadata({ metadata: { workerName, queue } })
@@ -209,13 +209,6 @@ const main = async () => {
   } else {
     logger.info({ message: 'No Task Found' })
   }
-  if (leaseExtendId) {
-    clearInterval(leaseExtendId)
-  }
-  if (timeoutId) {
-    clearTimeout(timeoutId)
-  }
-  cleanup({ workingDirBase, logger })
   logger.info({ message: 'Sleeping 10 Seconds' })
   await sleep(10000)
 }
@@ -231,7 +224,15 @@ const controlLoop = async () => {
         error: error.message,
       },
     })
-    process.exit(1)
+    cleanup({ workingDirBase, logger })
+    if (leaseExtendId) {
+      clearInterval(leaseExtendId)
+      leaseExtendId = undefined
+    }
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+      timeoutId = undefined
+    }
   }
   await controlLoop()
 }
