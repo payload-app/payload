@@ -55,7 +55,7 @@
     }
   },
   "payload": {
-    "scripts": ["cd frontend && npm run build"],
+    "scripts": ["cd frontend && npm install && npm run build"],
     "files": ["frontend/build/index.html", "frontend/build/service-worker.js"]
   }
 }
