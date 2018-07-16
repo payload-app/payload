@@ -28,6 +28,8 @@ const mergeLoggerMetadata = ({ metadata = {} }) => {
   }
 }
 
+const resetLoggerMetadata = () => (loggerMetadata = {})
+
 const log = ({ level, message, data = {} }) =>
   logger.log(level, message, { ...loggerMetadata, ...data })
 
@@ -41,6 +43,7 @@ const silly = ({ message, data }) => log({ level: 'silly', message, data })
 module.exports = {
   logger: {
     mergeLoggerMetadata,
+    resetLoggerMetadata,
     log,
     error,
     warn,
