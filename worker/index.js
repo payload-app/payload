@@ -14,6 +14,8 @@ const queueServiceClient = new RPCClient({
 const workingDirBase = '/home/sandbox'
 
 const main = async () => {
+  let leaseExtendId
+  let timeoutId
   const queue = process.env.WORKER_QUEUE
   const workerName = process.env.WORKER_NAME
   logger.mergeLoggerMetadata({ metadata: { workerName, queue } })
@@ -54,7 +56,7 @@ const main = async () => {
     })
     logger.info({ message: 'found task' })
 
-    const leaseExtendId = setInterval(async () => {
+    leaseExtendId = setInterval(async () => {
       logger.info({ message: 'extending lease' })
       try {
         await queueServiceClient.call('extendLease', {
@@ -78,7 +80,7 @@ const main = async () => {
       }
     }, lease * 1000 / 2)
 
-    const timeoutId = setTimeout(async () => {
+    timeoutId = setTimeout(async () => {
       logger.error({ message: 'worker max lease expired' })
       try {
         await queueServiceClient.call('failTask', {
@@ -204,12 +206,16 @@ const main = async () => {
       workerName,
       taskId,
     })
-    clearInterval(leaseExtendId)
-    clearTimeout(timeoutId)
   } else {
     logger.info({ message: 'No Task Found' })
   }
-
+  if (leaseExtendId) {
+    clearInterval(leaseExtendId)
+  }
+  if (timeoutId) {
+    clearTimeout(timeoutId)
+  }
+  cleanup({ workingDirBase, logger })
   logger.info({ message: 'Sleeping 10 Seconds' })
   await sleep(10000)
 }
@@ -225,7 +231,7 @@ const controlLoop = async () => {
         error: error.message,
       },
     })
-    cleanup({ workingDirBase })
+    process.exit(1)
   }
   await controlLoop()
 }
