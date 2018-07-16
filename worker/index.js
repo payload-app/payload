@@ -224,15 +224,15 @@ const controlLoop = async () => {
         error: error.message,
       },
     })
-    cleanup({ workingDirBase, logger })
-    if (leaseExtendId) {
-      clearInterval(leaseExtendId)
-      leaseExtendId = undefined
-    }
-    if (timeoutId) {
-      clearTimeout(timeoutId)
-      timeoutId = undefined
-    }
+  }
+  cleanup({ workingDirBase, logger })
+  if (leaseExtendId) {
+    clearInterval(leaseExtendId)
+    leaseExtendId = undefined
+  }
+  if (timeoutId) {
+    clearTimeout(timeoutId)
+    timeoutId = undefined
   }
   await controlLoop()
 }
