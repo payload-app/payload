@@ -34,7 +34,7 @@ module.exports = async ({
   }
   logger.info({ message: 'completed checking out repo', data: { sha } })
   logger.info({ message: 'changing repo permission to "sandbox" user' })
-  await exec(`chown ${username} ${join(workingDirBase, sha)}`)
+  await exec(`chown ${username} ${join(workingDirBase, sha)} -R`)
   logger.info({
     message: 'completed changing repo permission to "sandbox" user',
   })

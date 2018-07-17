@@ -59,26 +59,11 @@ const main = async () => {
 
     leaseExtendId = setInterval(async () => {
       logger.info({ message: 'extending lease' })
-      try {
-        await queueServiceClient.call('extendLease', {
-          queue,
-          workerName,
-          taskId,
-        })
-      } catch (error) {
-        logger.error({
-          message: 'error extending lease',
-          data: {
-            error: error.message,
-            stack: error.stack,
-          },
-        })
-        // if the lease was lost, exit the process
-        if (error.message === 'could not find existing lease') {
-          return
-          // process.exit(2)
-        }
-      }
+      await queueServiceClient.call('extendLease', {
+        queue,
+        workerName,
+        taskId,
+      })
     }, lease * 1000 / 2)
 
     timeoutId = setTimeout(async () => {
@@ -100,7 +85,7 @@ const main = async () => {
           },
         })
       }
-      // process.exit(1)
+      throw new Error('worker max lease expired')
     }, task.maxLease * 1000)
 
     // use these to calculate github status
@@ -130,7 +115,7 @@ const main = async () => {
         },
       })
       if (error.message === 'Another worker is processing this run') {
-        // process.exit(0)
+        throw new Error('Another worker is processing this run')
       }
     }
 
@@ -152,6 +137,7 @@ const main = async () => {
     } catch (error) {
       if (error.message === 'Another worker is processing this run') {
         logger.warn({ message: 'another worker is processing this run' })
+        throw new Error('Another worker is processing this run')
       } else {
         processingHeadFailed = true
         logger.error({
@@ -173,8 +159,6 @@ const main = async () => {
           errorMessage: error.displayable ? error.message : error.stack,
         })
       }
-      // let the task expire since another worker is processing this run
-      // process.exit(0)
     }
 
     if (headFileSizes && baseFileSizes && taskType === 'pullRequest') {
@@ -203,12 +187,13 @@ const main = async () => {
         sha: headSha,
       })
     }
-
-    await queueServiceClient.call('completeTask', {
-      queue,
-      workerName,
-      taskId,
-    })
+    if (!processingHeadFailed) {
+      await queueServiceClient.call('completeTask', {
+        queue,
+        workerName,
+        taskId,
+      })
+    }
   } else {
     logger.info({ message: 'No Task Found' })
   }
