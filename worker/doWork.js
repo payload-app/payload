@@ -24,6 +24,7 @@ module.exports = async ({
   sha,
   branch,
   logger,
+  baseRun,
   workingDirBase = '/home/sandbox',
   username = 'sandbox',
 }) => {
@@ -45,7 +46,8 @@ module.exports = async ({
     logger.info({ message: message.toLowerCase() })
     throw new Error(message)
     // allow failed runs to be tried again
-  } else if (run && !run.errorMessage) {
+    // allow base runs to return existing data
+  } else if (run && !run.errorMessage && baseRun) {
     logger.mergeLoggerMetadata({ metadata: { runId: run._id } })
     logger.info({
       message: 'returning existing run data',
