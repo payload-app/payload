@@ -332,7 +332,7 @@ const main = async () => {
     if (stopTaskTimeout) {
       stopTaskTimeout()
     }
-    cleanup({ workingDirBase, logger })
+    cleanup({ workingDirBase, logger, resetLoggerMetadata: true })
   } else {
     logger.info({ message: 'No Task Found' })
   }

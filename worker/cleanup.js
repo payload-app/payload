@@ -3,11 +3,18 @@ const { promisify } = require('util')
 const rimraf = require('rimraf')
 const rmrf = promisify(rimraf)
 
-module.exports = async ({ sha, workingDirBase, logger }) => {
+module.exports = async ({
+  sha,
+  workingDirBase,
+  logger,
+  resetLoggerMetadata,
+}) => {
   if (sha) {
     await rmrf(join(workingDirBase, sha))
   } else {
     await rmrf(`${workingDirBase}/*`)
   }
-  logger.resetLoggerMetadata()
+  if (resetLoggerMetadata) {
+    logger.resetLoggerMetadata()
+  }
 }

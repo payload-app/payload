@@ -20,8 +20,8 @@ env:
         fieldPath: metadata.name
 resources:
   limits:
-   cpu: 200m
-   memory: 512Mi
+   cpu: 300m
+   memory: 1024Mi
   requests:
-   cpu: 200m
-   memory: 512Mi
+   cpu: 300m
+   memory: 1024Mi
