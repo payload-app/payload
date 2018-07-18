@@ -18,3 +18,10 @@ env:
     valueFrom:
       fieldRef:
         fieldPath: metadata.name
+resources:
+  limits:
+   cpu: 200m
+   memory: 256Mi
+  requests:
+   cpu: 200m
+   memory: 256Mi
