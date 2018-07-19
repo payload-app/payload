@@ -73,7 +73,15 @@ const ActiveContents = ({ repo, onRunClick }) => {
           onRunClick={onRunClick}
         />
         <CreateTime created={created} />
-        <Duration start={start} stop={stop} />
+        {stop ? (
+          <Duration start={start} stop={stop} />
+        ) : (
+          <div style={{ flex: 1, textAlign: 'right' }}>
+            <Pulse>
+              <Text>Build Is In Progress...</Text>
+            </Pulse>
+          </div>
+        )}
       </div>
     )
   } else {

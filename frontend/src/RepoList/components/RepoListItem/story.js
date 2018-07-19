@@ -56,6 +56,14 @@ const activeRepoWithLongLastRunError = {
   },
 }
 
+const activeRepoWithInProgressRun = {
+  ...activeRepoWithLastRun,
+  lastDefaultRun: {
+    ...activeRepoWithLastRun.lastDefaultRun,
+    stop: undefined,
+  },
+}
+
 storiesOf('RepoListItem', module)
   .add('default', () => (
     <RepoListItem repo={repo} onActivateClick={action('Activate Clicked')} />
@@ -87,6 +95,12 @@ storiesOf('RepoListItem', module)
   .add('activeRepoWithLongLastRunError', () => (
     <RepoListItem
       repo={activeRepoWithLongLastRunError}
+      onActivateClick={action('Activate Clicked')}
+    />
+  ))
+  .add('activeRepoWithInProgressRun', () => (
+    <RepoListItem
+      repo={activeRepoWithInProgressRun}
       onActivateClick={action('Activate Clicked')}
     />
   ))
