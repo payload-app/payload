@@ -108,6 +108,21 @@ const ErrorDisplay = ({ errorMessage }) => (
   </div>
 )
 
+const BuildRunningDisplay = () => (
+  <div
+    style={{
+      display: 'flex',
+      background: softLighten,
+      borderLeft: `1px solid ${mutedWhite}`,
+      padding: 20,
+    }}
+  >
+    <div style={{ marginRight: '2rem' }}>
+      <Text>Build Is In Progress...</Text>
+    </div>
+  </div>
+)
+
 export default class extends React.Component {
   state = {
     runLoading: true,
@@ -138,7 +153,7 @@ export default class extends React.Component {
         <div
           style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
         >
-          {runLoading || errorMessage ? null : (
+          {runLoading || errorMessage || !stop ? null : (
             <RunComponent
               recentDefaultBranchRuns={recentDefaultBranchRuns}
               fileSizes={fileSizes}
@@ -147,9 +162,10 @@ export default class extends React.Component {
               created={created}
             />
           )}
-          {loading || !errorMessage ? null : (
+          {loading || !errorMessage || !stop ? null : (
             <ErrorDisplay errorMessage={errorMessage} />
           )}
+          {stop ? null : <BuildRunningDisplay />}
         </div>
       </Page>
     )
