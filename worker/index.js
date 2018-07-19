@@ -86,7 +86,6 @@ const setupLeaseExtender = ({ work, logger }) => {
       workerName,
       taskId,
     })
-    // TODO: handle extend release failing
   }, lease * 1000 / 2)
 
   return () => clearInterval(leaseExtendId)
@@ -103,8 +102,6 @@ const setupWorkerTimeout = ({ work, logger }) => {
       handled: true,
       errorMessage: `Worker lease expired - ${maxLease}`,
     })
-    // TODO: handle worker timeout
-    // TODO: handle failTask call failing
   }, maxLease * 1000)
 
   return () => clearTimeout(timeoutId)
@@ -232,7 +229,6 @@ const handleWork = async ({ work, logger }) => {
         handled: baseDisplayable,
         errorMessage: baseDisplayable ? baseError : baseStack,
       })
-      // TODO: broadcast worker failed
     }
     return
   }
@@ -263,7 +259,6 @@ const handleWork = async ({ work, logger }) => {
         handled: displayable,
         errorMessage: displayable ? error : stack,
       })
-      // TODO: broadcast worker failed
     }
     return
   }
