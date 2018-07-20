@@ -11,6 +11,7 @@ const generateTargetUrl = ({ type, ownerType, owner, repo, branch, sha }) =>
 
 const broadcastStart = async ({
   files,
+  assetManifests,
   accessToken,
   type,
   ownerType,
@@ -55,10 +56,30 @@ const broadcastStart = async ({
       }),
     })
   }
+  for (let assetManifest of assetManifests) {
+    await statusBroadcasterClient.call('broadcastStatus', {
+      accessToken,
+      owner,
+      repo,
+      sha,
+      state: 'pending',
+      description: 'Pending...',
+      context: `Payload - ${assetManifest}`,
+      targetUrl: generateTargetUrl({
+        type,
+        ownerType,
+        owner,
+        repo,
+        branch,
+        sha,
+      }),
+    })
+  }
 }
 
 const broadcastFail = async ({
   files,
+  assetManifests,
   accessToken,
   type,
   ownerType,
@@ -104,6 +125,25 @@ const broadcastFail = async ({
       }),
     })
   }
+  for (let assetManifest of assetManifests) {
+    await statusBroadcasterClient.call('broadcastStatus', {
+      accessToken,
+      owner,
+      repo,
+      sha,
+      state: 'failure',
+      description: 'Run Failed',
+      context: `Payload - ${assetManifest}`,
+      targetUrl: generateTargetUrl({
+        type,
+        ownerType,
+        owner,
+        repo,
+        branch,
+        sha,
+      }),
+    })
+  }
 }
 
 const broadcastRunError = async ({
@@ -129,6 +169,7 @@ const broadcastRunError = async ({
 
 const broadcastComplete = async ({
   fileSizes,
+  assetManifests,
   accessToken,
   type,
   ownerType,
@@ -136,14 +177,13 @@ const broadcastComplete = async ({
   repo,
   branch,
   sha,
-  processingHeadFailed,
 }) => {
   await statusBroadcasterClient.call('broadcastStatus', {
     accessToken,
     owner,
     repo,
     sha,
-    state: processingHeadFailed ? 'error' : 'success',
+    state: 'success',
     description: 'Complete',
     context: 'Payload',
     targetUrl: generateTargetUrl({
@@ -174,6 +214,25 @@ const broadcastComplete = async ({
       }),
     })
   }
+  for (let assetManifest of assetManifests) {
+    await statusBroadcasterClient.call('broadcastStatus', {
+      accessToken,
+      owner,
+      repo,
+      sha,
+      state: 'success',
+      description: 'Complete',
+      context: `Payload - ${assetManifest}`,
+      targetUrl: generateTargetUrl({
+        type,
+        ownerType,
+        owner,
+        repo,
+        branch,
+        sha,
+      }),
+    })
+  }
 }
 
 const filesCollectionToObject = ({ collection }) =>
@@ -187,6 +246,7 @@ const filesCollectionToObject = ({ collection }) =>
 const broadcastCompleteWithDiffs = async ({
   baseFileSizes,
   headFileSizes,
+  assetManifests,
   type,
   ownerType,
   owner,
@@ -270,6 +330,25 @@ const broadcastCompleteWithDiffs = async ({
       sha,
     }),
   })
+  for (let assetManifest of assetManifests) {
+    await statusBroadcasterClient.call('broadcastStatus', {
+      accessToken,
+      owner,
+      repo,
+      sha,
+      state: topLevelState,
+      description: topLevelState === 'failure' ? 'Failed' : 'Complete',
+      context: `Payload - ${assetManifest}`,
+      targetUrl: generateTargetUrl({
+        type,
+        ownerType,
+        owner,
+        repo,
+        branch,
+        sha,
+      }),
+    })
+  }
 }
 
 module.exports = {

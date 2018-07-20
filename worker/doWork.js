@@ -80,6 +80,7 @@ module.exports = async ({
   let error
   let fileSizes
   let fileList
+  let assetManifests
   let increaseThreshold
   try {
     await cloneRepo({
@@ -95,6 +96,7 @@ module.exports = async ({
       scripts,
       files,
       increaseThreshold: threshold,
+      assetManifests: assetManifestsList,
     } = await parsePayloadConfig({
       sha,
       logger,
@@ -103,9 +105,11 @@ module.exports = async ({
 
     increaseThreshold = threshold
     fileList = files
+    assetManifests = assetManifestsList
 
     await broadcastStart({
       files,
+      assetManifests,
       accessToken,
       owner,
       repo,
@@ -116,7 +120,13 @@ module.exports = async ({
     })
 
     await runScripts({ scripts, sha, logger, workingDirBase, username })
-    fileSizes = await calculateFileSizes({ sha, files, logger, workingDirBase })
+    fileSizes = await calculateFileSizes({
+      sha,
+      assetManifests,
+      files,
+      logger,
+      workingDirBase,
+    })
     await runServiceClient.call('stopRun', {
       id,
       fileSizes,
@@ -130,8 +140,9 @@ module.exports = async ({
       id,
       errorMessage: displayable ? errorMessage : defaultErrorMessage,
     })
-    if (fileList) {
+    if (fileList || assetManifests) {
       await broadcastFail({
+        assetManifests,
         files: fileList,
         accessToken,
         owner,
@@ -166,5 +177,6 @@ module.exports = async ({
   return {
     fileSizes,
     increaseThreshold,
+    assetManifests,
   }
 }

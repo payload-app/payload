@@ -31,14 +31,16 @@ module.exports = async ({ sha, logger, workingDirBase }) => {
       message: '"payload.scripts" key was not found in package.json',
     })
   }
-  if (!packageData.payload.files) {
+  if (!(packageData.payload.files || packageData.payload.assetManifests)) {
     throwDisplayableError({
-      message: '"payload.files" key was not found in package.json',
+      message:
+        '"payload.files" or "payload.assetManifests" key was not found in package.json',
     })
   }
   return {
     scripts: packageData.payload.scripts,
     files: packageData.payload.files,
+    assetManifests: packageData.payload.assetManifests || [],
     increaseThreshold: packageData.payload.increaseThreshold,
   }
 }

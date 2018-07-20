@@ -160,7 +160,7 @@ const doHeadCommitWork = async ({ work, logger }) => {
     work,
   })
   try {
-    const { fileSizes, increaseThreshold } = await doWork({
+    const { fileSizes, increaseThreshold, assetManifests } = await doWork({
       owner,
       ownerType,
       type,
@@ -175,12 +175,13 @@ const doHeadCommitWork = async ({ work, logger }) => {
     return {
       fileSizes,
       increaseThreshold,
+      assetManifests,
       failTask: false,
       stopProcessing: false,
     }
   } catch (error) {
     return {
-      failTask: error.message === 'Another worker is processing this run',
+      failTask: error.message !== 'Another worker is processing this run',
       stopProcessing: true,
       displayable: error.displayable || false,
       error: error.message,
@@ -203,6 +204,7 @@ const handleWork = async ({ work, logger }) => {
   } = parseWork({
     work,
   })
+  // TODO: there might be a bug if a base run is re-run and passes
   const {
     fileSizes: baseFileSizes,
     failTask: baseFailTask,
@@ -217,6 +219,9 @@ const handleWork = async ({ work, logger }) => {
       data: {
         error: baseError,
         stack: baseStack,
+        failTask: baseFailTask,
+        stopProcessing: baseStopProcessing,
+        displayable: baseDisplayable,
       },
     })
     if (baseFailTask) {
@@ -233,6 +238,7 @@ const handleWork = async ({ work, logger }) => {
     return
   }
   const {
+    assetManifests: headAssetManifests,
     fileSizes: headFileSizes,
     increaseThreshold,
     failTask,
@@ -247,6 +253,9 @@ const handleWork = async ({ work, logger }) => {
       data: {
         error,
         stack,
+        failTask,
+        stopProcessing,
+        displayable,
       },
     })
     if (failTask) {
@@ -267,6 +276,7 @@ const handleWork = async ({ work, logger }) => {
     await broadcastCompleteWithDiffs({
       baseFileSizes,
       headFileSizes,
+      assetManifests: headAssetManifests,
       ownerType,
       type,
       accessToken,
@@ -279,6 +289,7 @@ const handleWork = async ({ work, logger }) => {
   } else {
     await broadcastComplete({
       fileSizes: headFileSizes,
+      assetManifests: headAssetManifests,
       ownerType,
       type,
       accessToken,
