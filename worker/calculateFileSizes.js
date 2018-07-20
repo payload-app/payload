@@ -104,7 +104,6 @@ module.exports = async ({
       }),
     })
   }
-  console.log('fileSizes', fileSizes)
 
   // merge files speficically called list (writes over asset manifest files)
   fileSizes = mergeFileSizes({
@@ -119,6 +118,5 @@ module.exports = async ({
       logger,
     }),
   })
-  console.log('fileSizes', fileSizes)
   return fileSizes
 }
