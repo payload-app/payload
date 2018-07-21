@@ -2,7 +2,7 @@ import React from 'react'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import Page from '../../../Page'
-import { Text, AnimateText, FadeInChildren } from '../../../components'
+import { Text, Pulse, AnimateText, FadeInChildren } from '../../../components'
 import replace from 'react-string-replace'
 import { red, mutedWhite, softLighten } from '../../../components/style/color'
 import FileListViz from '../FileListViz'
@@ -67,20 +67,32 @@ const RunComponent = ({
     <Heading>Run Details</Heading>
     <div style={{ paddingBottom: 40, display: 'flex' }}>
       <FadeInChildren>
-        <StatBlock number={formatDuration({ start, stop })} label="Duration" />
-        <StatBlock number={<TimeAgo date={created} />} label="Date Ran" />
+        <StatBlock
+          number={
+            stop ? formatDuration({ start, stop }) : <Pulse>In Progress</Pulse>
+          }
+          label={'Duration'}
+        />
+        <StatBlock
+          number={<TimeAgo date={created} />}
+          label={stop ? 'Date Ran' : 'Date Started'}
+        />
       </FadeInChildren>
     </div>
 
     <Heading>Files Tracked</Heading>
-    <FileListViz
-      files={mergeRunFilesWithPastRun({
-        files: fileSizes,
-        prevFiles: recentDefaultBranchRuns[0]
-          ? recentDefaultBranchRuns[0].fileSizes
-          : [],
-      })}
-    />
+    {fileSizes ? (
+      <FileListViz
+        files={mergeRunFilesWithPastRun({
+          files: fileSizes,
+          prevFiles: recentDefaultBranchRuns[0]
+            ? recentDefaultBranchRuns[0].fileSizes
+            : [],
+        })}
+      />
+    ) : (
+      <Text>Build Is In Progress...</Text>
+    )}
   </div>
 )
 
@@ -104,21 +116,6 @@ const ErrorDisplay = ({ errorMessage }) => (
           </Text>
         ))}
       </Text>
-    </div>
-  </div>
-)
-
-const BuildRunningDisplay = () => (
-  <div
-    style={{
-      display: 'flex',
-      background: softLighten,
-      borderLeft: `1px solid ${mutedWhite}`,
-      padding: 20,
-    }}
-  >
-    <div style={{ marginRight: '2rem' }}>
-      <Text>Build Is In Progress...</Text>
     </div>
   </div>
 )
@@ -169,7 +166,7 @@ export default class extends React.Component {
           style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
         >
           {!loading ? null : <LoadingDisplay />}
-          {loading || runLoading || errorMessage || !stop ? null : (
+          {loading || runLoading || errorMessage ? null : (
             <RunComponent
               recentDefaultBranchRuns={recentDefaultBranchRuns}
               fileSizes={fileSizes}
@@ -181,7 +178,6 @@ export default class extends React.Component {
           {loading || !errorMessage || !stop ? null : (
             <ErrorDisplay errorMessage={errorMessage} />
           )}
-          {loading || stop ? null : <BuildRunningDisplay />}
         </div>
       </Page>
     )

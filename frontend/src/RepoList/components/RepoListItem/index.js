@@ -23,9 +23,11 @@ const Duration = ({ start, stop }) => (
   </div>
 )
 
-const CreateTime = ({ created }) => (
+const CreateTime = ({ created, stop }) => (
   <div style={{ flex: 1, textAlign: 'right' }}>
-    <Text>Last Ran: {<TimeAgo date={created} />}</Text>
+    <Text>
+      {stop ? 'Last Ran' : 'Run Started'}: {<TimeAgo date={created} />}
+    </Text>
   </div>
 )
 
@@ -72,13 +74,13 @@ const ActiveContents = ({ repo, onRunClick }) => {
           errorMessage={errorMessage}
           onRunClick={onRunClick}
         />
-        <CreateTime created={created} />
+        <CreateTime created={created} stop={stop} />
         {stop ? (
           <Duration start={start} stop={stop} />
         ) : (
           <div style={{ flex: 1, textAlign: 'right' }}>
             <Pulse>
-              <Text>Build Is In Progress...</Text>
+              <Text>In Progress...</Text>
             </Pulse>
           </div>
         )}
