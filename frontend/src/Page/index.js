@@ -11,7 +11,8 @@ export default ({ children }) => (
       flex: 1,
       display: 'flex',
       flexDirection: 'column',
-      minWidth: 0,
+      margin: '0 auto',
+      maxWidth: '120rem',
     }}
   >
     <Header />
