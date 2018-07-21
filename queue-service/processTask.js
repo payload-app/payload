@@ -5,6 +5,7 @@ const {
   parseValidationErrorMessage,
   processingQueue,
   processingTask,
+  pauseQueue,
 } = require('./utils')
 
 const schema = Joi.object().keys({
@@ -25,6 +26,10 @@ module.exports = ({ redisClient }) => async ({ queue, workerName }) => {
     throw createError({
       message: parseValidationErrorMessage({ error }),
     })
+  }
+  // if the queue is paused return null
+  if (await redisClient.get(pauseQueue({ queue }))) {
+    return null
   }
   const item = await redisClient.rpoplpush(queue, processingQueue({ queue }))
   if (item) {
