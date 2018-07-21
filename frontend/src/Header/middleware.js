@@ -23,13 +23,13 @@ export default ({ dispatch, getState }) => next => action => {
     case routingActionTypes.EMIT:
       switch (action.route) {
         case routes.REPO_LIST:
+          dispatch(headerActions.setTitle({ title: 'Payload Dashboard' }))
           if (getState()[repoListSelector].repos.length) {
             setSubtitleTrackingCount({
               dispatch,
               getState,
             })
           } else {
-            dispatch(headerActions.setTitle({ title: 'Payload Dashboard' }))
             dispatch(headerActions.setSubtitle({ subtitle: 'Loading...' }))
           }
           break
