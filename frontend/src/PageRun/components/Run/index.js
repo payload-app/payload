@@ -121,17 +121,8 @@ const ErrorDisplay = ({ errorMessage }) => (
 )
 
 const LoadingDisplay = () => (
-  <div
-    style={{
-      display: 'flex',
-      background: softLighten,
-      borderLeft: `1px solid ${mutedWhite}`,
-      padding: 20,
-    }}
-  >
-    <div style={{ marginRight: '2rem' }}>
-      <Text>Loading...</Text>
-    </div>
+  <div style={{ marginRight: '2rem' }}>
+    <Text>Loading...</Text>
   </div>
 )
 
