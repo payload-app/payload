@@ -311,8 +311,6 @@ services:
      - TRIAL_DAYS=14
     volumes:
      - ./billing-service:/usr/src/app/
-    ports:
-      - 3000:3000
     links:
      - mongodb
      - organization-service

@@ -5,6 +5,8 @@ const { createError } = require('@hharnisc/micro-rpc')
 
 const validateWithPromise = promisify(Joi.validate)
 
+const pauseQueue = ({ queue }) => `${queue}:paused`
+
 const processingQueue = ({ queue }) => `${queue}:processing`
 
 const processingTask = ({ queue, taskId }) =>
@@ -101,4 +103,5 @@ module.exports = {
   requeueTask,
   deadLetterTask,
   processingTask,
+  pauseQueue,
 }
