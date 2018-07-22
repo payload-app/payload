@@ -10,9 +10,11 @@ const sessionServiceClient = new RPCClient({
 
 module.exports = next => async (req, res) => {
   const cookies = parse((req.headers && req.headers.cookie) || '')
-  if (cookies.payload_session_token) {
+  const token =
+    cookies.impersonate_payload_session_token || cookies.payload_session_token
+  if (token) {
     const { userId } = await sessionServiceClient.call('getSession', {
-      token: cookies.payload_session_token,
+      token,
     })
     const user = await userServiceClient.call('getUser', {
       id: userId,
