@@ -1,8 +1,9 @@
 import React from 'react'
 import Header from '../Header'
 import Sidebar from '../Sidebar'
+import ImpersonationHeader from '../ImpersonationHeader'
 
-export default ({ children }) => (
+const Page = ({ children }) => (
   <div
     style={{
       paddingTop: 40,
@@ -15,6 +16,7 @@ export default ({ children }) => (
       maxWidth: '120rem',
     }}
   >
+    <ImpersonationHeader />
     <Header />
     <div style={{ display: 'flex', flex: 1 }}>
       <div
@@ -44,3 +46,5 @@ export default ({ children }) => (
     </div>
   </div>
 )
+
+export default Page
