@@ -16,5 +16,5 @@ storiesOf('ImpersonationHeader', module)
     />
   ))
   .add('impersonating = false', () => (
-    <ImpersonationHeader impersonating={true} />
+    <ImpersonationHeader impersonating={false} />
   ))
