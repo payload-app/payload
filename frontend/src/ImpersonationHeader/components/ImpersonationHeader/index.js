@@ -8,6 +8,7 @@ const ImpersonationHeader = ({
 }) => {
   return impersonating && user ? (
     <Banner
+      type={'error'}
       actionButton={{
         text: 'Stop Impersonating?',
         onClick: onStopImpersonationClick,

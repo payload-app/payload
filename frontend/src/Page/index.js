@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from '../Header'
 import Sidebar from '../Sidebar'
+import ImpersonationHeader from '../ImpersonationHeader'
 
 const Page = ({ children }) => (
   <div
@@ -15,6 +16,7 @@ const Page = ({ children }) => (
       maxWidth: '120rem',
     }}
   >
+    <ImpersonationHeader />
     <Header />
     <div style={{ display: 'flex', flex: 1 }}>
       <div
