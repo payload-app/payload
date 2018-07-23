@@ -1,20 +1,12 @@
 import React, { Fragment } from 'react'
-import { FadeInChildren } from '../../../components'
 import PaymentOverlay from '../PaymentOverlay'
 import BillingBanner from '../BillingBanner'
 import RepoListItem from '../RepoListItem'
 import ActivateConfirmDialog from '../ActivateConfirmDialog'
 
-const RepoList = ({
-  owner,
-  repos,
-  onActivateClick,
-  onRunClick,
-  billingCustomer,
-}) =>
-  repos.length ? (
-    <FadeInChildren speed={100} key={owner}>
-      {repos.map(repo => (
+const RepoList = ({ repos, onActivateClick, onRunClick, billingCustomer }) =>
+  repos.length
+    ? repos.map(repo => (
         <div style={{ paddingBottom: 14 }} key={repo._id}>
           <RepoListItem
             repo={repo}
@@ -23,9 +15,8 @@ const RepoList = ({
             billingCustomer={billingCustomer}
           />
         </div>
-      ))}
-    </FadeInChildren>
-  ) : null
+      ))
+    : null
 
 export default ({
   billingCustomer,

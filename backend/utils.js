@@ -64,8 +64,10 @@ const cleanupExistingWebooks = async ({
         id: webhook.id,
         url: webhook.config.url,
       }))
-      .filter(webhook =>
-        webhook.url.startsWith(`${webhookBaseUrl}/${appName}/`),
+      .filter(
+        webhook =>
+          webhook.url &&
+          webhook.url.startsWith(`${webhookBaseUrl}/${appName}/`),
       )
     return [...webhooksToClean, ...newWebhooksToClean]
   }, [])

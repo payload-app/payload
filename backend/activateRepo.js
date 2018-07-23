@@ -86,98 +86,105 @@ module.exports = ({
     })
   }
 
-  let organization
   try {
-    organization = await organizationServiceClient.call('getOrganization', {
-      name: owner,
-      type,
-    })
-  } catch (error) {
-    if (!error.message.startsWith('Could not find organization with name')) {
-      throw error
+    let organization
+    try {
+      organization = await organizationServiceClient.call('getOrganization', {
+        name: owner,
+        type,
+      })
+    } catch (error) {
+      if (!error.message.startsWith('Could not find organization with name')) {
+        throw error
+      }
     }
-  }
 
-  let ownerId
-  let ownerType
-  if (organization) {
-    ownerId = organization._id
-    ownerType = 'organization'
-  } else {
-    ownerId = session.user._id
-    ownerType = 'user'
-  }
+    let ownerId
+    let ownerType
+    if (organization) {
+      ownerId = organization._id
+      ownerType = 'organization'
+    } else {
+      ownerId = session.user._id
+      ownerType = 'user'
+    }
 
-  const billingCustomer = await billingServiceClient.call('getCustomer', {
-    ownerId,
-    ownerType,
-  })
-  const now = new Date().getTime()
-  if (
-    billingCustomer &&
-    !billingCustomer.paymentSourceSet &&
-    new Date(billingCustomer.trialEnd).getTime() < now
-  ) {
-    throw createError({
-      message: 'Trial has expired',
-    })
-  }
-
-  const appName = 'payload'
-  const accessToken = parseGithubTokenFromSession({ session })
-
-  // ensure repo exists
-  const repoData = await repoServiceClient.call('getRepo', {
-    owner,
-    repo,
-    type,
-  })
-
-  await cleanupExistingWebooks({
-    githubServiceClient,
-    appName,
-    owner,
-    repo,
-    webhookBaseUrl,
-    accessToken,
-  })
-  const { webhookToken } = await generateWebhookToken({
-    repoServiceClient,
-    appName,
-    owner,
-    repo,
-    type,
-  })
-
-  await createWebhook({
-    githubServiceClient,
-    webhookBaseUrl,
-    appName,
-    owner,
-    repo,
-    accessToken,
-    webhookToken,
-  })
-
-  // ensure a customer exists
-  if (!billingCustomer) {
-    await billingServiceClient.call('createCustomer', {
+    const billingCustomer = await billingServiceClient.call('getCustomer', {
       ownerId,
       ownerType,
     })
+    const now = new Date().getTime()
+    if (
+      billingCustomer &&
+      !billingCustomer.paymentSourceSet &&
+      new Date(billingCustomer.trialEnd).getTime() < now
+    ) {
+      throw createError({
+        message: 'Trial has expired',
+      })
+    }
+
+    const appName = 'payload'
+    const accessToken = parseGithubTokenFromSession({ session })
+
+    // ensure repo exists
+    const repoData = await repoServiceClient.call('getRepo', {
+      owner,
+      repo,
+      type,
+    })
+
+    await cleanupExistingWebooks({
+      githubServiceClient,
+      appName,
+      owner,
+      repo,
+      webhookBaseUrl,
+      accessToken,
+    })
+
+    const { webhookToken } = await generateWebhookToken({
+      repoServiceClient,
+      appName,
+      owner,
+      repo,
+      type,
+    })
+
+    await createWebhook({
+      githubServiceClient,
+      webhookBaseUrl,
+      appName,
+      owner,
+      repo,
+      accessToken,
+      webhookToken,
+    })
+
+    // ensure a customer exists
+    if (!billingCustomer.customerId) {
+      await billingServiceClient.call('createCustomer', {
+        ownerId,
+        ownerType,
+      })
+    }
+
+    // create a stripe subscription
+    await billingServiceClient.call('createSubscription', {
+      ownerId,
+      ownerType,
+      repoId: repoData._id,
+      planType,
+    })
+
+    return await repoServiceClient.call('activateRepo', {
+      owner,
+      repo,
+      type,
+    })
+  } catch (error) {
+    throw createError({
+      message: error.message,
+    })
   }
-
-  // create a stripe subscription
-  await billingServiceClient.call('createSubscription', {
-    ownerId,
-    ownerType,
-    repoId: repoData._id,
-    planType,
-  })
-
-  return await repoServiceClient.call('activateRepo', {
-    owner,
-    repo,
-    type,
-  })
 }

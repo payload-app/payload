@@ -36,8 +36,6 @@ module.exports = ({ collectionClient }) => async ({ ownerId, ownerType }) => {
     }
     return {
       ...billingObject,
-      // filter stripe customerId
-      customerId: undefined,
       // filter subscriptions of stripe subscription id
       subscriptions: billingObject.subscriptions.map(sub => ({
         repoId: sub.repoId,
