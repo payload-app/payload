@@ -1,39 +1,53 @@
-const listRoutePattern = '^/type/([\\w-]+)/ownertype/([\\w-]+)/owner/([\\w-]+)/'
+const urlString = ({ string, encoded }) =>
+  encoded ? encodeURIComponent(string) : string
+
+const urlParam = ({ param, decoded }) =>
+  decoded ? decodeURIComponent(param) : param
+
+const listRoutePattern =
+  '^/type/([\\w-/%]+)/ownertype/([\\w-/%]+)/owner/([\\w-/%]+)/'
 const listRouteRegex = new RegExp(listRoutePattern)
 
-export const getListRouteParams = ({ path }) => {
+export const getListRouteParams = ({ path, decoded = true }) => {
   const match = listRouteRegex.exec(path)
   if (match) {
     return {
-      type: match[1],
-      ownerType: match[2],
-      owner: match[3],
+      type: urlParam({ param: match[1], decoded }),
+      ownerType: urlParam({ param: match[2], decoded }),
+      owner: urlParam({ param: match[3], decoded }),
     }
   }
   return null
 }
 
-export const generateListRoute = ({ type, ownerType, owner }) =>
-  `/type/${type}/ownertype/${ownerType}/owner/${owner}/`
+export const generateListRoute = ({ type, ownerType, owner, encoded = true }) =>
+  `/type/${urlString({
+    string: type,
+    encoded,
+  })}/ownertype/${urlString({ string: ownerType, encoded })}/owner/${urlString({
+    string: owner,
+    encoded,
+  })}/`
 
 export const listRoute = () =>
   generateListRoute({
     type: ':type',
     ownerType: ':ownerType',
     owner: ':owner',
+    encoded: false,
   })
 
 const ownerSettingsRoutePattern = `${listRoutePattern}settings/([\\w-]+)/`
 const ownerSettingsRouteRegex = new RegExp(ownerSettingsRoutePattern)
 
-export const getOwnerSettingsRouteParams = ({ path }) => {
+export const getOwnerSettingsRouteParams = ({ path, decoded = true }) => {
   const match = ownerSettingsRouteRegex.exec(path)
   if (match) {
     return {
-      type: match[1],
-      ownerType: match[2],
-      owner: match[3],
-      settingsType: match[4],
+      type: urlParam({ param: match[1], decoded }),
+      ownerType: urlParam({ param: match[2], decoded }),
+      owner: urlParam({ param: match[3], decoded }),
+      settingsType: urlParam({ param: match[4], decoded }),
     }
   }
   return null
@@ -44,8 +58,15 @@ export const generateOwnerSettingsRoute = ({
   ownerType,
   owner,
   settingsType,
+  encoded = true,
 }) =>
-  `/type/${type}/ownertype/${ownerType}/owner/${owner}/settings/${settingsType}/`
+  `/type/${urlString({ string: type, encoded })}/ownertype/${urlString({
+    string: ownerType,
+    encoded,
+  })}/owner/${urlString({ string: owner, encoded })}/settings/${urlString({
+    string: settingsType,
+    encoded,
+  })}/`
 
 export const ownerSettingsRoute = () =>
   generateOwnerSettingsRoute({
@@ -53,21 +74,22 @@ export const ownerSettingsRoute = () =>
     ownerType: ':ownerType',
     owner: ':owner',
     settingsType: ':settingsType',
+    encoded: false,
   })
 
-const runRoutePattern = `${listRoutePattern}repo/([\\w-]+)/branch/([\\w-]+)/sha/([\\w-]+)/`
+const runRoutePattern = `${listRoutePattern}repo/([\\w-/%]+)/branch/([\\w-/%]+)/sha/([\\w-]+)/`
 const runRouteRegex = new RegExp(runRoutePattern)
 
-export const getRunRouteParams = ({ path }) => {
+export const getRunRouteParams = ({ path, decoded = true }) => {
   const match = runRouteRegex.exec(path)
   if (match) {
     return {
-      type: match[1],
-      ownerType: match[2],
-      owner: match[3],
-      repo: match[4],
-      branch: match[5],
-      sha: match[6],
+      type: urlParam({ param: match[1], decoded }),
+      ownerType: urlParam({ param: match[2], decoded }),
+      owner: urlParam({ param: match[3], decoded }),
+      repo: urlParam({ param: match[4], decoded }),
+      branch: urlParam({ param: match[5], decoded }),
+      sha: urlParam({ param: match[6], decoded }),
     }
   }
   return null
@@ -80,12 +102,17 @@ export const generateRunRoute = ({
   repo,
   branch,
   sha,
+  encoded = true,
 }) =>
   `${generateListRoute({
     type,
     ownerType,
     owner,
-  })}repo/${repo}/branch/${branch}/sha/${sha}/`
+    encoded,
+  })}repo/${urlString({ string: repo, encoded })}/branch/${urlString({
+    string: branch,
+    encoded,
+  })}/sha/${urlString({ string: sha, encoded })}/`
 
 export const runRoute = () =>
   generateRunRoute({
@@ -95,6 +122,7 @@ export const runRoute = () =>
     repo: ':repo',
     branch: ':branch',
     sha: ':sha',
+    encoded: false,
   })
 
 export const baseRoute = () => '/'
