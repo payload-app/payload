@@ -15,6 +15,8 @@ module.exports = async ({ scripts, sha, logger, workingDirBase, username }) => {
       cwd: join(workingDirBase, sha),
       env: {
         PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+        CI: 'true',
+        PAYLOAD: 'true',
       },
       uid,
     })
