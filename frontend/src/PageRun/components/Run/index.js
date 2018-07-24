@@ -85,9 +85,11 @@ const RunComponent = ({
       <FileListViz
         files={mergeRunFilesWithPastRun({
           files: fileSizes,
-          prevFiles: recentDefaultBranchRuns[0]
-            ? recentDefaultBranchRuns[0].fileSizes
-            : [],
+          prevFiles:
+            recentDefaultBranchRuns[0] &&
+            !recentDefaultBranchRuns[0].errorMessage
+              ? recentDefaultBranchRuns[0].fileSizes
+              : [],
         })}
       />
     ) : (
