@@ -7,7 +7,13 @@ const statusBroadcasterClient = new RPCClient({
 const appRootUrl = `${process.env.APP_PROTOCOL}://${process.env.APP_HOST}`
 
 const generateTargetUrl = ({ type, ownerType, owner, repo, branch, sha }) =>
-  `${appRootUrl}/type/${type}/ownertype/${ownerType}/owner/${owner}/repo/${repo}/branch/${branch}/sha/${sha}/`
+  `${appRootUrl}/type/${encodeURIComponent(
+    type,
+  )}/ownertype/${encodeURIComponent(ownerType)}/owner/${encodeURIComponent(
+    owner,
+  )}/repo/${encodeURIComponent(repo)}/branch/${encodeURIComponent(
+    branch,
+  )}/sha/${encodeURIComponent(sha)}/`
 
 const broadcastStart = async ({
   files,
