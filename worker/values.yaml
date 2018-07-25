@@ -1,7 +1,7 @@
 name: worker
 image:
   repository: payloadapp/worker
-replicaCount: 2
+replicaCount: 1
 healthcheck:
   enabled: false
 service:
@@ -20,8 +20,8 @@ env:
         fieldPath: metadata.name
 resources:
   limits:
-   cpu: 750m
-   memory: 1536Mi
+   cpu: 1000m
+   memory: 2000Mi
   requests:
-   cpu: 750m
-   memory: 1536Mi
+   cpu: 1000m
+   memory: 2000Mi
