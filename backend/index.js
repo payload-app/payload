@@ -68,7 +68,14 @@ const rpcHandler = setSession(
     ),
     method('repoOwners', repoOwners({ organizationServiceClient })),
     method('repos', repos({ repoServiceClient, runServiceClient })),
-    method('getRun', getRun({ runServiceClient, repoServiceClient })),
+    method(
+      'getRun',
+      getRun({
+        runServiceClient,
+        repoServiceClient,
+        organizationServiceClient,
+      }),
+    ),
     method(
       'syncOrganizations',
       syncOrganizations({
