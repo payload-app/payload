@@ -1,6 +1,9 @@
 const Joi = require('joi')
 const { validate, parseValidationErrorMessage } = require('./utils')
-const validateUserAction = require('./validateUserAction')
+const {
+  validateUserAction,
+  validateOrganizationAction,
+} = require('./validateAction')
 const { createError } = require('@hharnisc/micro-rpc')
 
 const schema = Joi.object().keys({
@@ -10,13 +13,16 @@ const schema = Joi.object().keys({
   type: Joi.string()
     .valid(['github'])
     .required(),
+  ownerType: Joi.string()
+    .valid(['user', 'organization'])
+    .required(),
 })
 
 module.exports = ({
   runServiceClient,
   repoServiceClient,
   organizationServiceClient,
-}) => async ({ owner, repo, sha, type }, { session }) => {
+}) => async ({ owner, repo, sha, type, ownerType }, { session }) => {
   try {
     await validate({
       value: {
@@ -24,6 +30,7 @@ module.exports = ({
         repo,
         sha,
         type,
+        ownerType,
       },
       schema,
     })
@@ -33,13 +40,20 @@ module.exports = ({
     })
   }
   try {
-    await validateUserAction({
-      session,
-      name: owner,
-      type,
-      organizationServiceClient,
-    })
-
+    if (ownerType === 'user') {
+      await validateUserAction({
+        session,
+        type,
+        name: owner,
+      })
+    } else {
+      await validateOrganizationAction({
+        session,
+        name: owner,
+        type,
+        organizationServiceClient,
+      })
+    }
     const run = await runServiceClient.call('getRun', {
       owner,
       repo,

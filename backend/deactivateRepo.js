@@ -1,5 +1,8 @@
 const { createError } = require('@hharnisc/micro-rpc')
-const validateUserAction = require('./validateUserAction')
+const {
+  validateUserAction,
+  validateOrganizationAction,
+} = require('./validateAction')
 const {
   cleanupExistingWebooks,
   parseGithubTokenFromSession,
@@ -17,12 +20,21 @@ module.exports = ({
     const { owner, repo, type } = await repoServiceClient.call('getRepo', {
       id: repoId,
     })
-    await validateUserAction({
-      session,
-      name: owner,
-      type,
-      organizationServiceClient,
-    })
+    if (ownerType === 'user') {
+      await validateUserAction({
+        session,
+        type,
+        name: owner,
+      })
+    } else {
+      await validateOrganizationAction({
+        session,
+        name: owner,
+        type,
+        organizationServiceClient,
+      })
+    }
+
     await cleanupExistingWebooks({
       githubServiceClient,
       appName: 'payload',

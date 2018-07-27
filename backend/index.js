@@ -120,7 +120,10 @@ const rpcHandler = setSession(
         billingServiceClient,
       }),
     ),
-    method('getRepos', getRepos({ repoServiceClient })),
+    method(
+      'getRepos',
+      getRepos({ repoServiceClient, organizationServiceClient }),
+    ),
     method(
       'deactivateRepo',
       deactivateRepo({

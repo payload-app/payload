@@ -1,7 +1,10 @@
 const Joi = require('joi')
 const { createError } = require('@hharnisc/micro-rpc')
 const { validate, parseValidationErrorMessage } = require('./utils')
-const validateUserAction = require('./validateUserAction')
+const {
+  validateUserAction,
+  validateOrganizationAction,
+} = require('./validateAction')
 
 const schema = Joi.object().keys({
   name: Joi.string().required(),
@@ -39,12 +42,21 @@ module.exports = ({
     })
   }
   try {
-    await validateUserAction({
-      session,
-      name,
-      type,
-      organizationServiceClient,
-    })
+    if (ownerType === 'user') {
+      await validateUserAction({
+        session,
+        type,
+        name,
+      })
+    } else {
+      await validateOrganizationAction({
+        session,
+        name,
+        type,
+        organizationServiceClient,
+      })
+    }
+
     // get all repos for an owner
     const repos = await repoServiceClient.call('getOwnerRepos', {
       owner: name,

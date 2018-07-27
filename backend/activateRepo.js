@@ -6,7 +6,10 @@ const {
   parseGithubTokenFromSession,
   cleanupExistingWebooks,
 } = require('./utils')
-const validateUserAction = require('./validateUserAction')
+const {
+  validateUserAction,
+  validateOrganizationAction,
+} = require('./validateAction')
 
 const schema = Joi.object().keys({
   owner: Joi.string().required(),
@@ -99,12 +102,19 @@ module.exports = ({
         throw error
       }
     }
-
-    await validateUserAction({
-      session,
-      id: organization._id,
-      organizationServiceClient,
-    })
+    if (organization) {
+      await validateOrganizationAction({
+        session,
+        id: organization._id,
+        organizationServiceClient,
+      })
+    } else {
+      await validateUserAction({
+        session,
+        type,
+        name: owner,
+      })
+    }
 
     let ownerId
     let ownerType

@@ -12,6 +12,7 @@ export default ({ dispatch }) => next => action => {
             args: {
               type: action.params.type,
               owner: action.params.owner,
+              ownerType: action.params.ownerType,
               repo: action.params.repo,
               sha: action.params.sha,
             },
