@@ -124,6 +124,7 @@ const rpcHandler = setSession(
         billingServiceClient,
         repoServiceClient,
         githubServiceClient,
+        organizationServiceClient,
         webhookBaseUrl,
       }),
     ),

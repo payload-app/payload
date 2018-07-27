@@ -1,11 +1,12 @@
 const Joi = require('joi')
+const { createError } = require('@hharnisc/micro-rpc')
 const {
   validate,
   parseValidationErrorMessage,
   parseGithubTokenFromSession,
   cleanupExistingWebooks,
 } = require('./utils')
-const { createError } = require('@hharnisc/micro-rpc')
+const validateUserAction = require('./validateUserAction')
 
 const schema = Joi.object().keys({
   owner: Joi.string().required(),
@@ -98,6 +99,12 @@ module.exports = ({
         throw error
       }
     }
+
+    await validateUserAction({
+      session,
+      id: organization._id,
+      organizationServiceClient,
+    })
 
     let ownerId
     let ownerType
