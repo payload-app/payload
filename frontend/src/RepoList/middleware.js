@@ -18,6 +18,7 @@ export default ({ dispatch, getState }) => next => action => {
             args: {
               name: params.owner,
               ownerType: params.ownerType,
+              type: params.type,
             },
           }),
         )

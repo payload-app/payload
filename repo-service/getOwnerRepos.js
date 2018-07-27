@@ -7,14 +7,22 @@ const schema = Joi.object().keys({
   ownerType: Joi.string()
     .valid(['organization', 'user'])
     .required(),
+  type: Joi.string()
+    .valid(['github'])
+    .required(),
 })
 
-module.exports = ({ collectionClient }) => async ({ owner, ownerType }) => {
+module.exports = ({ collectionClient }) => async ({
+  owner,
+  ownerType,
+  type,
+}) => {
   try {
     await validate({
       value: {
         owner,
         ownerType,
+        type,
       },
       schema,
     })
@@ -28,6 +36,7 @@ module.exports = ({ collectionClient }) => async ({ owner, ownerType }) => {
       .find({
         owner,
         ownerType,
+        type,
       })
       .sort({
         active: -1,

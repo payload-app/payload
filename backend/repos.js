@@ -1,10 +1,12 @@
 const Joi = require('joi')
-const { validate } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
+const { validate, parseValidationErrorMessage } = require('./utils')
+const validateUserAction = require('./validateUserAction')
 
 const schema = Joi.object().keys({
   name: Joi.string().required(),
   ownerType: Joi.string().required(),
+  type: Joi.string().required(),
 })
 
 const sep = '///'
@@ -17,15 +19,17 @@ const runKey = ({ run, repo }) => {
   }
 }
 
-module.exports = ({ repoServiceClient, runServiceClient }) => async ({
-  name,
-  ownerType,
-}) => {
+module.exports = ({
+  repoServiceClient,
+  runServiceClient,
+  organizationServiceClient,
+}) => async ({ name, ownerType, type }, { session }) => {
   try {
     await validate({
       value: {
         name,
         ownerType,
+        type,
       },
       schema,
     })
@@ -35,10 +39,17 @@ module.exports = ({ repoServiceClient, runServiceClient }) => async ({
     })
   }
   try {
+    await validateUserAction({
+      session,
+      name,
+      type,
+      organizationServiceClient,
+    })
     // get all repos for an owner
     const repos = await repoServiceClient.call('getOwnerRepos', {
       owner: name,
       ownerType,
+      type,
     })
 
     // get last run for each active repo
@@ -69,8 +80,7 @@ module.exports = ({ repoServiceClient, runServiceClient }) => async ({
       }
       return repo
     })
-  } catch (err) {
-    console.log('err', err)
-    throw createError({ message: err.message })
+  } catch (error) {
+    throw createError({ message: error.message })
   }
 }
