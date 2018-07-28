@@ -8,9 +8,7 @@ const schema = Joi.object().keys({
     .required(),
 })
 
-module.exports = ({ collectionClient, userServiceClient }) => async ({
-  email,
-}) => {
+module.exports = ({ collectionClient }) => async ({ email }) => {
   try {
     await validate({
       value: {
