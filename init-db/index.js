@@ -76,6 +76,7 @@ const initDB = async () => {
         user: process.env.MONGODB_USERNAME,
         password: process.env.MONGODB_PASSWORD,
       },
+      useNewUrlParser: true,
     },
   )
   const dbClient = mongoClient.db(process.env.MONGODB_DATABASE)
