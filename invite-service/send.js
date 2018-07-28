@@ -50,6 +50,7 @@ module.exports = ({ collectionClient, userServiceClient }) => async ({
     if (!invitedByUser) {
       throw new Error(`Could not user who send the invite: ${invitedByUserId}`)
     }
+    // create a token that expires in 30 days
     const inviteToken = await jwtSign(
       {
         email,

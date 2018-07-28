@@ -6,6 +6,7 @@ const { router, get, post } = require('microrouter')
 const create = require('./create')
 const send = require('./send')
 const accept = require('./accept')
+const getInvitedUserId = require('./getInvitedUserId')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -34,7 +35,7 @@ const rpcHandler = ({ collectionClient, userServiceClient }) =>
     method('create', create({ collectionClient })),
     method('send', send({ collectionClient, userServiceClient })),
     method('accept', accept({ collectionClient, userServiceClient })),
-    method('getInvitedUserId', () => 'OK'),
+    method('getInvitedUserId', getInvitedUserId({ collectionClient })),
   )
 
 const healthHandler = () => 'OK'
