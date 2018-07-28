@@ -96,6 +96,7 @@ services:
       - github-service
       - random-state-service
       - billing-service
+      - invite-service
     networks:
      - main
   queue-service:
@@ -316,6 +317,28 @@ services:
      - organization-service
      - user-service
      - repo-service
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+     - main
+  invite-service:
+    build:
+      context: ./invite-service
+      dockerfile: Dockerfile.development
+    networks:
+      - main
+    environment:
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
+    volumes:
+     - ./invite-service:/usr/src/app/
+    ports:
+      - 3000:3000
+    links:
+     - mongodb
     depends_on:
       mongodb:
         condition: service_healthy
