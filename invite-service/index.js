@@ -5,6 +5,7 @@ const RPCClient = require('@hharnisc/micro-rpc-client')
 const { router, get, post } = require('microrouter')
 const create = require('./create')
 const send = require('./send')
+const accept = require('./accept')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -32,7 +33,7 @@ const rpcHandler = ({ collectionClient, userServiceClient }) =>
   rpc(
     method('create', create({ collectionClient })),
     method('send', send({ collectionClient, userServiceClient })),
-    method('accept', () => 'OK'),
+    method('accept', accept({ collectionClient, userServiceClient })),
     method('getInvitedUserId', () => 'OK'),
   )
 
