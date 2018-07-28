@@ -2,7 +2,6 @@ const Joi = require('joi')
 const { validate, parseValidationErrorMessage } = require('./utils')
 const { createError } = require('@hharnisc/micro-rpc')
 
-// TODO: validate email address
 const schema = Joi.object().keys({
   email: Joi.string()
     .email()
@@ -30,7 +29,7 @@ module.exports = ({ collectionClient }) => async ({ email }) => {
     return {
       id: insertedId,
     }
-  } catch (err) {
+  } catch (error) {
     throw createError({
       message: error.message,
     })
