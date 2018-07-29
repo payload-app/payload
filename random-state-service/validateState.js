@@ -23,5 +23,6 @@ module.exports = ({ redisClient }) => async ({ state }) => {
   if (!result) {
     return { valid: false }
   }
-  return { valid: true, metadata: result.metadata }
+  const { metadata } = JSON.parse(result)
+  return { valid: true, metadata }
 }

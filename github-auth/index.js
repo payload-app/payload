@@ -61,7 +61,7 @@ const callback = async (req, res) => {
   } else {
     const {
       valid,
-      data: randomStateMetadata,
+      metadata: randomStateMetadata,
     } = await randomStateServiceClient.call('validateState', {
       state,
     })
