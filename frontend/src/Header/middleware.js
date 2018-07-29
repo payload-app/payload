@@ -1,6 +1,10 @@
 import { actions as headerActions } from '../Header'
 import { selector as repoListSelector } from '../RepoList'
-import { actionTypes as routingActionTypes, routes } from '../Routing'
+import {
+  actionTypes as routingActionTypes,
+  routes,
+  selector as routingSelector,
+} from '../Routing'
 import { actionTypes as dataFetchActionTypes } from '@hharnisc/async-data-fetch'
 
 const setSubtitleTrackingCount = ({ dispatch, getState }) => {
@@ -34,11 +38,23 @@ export default ({ dispatch, getState }) => next => action => {
           }
           break
         case routes.AUTH:
-          dispatch(headerActions.setTitle({ title: 'Authentication' }))
-          dispatch(headerActions.setWarning({ warning: 'Required' }))
-          dispatch(
-            headerActions.setSubtitle({ subtitle: 'Locating Source Code...' }),
-          )
+          const { email, inviteToken } = getState()[routingSelector].params
+          if (email && inviteToken) {
+            dispatch(headerActions.setTitle({ title: 'Claim Payload Invite' }))
+            dispatch(
+              headerActions.setSubtitle({
+                subtitle: 'Authenticate To Claim Invite Code...',
+              }),
+            )
+          } else {
+            dispatch(headerActions.setTitle({ title: 'Authentication' }))
+            dispatch(headerActions.setWarning({ warning: 'Required' }))
+            dispatch(
+              headerActions.setSubtitle({
+                subtitle: 'Locating Source Code...',
+              }),
+            )
+          }
           dispatch(headerActions.setLoading({ loading: true }))
           setTimeout(() => {
             dispatch(headerActions.setLoading({ loading: false }))

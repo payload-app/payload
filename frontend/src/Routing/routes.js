@@ -1,3 +1,5 @@
+import { parse } from 'query-string'
+
 const urlString = ({ string, encoded }) =>
   encoded ? encodeURIComponent(string) : string
 
@@ -138,7 +140,7 @@ export const routes = {
   INIT: 'INIT',
 }
 
-export const matchRoute = ({ path }) => {
+export const matchRoute = ({ path, search }) => {
   if (path === baseRoute()) {
     return {
       route: routes.BASE,
@@ -146,9 +148,13 @@ export const matchRoute = ({ path }) => {
     }
   }
   if (path === authRoute()) {
+    const { email, inviteToken } = parse(search)
     return {
       route: routes.AUTH,
-      params: {},
+      params: {
+        email,
+        inviteToken,
+      },
     }
   }
   if (path === initRoute()) {
