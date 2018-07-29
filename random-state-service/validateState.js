@@ -19,6 +19,9 @@ module.exports = ({ redisClient }) => async ({ state }) => {
       message: parseValidationErrorMessage({ error }),
     })
   }
-  const valid = !!await redisClient.get(stateKey({ state }))
-  return { valid }
+  const result = await redisClient.get(stateKey({ state }))
+  if (!result) {
+    return { valid: false }
+  }
+  return { valid: true, metadata: result.metadata }
 }

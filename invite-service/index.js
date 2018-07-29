@@ -7,6 +7,7 @@ const create = require('./create')
 const send = require('./send')
 const accept = require('./accept')
 const getInvitedUserId = require('./getInvitedUserId')
+const userHasAcceptedInvite = require('./userHasAcceptedInvite')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -36,6 +37,10 @@ const rpcHandler = ({ collectionClient, userServiceClient }) =>
     method('send', send({ collectionClient, userServiceClient })),
     method('accept', accept({ collectionClient, userServiceClient })),
     method('getInvitedUserId', getInvitedUserId({ collectionClient })),
+    method(
+      'userHasAcceptedInvite',
+      userHasAcceptedInvite({ collectionClient }),
+    ),
   )
 
 const healthHandler = () => 'OK'

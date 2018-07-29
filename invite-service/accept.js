@@ -56,7 +56,7 @@ module.exports = ({ collectionClient, userServiceClient }) => async ({
     const { email: verifyEmail } = await jwtVerify(inviteToken, secret)
     if (email !== verifyEmail) {
       throw new Error(
-        `inviteToken email ${verifyEmail} does not match input email ${ema}`,
+        `inviteToken email ${verifyEmail} does not match input email ${email}`,
       )
     }
     await collectionClient.updateOne(

@@ -27,6 +27,9 @@ const randomStateServiceClient = new RPCClient({
 const billingServiceClient = new RPCClient({
   url: 'http://billing-service:3000/rpc',
 })
+const inviteServiceClient = new RPCClient({
+  url: 'http://invite-service:3000/rpc',
+})
 
 const redirectWithQueryString = (res, data) => {
   const location = `${appRootUrl}?${querystring.stringify(data)}`
@@ -34,7 +37,10 @@ const redirectWithQueryString = (res, data) => {
 }
 
 const login = async (req, res) => {
-  const { state } = await randomStateServiceClient.call('createState')
+  const { email, inviteToken } = req.query
+  const { state } = await randomStateServiceClient.call('createState', {
+    metadata: { email, inviteToken },
+  })
   redirect(
     res,
     302,
@@ -53,7 +59,10 @@ const callback = async (req, res) => {
       error: 'Provide code and state query param',
     })
   } else {
-    const { valid } = await randomStateServiceClient.call('validateState', {
+    const {
+      valid,
+      data: randomStateMetadata,
+    } = await randomStateServiceClient.call('validateState', {
       state,
     })
     if (!valid) {
@@ -79,16 +88,23 @@ const callback = async (req, res) => {
         if (qs.error) {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
-          const { created } = await createSession({
+          const { created, invited } = await createSession({
             userServiceClient,
             sessionServiceClient,
             githubServiceClient,
             billingServiceClient,
+            inviteServiceClient,
             accessToken: qs.access_token,
+            randomStateMetadata,
             res,
             cookieDomain,
           })
-          redirect(res, 302, `${appRootUrl}${created ? '/init/' : ''}`)
+          if (invited) {
+            redirect(res, 302, `https://google.com`)
+            // TODO: redirect somewhere different if user was invited
+          } else {
+            redirect(res, 302, `${appRootUrl}${created ? '/init/' : ''}`)
+          }
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })

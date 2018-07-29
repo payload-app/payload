@@ -7,29 +7,36 @@ module.exports = async ({
   sessionServiceClient,
   githubServiceClient,
   billingServiceClient,
+  inviteServiceClient,
+  randomStateMetadata,
   accessToken,
   res,
   cookieDomain,
 }) => {
-  const { userId, created } = await updateOrCreateUser({
+  const { userId, created, invited } = await updateOrCreateUser({
     userServiceClient,
     githubServiceClient,
     billingServiceClient,
+    inviteServiceClient,
+    randomStateMetadata,
     accessToken,
   })
-  const token = await sessionServiceClient.call('createSession', {
-    userId,
-  })
-  res.setHeader(
-    'Set-Cookie',
-    cookie.serialize('payload_session_token', token, {
-      maxAge: ms('30 days') / 1000,
-      domain: cookieDomain,
-      path: '/',
-      httpOnly: true,
-    }),
-  )
+  if (!invited) {
+    const token = await sessionServiceClient.call('createSession', {
+      userId,
+    })
+    res.setHeader(
+      'Set-Cookie',
+      cookie.serialize('payload_session_token', token, {
+        maxAge: ms('30 days') / 1000,
+        domain: cookieDomain,
+        path: '/',
+        httpOnly: true,
+      }),
+    )
+  }
   return {
     created,
+    invited,
   }
 }
