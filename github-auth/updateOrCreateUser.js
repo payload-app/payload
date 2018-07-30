@@ -65,5 +65,6 @@ module.exports = async ({
     userId,
     created,
     invited,
+    userEmail: data.email,
   }
 }

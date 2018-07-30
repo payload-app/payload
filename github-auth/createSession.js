@@ -13,7 +13,7 @@ module.exports = async ({
   res,
   cookieDomain,
 }) => {
-  const { userId, created, invited } = await updateOrCreateUser({
+  const { userId, created, invited, userEmail } = await updateOrCreateUser({
     userServiceClient,
     githubServiceClient,
     billingServiceClient,
@@ -22,12 +22,39 @@ module.exports = async ({
     accessToken,
   })
   if (!invited) {
+    // delete payload_invite cookie
+    res.setHeader(
+      'Set-Cookie',
+      cookie.serialize('payload_invite', '', {
+        maxAge: -1,
+        domain: cookieDomain,
+        path: '/',
+        httpOnly: true,
+      }),
+    )
     const token = await sessionServiceClient.call('createSession', {
       userId,
     })
     res.setHeader(
       'Set-Cookie',
       cookie.serialize('payload_session_token', token, {
+        maxAge: ms('30 days') / 1000,
+        domain: cookieDomain,
+        path: '/',
+        httpOnly: true,
+      }),
+    )
+  } else {
+    // create a cookie payload_invite -- contains a JWT with invite email
+    const { inviteCookieToken } = await inviteServiceClient.call(
+      'createInviteCookieToken',
+      {
+        email: userEmail,
+      },
+    )
+    res.setHeader(
+      'Set-Cookie',
+      cookie.serialize('payload_invite', inviteCookieToken, {
         maxAge: ms('30 days') / 1000,
         domain: cookieDomain,
         path: '/',
