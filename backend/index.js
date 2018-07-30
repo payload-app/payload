@@ -17,6 +17,7 @@ const setPaymentSource = require('./setPaymentSource')
 const getBillingCustomers = require('./getBillingCustomers')
 const getRepos = require('./getRepos')
 const deactivateRepo = require('./deactivateRepo')
+const inviteStatusHandler = require('./inviteStatusHandler')
 
 const cookieDomain = process.env.COOKIE_DOMAIN
 
@@ -46,6 +47,10 @@ const sessionServiceClient = new RPCClient({
 
 const billingServiceClient = new RPCClient({
   url: 'http://billing-service:3000/rpc',
+})
+
+const inviteServiceClient = new RPCClient({
+  url: 'http://invite-service:3000/rpc',
 })
 
 const webhookBaseUrl = process.env.WEBHOOK_BASE_URL
@@ -145,4 +150,5 @@ module.exports = router(
   get('/', healthHandler),
   get('/healthz', healthHandler),
   post('/api/rpc', rpcHandler),
+  post('/api/invite/status', inviteStatusHandler({ inviteServiceClient })),
 )
