@@ -1,6 +1,6 @@
 const Joi = require('joi')
-const { createError } = require('@hharnisc/micro-rpc')
 const { validate, parseValidationErrorMessage } = require('./utils')
+const { createError } = require('@hharnisc/micro-rpc')
 
 const schema = Joi.object().keys({
   email: Joi.string()
@@ -25,13 +25,16 @@ module.exports = ({ collectionClient }) => async ({ email }) => {
     const result = await collectionClient.findOne({
       email,
     })
-    if (!result) {
-      throw new Error(`Could not find user with email: ${email}`)
+    const after = await collectionClient
+      .find({ createdAt: { $gt: result.createdAt } })
+      .count()
+    const before = await collectionClient
+      .find({ createdAt: { $lt: result.createdAt } })
+      .count()
+    return {
+      before,
+      after,
     }
-    if (!result.userId) {
-      return null
-    }
-    return result.userId
   } catch (error) {
     throw createError({
       message: error.message,

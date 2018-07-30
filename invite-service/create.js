@@ -24,7 +24,7 @@ module.exports = ({ collectionClient }) => async ({ email }) => {
   try {
     const { insertedId } = await collectionClient.insertOne({
       email,
-      created: new Date(),
+      createdAt: new Date(),
     })
     return {
       id: insertedId,
