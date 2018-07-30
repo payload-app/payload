@@ -9,6 +9,7 @@ const accept = require('./accept')
 const userHasAcceptedInvite = require('./userHasAcceptedInvite')
 const getInviteStatus = require('./getInviteStatus')
 const createInviteCookieToken = require('./createInviteCookieToken')
+const verifyInviteCookieToken = require('./verifyInviteCookieToken')
 
 const promisifiedMongoClient = promisify(MongoClient)
 
@@ -45,6 +46,10 @@ const rpcHandler = ({ collectionClient, userServiceClient }) =>
     method(
       'createInviteCookieToken',
       createInviteCookieToken({ collectionClient }),
+    ),
+    method(
+      'verifyInviteCookieToken',
+      verifyInviteCookieToken({ collectionClient }),
     ),
   )
 
