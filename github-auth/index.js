@@ -100,8 +100,7 @@ const callback = async (req, res) => {
             cookieDomain,
           })
           if (invited) {
-            redirect(res, 302, `https://google.com`)
-            // TODO: redirect somewhere different if user was invited
+            redirect(res, 302, `${appRootUrl}/invited/`)
           } else {
             redirect(res, 302, `${appRootUrl}${created ? '/init/' : ''}`)
           }
