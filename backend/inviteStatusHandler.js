@@ -6,7 +6,7 @@ module.exports = ({ inviteServiceClient }) => async (req, res) => {
   const cookies = parse((req.headers && req.headers.cookie) || '')
   const inviteCookieToken = cookies.payload_invite
   if (!inviteCookieToken) {
-    return send(res, 400, 'Could not find payload_invite cookie')
+    return send(res, 400, { message: 'Could not find payload_invite cookie' })
   }
   // verify cookie with invite service client -- returns email address
   let email

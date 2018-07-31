@@ -18,6 +18,9 @@ export default ({ dispatch }) => next => async action => {
             },
             credentials: 'same-origin',
           })
+          if (response.status !== 200) {
+            throw new Error('There was an error fetching the invite status')
+          }
           const result = await response.json()
           dispatch(
             actions.fetchSuccess({

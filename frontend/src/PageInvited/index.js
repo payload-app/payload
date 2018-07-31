@@ -4,6 +4,8 @@ import { selector } from './reducer'
 export default connect(state => ({
   invitesBefore: state[selector].invitesBefore,
   invitesAfter: state[selector].invitesAfter,
+  loading: state[selector].loading,
+  error: state[selector].error,
 }))(PageInvited)
 
 export { default as middleware } from './middleware'

@@ -20,3 +20,7 @@ storiesOf('PageInvited', module)
     return <Provider store={store}>{getStory()}</Provider>
   })
   .add('default', () => <PageInvited invitesBefore={192} invitesAfter={3212} />)
+  .add('loading=true', () => <PageInvited loading={true} />)
+  .add('error', () => (
+    <PageInvited error={'There was an error loading invites'} />
+  ))

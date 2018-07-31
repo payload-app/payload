@@ -1,9 +1,16 @@
 import React from 'react'
 import Header from '../../../Header'
-import { Text, FadeInChildren } from '../../../components'
+import { Pulse, Text, FadeInChildren } from '../../../components'
 import { mutedWhite } from '../../../components/style/color'
 
-const PageInvited = ({ invitesBefore, invitesAfter }) => (
+const Loading = () => <Text>Loading...</Text>
+const Error = ({ error }) => (
+  <Pulse>
+    <Text size={3}>{error}</Text>
+  </Pulse>
+)
+
+const PageInvited = ({ invitesBefore, invitesAfter, loading, error }) => (
   <div
     style={{
       paddingTop: 40,
@@ -23,18 +30,22 @@ const PageInvited = ({ invitesBefore, invitesAfter }) => (
         alignItems: 'center',
       }}
     >
-      <FadeInChildren delayBetween={500}>
-        <Text size={10} capitalize={true}>{`${invitesBefore}`}</Text>
-        <Text capitalize={true}>People In Front Of You</Text>
-        <Text
-          size={5}
-          capitalize={true}
-          color={mutedWhite}
-        >{`${invitesAfter}`}</Text>
-        <Text capitalize={true} color={mutedWhite}>
-          People Behind You
-        </Text>
-      </FadeInChildren>
+      {error ? <Error error={error} /> : null}
+      {loading ? <Loading /> : null}
+      {!loading && !error ? (
+        <FadeInChildren delayBetween={500}>
+          <Text size={10} capitalize={true}>{`${invitesBefore}`}</Text>
+          <Text capitalize={true}>People In Front Of You</Text>
+          <Text
+            size={5}
+            capitalize={true}
+            color={mutedWhite}
+          >{`${invitesAfter}`}</Text>
+          <Text capitalize={true} color={mutedWhite}>
+            People Behind You
+          </Text>
+        </FadeInChildren>
+      ) : null}
     </div>
   </div>
 )
