@@ -29,7 +29,7 @@ module.exports = async ({
         maxAge: -1,
         domain: cookieDomain,
         path: '/',
-        httpOnly: true,
+        httpOnly: false,
       }),
     )
     const token = await sessionServiceClient.call('createSession', {
@@ -58,7 +58,7 @@ module.exports = async ({
         maxAge: ms('30 days') / 1000,
         domain: cookieDomain,
         path: '/',
-        httpOnly: true,
+        httpOnly: false,
       }),
     )
   }

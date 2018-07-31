@@ -1,6 +1,12 @@
+import Cookies from 'js-cookie'
+import { push } from 'react-router-redux'
 import fetch from 'isomorphic-fetch'
 import { actions } from './reducer'
-import { actionTypes as routingActionTypes, routes } from '../Routing'
+import {
+  actionTypes as routingActionTypes,
+  routes,
+  invitedRoute,
+} from '../Routing'
 
 export default ({ dispatch }) => next => async action => {
   next(action)
@@ -34,8 +40,16 @@ export default ({ dispatch }) => next => async action => {
             }),
           )
         }
-      } else if (action.route === routes.BASE) {
-        // redirect to /invited/ if BASE route and have payload_invite cookie
+      }
+    case routingActionTypes.QUEUED_EMIT:
+      // redirect to /invited/ if BASE route and have payload_invite cookie
+      if (action.route === routes.BASE) {
+        if (Cookies.get('payload_invite')) {
+          // HACK: queue up the dispatch after middware has completed
+          // ALSO, don't copy this pattern if you find this.
+          // Expecting this to be delete after invites aren't needed
+          setTimeout(() => dispatch(push(invitedRoute())), 0)
+        }
       }
       break
     default:
