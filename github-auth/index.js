@@ -1,10 +1,14 @@
 require('dotenv').config()
+const { readFile } = require('fs')
+const { promisify } = require('util')
 const querystring = require('querystring')
 const axios = require('axios')
 const { router, get } = require('microrouter')
 const redirect = require('micro-redirect')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const createSession = require('./createSession')
+
+const readFilePromise = promisify(readFile)
 
 const appHost = process.env.APP_HOST
 const appRootUrl = `${process.env.APP_PROTOCOL}://${appHost}`
@@ -31,6 +35,11 @@ const inviteServiceClient = new RPCClient({
   url: 'http://invite-service:3000/rpc',
 })
 
+const init = async handler => {
+  const admins = JSON.parse(await readFilePromise('admins.json'))
+  return handler({ admins })
+}
+
 const redirectWithQueryString = (res, data) => {
   const location = `${appRootUrl}?${querystring.stringify(data)}`
   redirect(res, 302, location)
@@ -51,7 +60,7 @@ const login = async (req, res) => {
 }
 
 // TODO: redirect to error page to display error message
-const callback = async (req, res) => {
+const callback = ({ admins }) => async (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   const { code, state } = req.query
   if (!code && !state) {
@@ -96,6 +105,7 @@ const callback = async (req, res) => {
             inviteServiceClient,
             accessToken: qs.access_token,
             randomStateMetadata,
+            admins,
             res,
             cookieDomain,
           })
@@ -120,9 +130,11 @@ const callback = async (req, res) => {
 
 const healthHandler = () => 'OK'
 
-module.exports = router(
-  get('/', healthHandler),
-  get('/healthz', healthHandler),
-  get('/login', login),
-  get('/callback', callback),
+module.exports = init(({ admins }) =>
+  router(
+    get('/', healthHandler),
+    get('/healthz', healthHandler),
+    get('/login', login),
+    get('/callback', callback({ admins })),
+  ),
 )

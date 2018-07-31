@@ -6,6 +6,7 @@ module.exports = async ({
   billingServiceClient,
   inviteServiceClient,
   randomStateMetadata,
+  admins,
   accessToken,
 }) => {
   const { status, data } = await githubServiceClient.call('githubRequest', {
@@ -15,12 +16,14 @@ module.exports = async ({
   if (status !== 200) {
     throw new Error('Could not get user from github')
   }
+  const isSuperUser = admins.includes(data.email)
   const user = {
     avatar: data.avatar_url,
     username: data.login,
     name: data.name,
     accessToken,
     email: data.email,
+    superUser: isSuperUser,
     type: 'github',
   }
   let userId
@@ -33,20 +36,22 @@ module.exports = async ({
       throw err
     }
   }
-  // TODO: could inject super user status here
   if (!userId) {
     const { id } = await userServiceClient.call('createUser', user)
     userId = id
     created = true
   }
 
-  const { invited } = await acceptOrCreateInvite({
-    randomStateMetadata,
-    userId,
-    email: data.email,
-    inviteServiceClient,
-  })
-
+  let invited = false
+  if (!isSuperUser) {
+    const { invited: userInvited } = await acceptOrCreateInvite({
+      randomStateMetadata,
+      userId,
+      email: data.email,
+      inviteServiceClient,
+    })
+    invited = userInvited
+  }
   if (!invited) {
     try {
       await billingServiceClient.call('startTrial', {
