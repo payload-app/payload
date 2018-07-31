@@ -82,6 +82,13 @@ export default ({ dispatch, getState }) => next => action => {
               }),
             )
           }
+        case routes.INVITED:
+          dispatch(headerActions.setTitle({ title: 'Invite Request Received' }))
+          dispatch(
+            headerActions.setSubtitle({
+              subtitle: "You're on the invite queue...",
+            }),
+          )
         default:
           break
       }

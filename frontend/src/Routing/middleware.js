@@ -26,7 +26,12 @@ export default ({ dispatch, getState }) => next => action => {
           route !== curRoute ||
           JSON.stringify(params) !== JSON.stringify(curParams)
         ) {
-          if (initialized || route === routes.AUTH || route === routes.INIT) {
+          if (
+            initialized ||
+            route === routes.AUTH ||
+            route === routes.INIT ||
+            route === routes.INVITED
+          ) {
             dispatch(
               actions.emit({
                 route,

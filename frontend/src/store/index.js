@@ -54,6 +54,11 @@ import {
   selector as billingSelector,
   reducer as billingReducer,
 } from '../Billing'
+import {
+  middleware as pageInvitedMiddleware,
+  selector as pageInvitedSelector,
+  reducer as pageInvitedReducer,
+} from '../PageInvited'
 
 const logger = createLogger({ level: 'info', collapsed: true })
 const composeEnhancers =
@@ -74,6 +79,7 @@ const store = createStore(
     [sidebarSelector]: sidebarReducer,
     [billingSelector]: billingReducer,
     [storeSelector]: storeReducer,
+    [pageInvitedSelector]: pageInvitedReducer,
     router: routerReducer,
   }),
   {},
@@ -96,6 +102,7 @@ const store = createStore(
       sidebarMiddleware,
       billingMiddleware,
       storeMiddleware,
+      pageInvitedMiddleware,
       logger,
     ),
   ),

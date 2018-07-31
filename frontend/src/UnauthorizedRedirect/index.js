@@ -9,8 +9,9 @@ export const middleware = ({ dispatch, getState }) => next => action => {
     action.error === 'Unauthorized'
   ) {
     const { route } = getState()[routingSelector]
-    if (route !== routes.AUTH) {
+    if (!(route === routes.AUTH || route === routes.INVITED)) {
       dispatch(push(authRoute()))
     }
+    // if route === routes.BASE and have payload_invite cookie don't redirect
   }
 }

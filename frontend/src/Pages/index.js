@@ -6,6 +6,7 @@ import {
   baseRoute,
   authRoute,
   initRoute,
+  invitedRoute,
   ownerSettingsRoute,
 } from '../Routing'
 import Auth from '../PageAuth'
@@ -13,6 +14,7 @@ import List from '../PageList'
 import Loading from '../PageLoading'
 import Run from '../PageRun'
 import Settings from '../PageSettings'
+import Invited from '../PageInvited'
 
 export default () => (
   <Switch>
@@ -22,5 +24,6 @@ export default () => (
     <Route path={ownerSettingsRoute()} component={Settings} />
     <Route path={listRoute()} component={List} />
     <Route path={authRoute()} component={Auth} />
+    <Route path={invitedRoute()} component={Invited} />
   </Switch>
 )
