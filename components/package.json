@@ -12,9 +12,13 @@
     "prepublish": "NODE_ENV=production babel src -d lib"
   },
   "babel": {
-    "presets": ["react-app"]
+    "presets": [
+      "react-app"
+    ]
   },
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "dependencies": {
     "react-stripe-elements": "^2.0.0",
     "react-transition-group": "^2.2.1",
