@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, IconCached } from '../../../components'
+import { Button, IconCached } from '@payloadapp/components'
 import Page from '../../../Page'
 import BillingPage from '../../../Billing'
 

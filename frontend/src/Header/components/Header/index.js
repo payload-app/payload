@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { AnimateText, Pulse, Truncate } from '../../../components'
+import { AnimateText, Pulse, Truncate } from '@payloadapp/components'
 import LoadingBar from '../LoadingBar'
 
 const StatelessFunctionalHeader = ({

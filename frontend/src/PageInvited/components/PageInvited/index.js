@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from '../../../Header'
-import { Pulse, Text, FadeInChildren } from '../../../components'
-import { mutedWhite } from '../../../components/style/color'
+import { Pulse, Text, FadeInChildren, style } from '@payloadapp/components'
+const { color: { mutedWhite } } = style
 
 const Loading = () => <Text>Loading...</Text>
 const Error = ({ error }) => (

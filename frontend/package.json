@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@payloadapp/components": "0.0.2-beta-02",
     "@hharnisc/async-data-fetch": "^1.2.6",
     "@middleware/github-api": "^0.1.0",
     "@storybook/react": "^3.3.13",

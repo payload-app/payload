@@ -1,8 +1,8 @@
 import React from 'react'
 import padStart from 'lodash.padstart'
 import merge from 'lodash.merge'
-import { Text, AnimateText } from '../../../components'
-import { mutedWhite, softLighten } from '../../../components/style/color'
+import { Text, AnimateText, style } from '@payloadapp/components'
+const { color: { mutedWhite, softLighten } } = style
 
 import CompareFileSizeGraph from './CompareFileSizeGraph'
 import SizeChangePercent from './SizeChangePercent'

@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Popover, PaymentForm, Overlay } from '../../../components'
+import { Popover, PaymentForm, Overlay } from '@payloadapp/components'
 
 const PaymentOverlay = ({
   billingCustomer,

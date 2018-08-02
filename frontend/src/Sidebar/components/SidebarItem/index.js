@@ -1,6 +1,6 @@
 import React from 'react'
-import { Text } from '../../../components'
-import { white, mutedWhite } from '../../../components/style/color'
+import { Text, style } from '@payloadapp/components'
+const { color: { white, mutedWhite } } = style
 
 export default ({ children, active, onClick }) => {
   return (

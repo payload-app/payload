@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { Text } from '../../../components'
-import { white, mutedWhite, brightRed } from '../../../components/style/color'
+import { Text, style } from '@payloadapp/components'
+const { color: { white, mutedWhite, brightRed } } = style
 
 const SizeChangePercent = ({ size, prevSize }) => {
   const change = (size - prevSize) / prevSize * 100

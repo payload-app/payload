@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
-import { white, mutedWhite, brightRed } from '../../../components/style/color'
+import { style } from '@payloadapp/components'
+const { color: { white, mutedWhite, brightRed } } = style
 
 export const CompareFileSizeGraph = ({
   primary,

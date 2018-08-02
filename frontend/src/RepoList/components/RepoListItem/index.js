@@ -2,8 +2,8 @@ import React from 'react'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import { calculateDaysFromToday } from '../../utils'
-import { Pulse, Text, Button, Link, Panel } from '../../../components'
-import { red } from '../../../components/style/color'
+import { Pulse, Text, Button, Link, Panel, style } from '@payloadapp/components'
+const { color: { red } } = style
 
 const datetimeToMS = ({ datetime }) => new Date(datetime).getTime()
 

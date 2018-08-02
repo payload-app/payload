@@ -1,6 +1,7 @@
 import React from 'react'
-import { white, mutedWhite } from '../../../components/style/color'
-import injectStyle from '../../../components/utils/injectStyle'
+import { style, utils } from '@payloadapp/components'
+const { color: { white, mutedWhite } } = style
+const { injectStyle } = utils
 
 import Transition from 'react-transition-group/Transition'
 

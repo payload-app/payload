@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, IconGithub, Button } from '../../../components'
+import { Link, IconGithub, Button } from '@payloadapp/components'
 import Header from '../../../Header'
 
 const generateQueryString = ({ email, inviteToken }) => {
