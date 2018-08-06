@@ -6,7 +6,6 @@ import {
   Text,
   style,
 } from '@payloadapp/components'
-console.log('style', style)
 const { color: { invertedText } } = style
 
 const DeactivateConfirmDialog = ({
