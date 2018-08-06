@@ -3,28 +3,19 @@
   "description": "Payload component library",
   "repository": "https://github.com/payload-app/payload",
   "license": "MIT",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": false,
-  "main": "lib/index.js",
+  "main": "umd/bundle.js",
   "scripts": {
     "start": "start-storybook -p 6007",
-    "build": "npm run build-webpack && npm run build-rollup",
-    "build-webpack": "NODE_ENV=production babel src -d lib",
-    "build-rollup": "NODE_ENV=production rollup -c",
-    "prepublish": "npm run build-webpack && npm run build-rollup"
+    "build": "NODE_ENV=production rollup -c",
+    "prepublish": "NODE_ENV=production rollup -c"
   },
   "babel": {
-    "plugins": [
-      "external-helpers"
-    ],
-    "presets": [
-      "react-app"
-    ]
+    "plugins": ["external-helpers"],
+    "presets": ["react-app"]
   },
-  "files": [
-    "lib",
-    "umd"
-  ],
+  "files": ["umd"],
   "dependencies": {
     "react-stripe-elements": "^2.0.0",
     "react-transition-group": "^2.2.1",
