@@ -12,10 +12,16 @@
     "prepublish": "NODE_ENV=production rollup -c"
   },
   "babel": {
-    "plugins": ["external-helpers"],
-    "presets": ["react-app"]
+    "plugins": [
+      "external-helpers"
+    ],
+    "presets": [
+      "react-app"
+    ]
   },
-  "files": ["umd"],
+  "files": [
+    "umd"
+  ],
   "dependencies": {
     "react-stripe-elements": "^2.0.0",
     "react-transition-group": "^2.2.1",
