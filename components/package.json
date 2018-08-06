@@ -3,7 +3,7 @@
   "description": "Payload component library",
   "repository": "https://github.com/payload-app/payload",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
   "main": "lib/index.js",
   "scripts": {
