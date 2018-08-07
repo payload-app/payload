@@ -14,6 +14,7 @@ export default ({
   color,
   background,
   type,
+  noWrap,
 }) => (
   <button
     type={type}
@@ -62,6 +63,9 @@ export default ({
         background: {
           background,
         },
+        noWrap: {
+          whiteSpace: 'nowrap',
+        },
       },
       {
         standard: !noStyle,
@@ -70,6 +74,7 @@ export default ({
         fillContainer,
         color: !!color,
         background: !!background,
+        noWrap,
       },
     )}
   >

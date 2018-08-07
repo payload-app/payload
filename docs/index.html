@@ -2,7 +2,133 @@
 <head>
   <meta charset="utf-8">
   <title>Payload</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  <script src="https://unpkg.com/@payloadapp/components@0.0.6/umd/bundle.js"></script>
+  <style>
+    html, body, #root {
+      font-size:62.5%;
+      margin: 0;
+      background: #222;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      cursor: default;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hi👋</h1>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { Header, Button, Input, Panel, Text } = PayloadComponents
+
+    class SignupForm extends React.Component {
+      constructor() {
+        super()
+        this.state = {
+          value: '',
+          focused: false,
+        }
+        this.handleChange = this.handleChange.bind(this)
+        this.handleFocus = this.handleFocus.bind(this)
+        this.handleBlur = this.handleBlur.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
+      }
+      handleChange(e) {
+        this.setState({
+          value: e.target.value,
+        })
+      }
+      handleFocus(e) {
+        this.setState({
+          focused: true,
+        })
+      }
+      handleBlur(e) {
+        this.setState({
+          focused: false,
+        })
+      }
+      handleSubmit(e) {
+        e.preventDefault()
+        this.props.onSubmit({ email: this.state.value })
+      }
+      render() {
+        return (
+          <form
+            style={{
+              display: 'flex',
+            }}
+            onSubmit={this.handleSubmit}
+          >
+            <Input
+              type={'email'}
+              name={'email'}
+              value={this.state.value}
+              focused={this.state.focused}
+              onChange={this.handleChange}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+              placeholder={'your.email@test.com'}
+            />
+            <Button type={'submit'} noWrap={true}>Request Invite?</Button>
+          </form>
+        );
+      }
+    }
+
+    class App extends React.Component {
+      constructor() {
+        super()
+        this.state = {
+          title: 'Payload',
+          currentSubtitle: 0,
+          subtitles: [
+            'Configuring Telemetry...',
+            'Priming Heisenberg Compensators...',
+            'Collecting Neutrinos...',
+            'Opening The Pod Bay Doors...',
+          ]
+        }
+        setInterval(() => {
+          this.setState({
+            currentSubtitle:
+              (this.state.currentSubtitle + 1) % this.state.subtitles.length,
+          })
+        }, 10000)
+        this.handleSubmit = this.handleSubmit.bind(this)
+      }
+      handleSubmit({ email }) {
+        console.log('email', email)
+      }
+      render() {
+        return (
+          <div
+            style={{
+              paddingTop: 40,
+              paddingRight: 50,
+              paddingLeft: 50,
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              margin: '0 auto',
+              maxWidth: '80rem',
+            }}
+          >
+            <Header
+              title={this.state.title}
+              subtitle={this.state.subtitles[this.state.currentSubtitle]}
+            />
+            <div style={{ marginTop: '5rem' }} />
+            <SignupForm onSubmit={this.handleSubmit}/>
+          </div>
+        );
+      }
+    }
+    ReactDOM.render(
+      <App />,
+      document.getElementById('root')
+    )
+  </script>
 </body>

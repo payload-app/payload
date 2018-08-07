@@ -55,3 +55,8 @@ storiesOf('Button', module)
       Submit?
     </Button>
   ))
+  .add('noWrap', () => (
+    <Button noWrap={true} onClick={action('Button Click')}>
+      Activate?
+    </Button>
+  ))
