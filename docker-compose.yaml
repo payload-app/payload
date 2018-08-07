@@ -47,6 +47,7 @@ services:
      - session-service
      - billing-service
      - invite-service
+     - random-state-service
     networks:
       - main
   status-broadcaster:

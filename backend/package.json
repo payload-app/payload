@@ -20,6 +20,7 @@
     "joi": "^13.1.2",
     "micro": "^9.0.2",
     "microrouter": "^3.0.0",
+    "ms": "^2.1.1",
     "object-path": "^0.11.4",
     "object-path-immutable": "^1.0.1",
     "request": "^2.83.0",

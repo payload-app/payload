@@ -21,7 +21,7 @@
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    const { Header, Button, Input, Panel, Text } = PayloadComponents
+    const { Header, Button, Input, Panel, Text, Pulse } = PayloadComponents
 
     class SignupForm extends React.Component {
       constructor() {
@@ -71,8 +71,15 @@
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}
               placeholder={'your.email@test.com'}
+              disabled={this.props.submitting}
             />
-            <Button type={'submit'} noWrap={true}>Request Invite?</Button>
+            <Button
+              type={'submit'}
+              noWrap={true}
+              disabled={this.props.submitting}
+            >
+              Request Invite?
+            </Button>
           </form>
         );
       }
@@ -84,6 +91,7 @@
         this.state = {
           title: 'Payload',
           currentSubtitle: 0,
+          loading: true,
           subtitles: [
             'Configuring Telemetry...',
             'Priming Heisenberg Compensators...',
@@ -91,16 +99,55 @@
             'Opening The Pod Bay Doors...',
           ]
         }
+        this.handleSubmit = this.handleSubmit.bind(this)
+      }
+      componentDidMount() {
         setInterval(() => {
           this.setState({
             currentSubtitle:
               (this.state.currentSubtitle + 1) % this.state.subtitles.length,
           })
         }, 10000)
-        this.handleSubmit = this.handleSubmit.bind(this)
+        fetch('/api/issueRandomState', { method: 'POST' })
+          .then(response => {
+            if (response.status !== 200) {
+              throw new Error('Could not get state')
+            }
+            return response.json()
+          })
+          .then(({ state }) => this.setState({
+            randomState: state,
+            loading: false,
+          }))
+          .catch(error => this.setState({
+            error: 'There was an error fetching random state',
+            loading: false,
+          }))
       }
       handleSubmit({ email }) {
-        console.log('email', email)
+        this.setState({
+          inviteCreating: true,
+        })
+        fetch('/api/createInvite', {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            email,
+            state: this.state.randomState,
+          })
+        })
+          .then(response => {
+            if (response.status !== 200) {
+              throw new Error('There was an error creating the invite')
+            }
+            location.replace(`${location.protocol}//${location.host}/invited/`)
+          })
+          .catch(error => {
+            return this.setState({
+              error: 'There was an error creating the invite',
+              inviteCreating: false,
+            });
+          })
       }
       render() {
         return (
@@ -121,7 +168,15 @@
               subtitle={this.state.subtitles[this.state.currentSubtitle]}
             />
             <div style={{ marginTop: '5rem' }} />
-            <SignupForm onSubmit={this.handleSubmit}/>
+            { this.state.loading ? <Text>Loading...</Text> : null }
+            { !this.state.loading && this.state.error ? <Pulse><Text>{ this.state.error }</Text></Pulse> : null }
+            { !this.state.loading && !this.state.error ?
+              <SignupForm
+                onSubmit={this.handleSubmit}
+                submitting={this.state.inviteCreating}
+                randomState={this.state.randomState}
+              /> : null
+            }
           </div>
         );
       }
