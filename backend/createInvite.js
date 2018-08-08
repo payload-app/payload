@@ -1,7 +1,6 @@
 const cookie = require('cookie')
 const ms = require('ms')
 const { send, json } = require('micro')
-const redirect = require('micro-redirect')
 
 module.exports = ({
   randomStateServiceClient,
