@@ -1,4 +1,4 @@
-import { parse } from 'query-string'
+import { parse } from 'qs'
 
 const urlString = ({ string, encoded }) =>
   encoded ? encodeURIComponent(string) : string
