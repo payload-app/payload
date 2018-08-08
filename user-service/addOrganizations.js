@@ -6,7 +6,7 @@ const { createError } = require('@hharnisc/micro-rpc')
 const schema = Joi.object()
   .keys({
     id: Joi.string(),
-    email: Joi.string(),
+    email: Joi.string().email(),
     organizationIds: Joi.array()
       .unique()
       .required(),

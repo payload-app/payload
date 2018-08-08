@@ -3,3 +3,4 @@ npm-debug.log
 flow-typed
 *.log
 .env
+components/umd

@@ -22,6 +22,7 @@ const initDB = async handler => {
         user: process.env.MONGODB_USERNAME,
         password: process.env.MONGODB_PASSWORD,
       },
+      useNewUrlParser: true,
     },
   )
   const collectionClient = client

@@ -7,8 +7,9 @@ import {
   Button,
   PopoverContainer,
   InvertedPanel,
-} from '../../../components'
-import { invertedText, mutedWhite } from '../../../components/style/color'
+  style,
+} from '@payloadapp/components'
+const { color: { invertedText, mutedWhite } } = style
 
 const getAvatar = ({ user }) => user.accounts.github.avatar
 const getName = ({ user }) => user.accounts.github.name

@@ -1,7 +1,13 @@
 import React, { Fragment } from 'react'
 import currencySymbolMap from 'currency-symbol-map'
-import { Popover, ConfirmDialog, Overlay, Text } from '../../../components'
-import { invertedText } from '../../../components/style/color'
+import {
+  Popover,
+  ConfirmDialog,
+  Overlay,
+  Text,
+  style,
+} from '@payloadapp/components'
+const { color: { invertedText } } = style
 
 const ActivateConfirmDialog = ({
   repoName,

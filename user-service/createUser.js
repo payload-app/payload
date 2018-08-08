@@ -7,7 +7,9 @@ const schema = Joi.object().keys({
   username: Joi.string().required(),
   name: Joi.string().required(),
   accessToken: Joi.string().required(),
-  email: Joi.string().required(),
+  email: Joi.string()
+    .email()
+    .required(),
   type: Joi.string()
     .valid(['github'])
     .required(),

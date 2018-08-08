@@ -1,10 +1,14 @@
 require('dotenv').config()
+const { readFile } = require('fs')
+const { promisify } = require('util')
 const querystring = require('querystring')
 const axios = require('axios')
 const { router, get } = require('microrouter')
 const redirect = require('micro-redirect')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const createSession = require('./createSession')
+
+const readFilePromise = promisify(readFile)
 
 const appHost = process.env.APP_HOST
 const appRootUrl = `${process.env.APP_PROTOCOL}://${appHost}`
@@ -27,6 +31,14 @@ const randomStateServiceClient = new RPCClient({
 const billingServiceClient = new RPCClient({
   url: 'http://billing-service:3000/rpc',
 })
+const inviteServiceClient = new RPCClient({
+  url: 'http://invite-service:3000/rpc',
+})
+
+const init = async handler => {
+  const admins = JSON.parse(await readFilePromise('admins.json'))
+  return handler({ admins })
+}
 
 const redirectWithQueryString = (res, data) => {
   const location = `${appRootUrl}?${querystring.stringify(data)}`
@@ -34,7 +46,10 @@ const redirectWithQueryString = (res, data) => {
 }
 
 const login = async (req, res) => {
-  const { state } = await randomStateServiceClient.call('createState')
+  const { email, inviteToken } = req.query
+  const { state } = await randomStateServiceClient.call('createState', {
+    metadata: { email, inviteToken },
+  })
   redirect(
     res,
     302,
@@ -45,7 +60,7 @@ const login = async (req, res) => {
 }
 
 // TODO: redirect to error page to display error message
-const callback = async (req, res) => {
+const callback = ({ admins }) => async (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   const { code, state } = req.query
   if (!code && !state) {
@@ -53,7 +68,10 @@ const callback = async (req, res) => {
       error: 'Provide code and state query param',
     })
   } else {
-    const { valid } = await randomStateServiceClient.call('validateState', {
+    const {
+      valid,
+      metadata: randomStateMetadata,
+    } = await randomStateServiceClient.call('validateState', {
       state,
     })
     if (!valid) {
@@ -79,16 +97,23 @@ const callback = async (req, res) => {
         if (qs.error) {
           redirectWithQueryString(res, { error: qs.error_description })
         } else {
-          const { created } = await createSession({
+          const { created, invited } = await createSession({
             userServiceClient,
             sessionServiceClient,
             githubServiceClient,
             billingServiceClient,
+            inviteServiceClient,
             accessToken: qs.access_token,
+            randomStateMetadata,
+            admins,
             res,
             cookieDomain,
           })
-          redirect(res, 302, `${appRootUrl}${created ? '/init/' : ''}`)
+          if (invited) {
+            redirect(res, 302, `${appRootUrl}/invited/`)
+          } else {
+            redirect(res, 302, `${appRootUrl}${created ? '/init/' : ''}`)
+          }
         }
       } else {
         redirectWithQueryString(res, { error: 'GitHub server error.' })
@@ -105,9 +130,11 @@ const callback = async (req, res) => {
 
 const healthHandler = () => 'OK'
 
-module.exports = router(
-  get('/', healthHandler),
-  get('/healthz', healthHandler),
-  get('/login', login),
-  get('/callback', callback),
+module.exports = init(({ admins }) =>
+  router(
+    get('/', healthHandler),
+    get('/healthz', healthHandler),
+    get('/login', login),
+    get('/callback', callback({ admins })),
+  ),
 )

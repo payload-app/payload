@@ -1,3 +1,5 @@
+import { parse } from 'qs'
+
 const urlString = ({ string, encoded }) =>
   encoded ? encodeURIComponent(string) : string
 
@@ -128,6 +130,7 @@ export const runRoute = () =>
 export const baseRoute = () => '/'
 export const authRoute = () => '/auth/'
 export const initRoute = () => '/init/'
+export const invitedRoute = () => '/invited/'
 
 export const routes = {
   BASE: 'BASE',
@@ -136,9 +139,16 @@ export const routes = {
   REPO_LIST: 'REPO_LIST',
   OWNER_SETTINGS: 'OWNER_SETTINGS',
   INIT: 'INIT',
+  INVITED: 'INVITED',
 }
 
-export const matchRoute = ({ path }) => {
+export const matchRoute = ({ path, search }) => {
+  if (path === invitedRoute()) {
+    return {
+      route: routes.INVITED,
+      params: {},
+    }
+  }
   if (path === baseRoute()) {
     return {
       route: routes.BASE,
@@ -146,9 +156,13 @@ export const matchRoute = ({ path }) => {
     }
   }
   if (path === authRoute()) {
+    const { email, inviteToken } = parse(search)
     return {
       route: routes.AUTH,
-      params: {},
+      params: {
+        email,
+        inviteToken,
+      },
     }
   }
   if (path === initRoute()) {

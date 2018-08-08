@@ -1,7 +1,7 @@
 import React from 'react'
 import prettyBytes from 'pretty-bytes'
 
-import { Text, AnimateText } from '../../../components'
+import { Text, AnimateText } from '@payloadapp/components'
 
 const SplitFileSize = ({ size }) => {
   const [smallSize, sizeLabel] = prettyBytes(size).split(' ')

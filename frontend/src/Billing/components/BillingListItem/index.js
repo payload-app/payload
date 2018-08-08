@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import currencySymbolMap from 'currency-symbol-map'
-import { Text, Panel, Button, Banner } from '../../../components'
+import { Text, Panel, Button, Banner } from '@payloadapp/components'
 import SubscriptionList from '../SubscriptionList'
 
 const calculateDaysFromToday = ({ date }) =>

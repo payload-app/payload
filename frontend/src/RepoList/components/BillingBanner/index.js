@@ -1,5 +1,5 @@
 import React from 'react'
-import { Banner } from '../../../components'
+import { Banner } from '@payloadapp/components'
 import { calculateDaysFromToday } from '../../utils'
 
 const MarginBottom = ({ children }) => (

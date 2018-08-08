@@ -1,6 +1,12 @@
 import React, { Fragment } from 'react'
-import { Popover, ConfirmDialog, Overlay, Text } from '../../../components'
-import { invertedText } from '../../../components/style/color'
+import {
+  Popover,
+  ConfirmDialog,
+  Overlay,
+  Text,
+  style,
+} from '@payloadapp/components'
+const { color: { invertedText } } = style
 
 const DeactivateConfirmDialog = ({
   repoName,

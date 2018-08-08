@@ -18,6 +18,7 @@ services:
       - backend
       - github-auth
       - webhook-collector
+      - docs
     networks:
      - main
   frontend:
@@ -45,6 +46,8 @@ services:
      - user-service
      - session-service
      - billing-service
+     - invite-service
+     - random-state-service
     networks:
       - main
   status-broadcaster:
@@ -96,6 +99,7 @@ services:
       - github-service
       - random-state-service
       - billing-service
+      - invite-service
     networks:
      - main
   queue-service:
@@ -319,5 +323,36 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    networks:
+     - main
+  invite-service:
+    build:
+      context: ./invite-service
+      dockerfile: Dockerfile.development
+    networks:
+      - main
+    environment:
+     - MONGODB_URL=mongodb://mongodb:27017
+     - MONGODB_USERNAME=payloaduser
+     - MONGODB_PASSWORD=password
+     - MONGODB_DATABASE=payload
+     - JWT_SECRET=s3cr3t_invite_token
+    volumes:
+     - ./invite-service:/usr/src/app/
+    ports:
+      - 3000:3000
+    links:
+     - mongodb
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+     - main
+  docs:
+    build:
+      context: ./docs
+      dockerfile: Dockerfile
+    volumes:
+      - ./docs:/usr/src/app/
     networks:
      - main

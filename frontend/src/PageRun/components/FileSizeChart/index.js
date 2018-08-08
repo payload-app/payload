@@ -1,8 +1,6 @@
 import React from 'react'
 import prettyBytes from 'pretty-bytes'
-import { text } from '../../../components/style/color'
-import { fontFamily } from '../../../components/style/font'
-import { Text } from '../../../components'
+import { Text, style } from '@payloadapp/components'
 import {
   FlexibleWidthXYPlot,
   VerticalBarSeries,
@@ -14,6 +12,7 @@ import {
   Crosshair,
 } from 'react-vis'
 import '../../../../node_modules/react-vis/dist/style.css'
+const { color: { text }, font: { fontFamily } } = style
 
 export default class FileSizeChart extends React.Component {
   constructor(props) {

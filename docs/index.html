@@ -2,7 +2,188 @@
 <head>
   <meta charset="utf-8">
   <title>Payload</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  <script src="https://unpkg.com/@payloadapp/components@0.0.6/umd/bundle.js"></script>
+  <style>
+    html, body, #root {
+      font-size:62.5%;
+      margin: 0;
+      background: #222;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      cursor: default;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hi👋</h1>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { Header, Button, Input, Panel, Text, Pulse } = PayloadComponents
+
+    class SignupForm extends React.Component {
+      constructor() {
+        super()
+        this.state = {
+          value: '',
+          focused: false,
+        }
+        this.handleChange = this.handleChange.bind(this)
+        this.handleFocus = this.handleFocus.bind(this)
+        this.handleBlur = this.handleBlur.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
+      }
+      handleChange(e) {
+        this.setState({
+          value: e.target.value,
+        })
+      }
+      handleFocus(e) {
+        this.setState({
+          focused: true,
+        })
+      }
+      handleBlur(e) {
+        this.setState({
+          focused: false,
+        })
+      }
+      handleSubmit(e) {
+        e.preventDefault()
+        this.props.onSubmit({ email: this.state.value })
+      }
+      render() {
+        return (
+          <form
+            style={{
+              display: 'flex',
+            }}
+            onSubmit={this.handleSubmit}
+          >
+            <Input
+              type={'email'}
+              name={'email'}
+              value={this.state.value}
+              focused={this.state.focused}
+              onChange={this.handleChange}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+              placeholder={'your.email@test.com'}
+              disabled={this.props.submitting}
+            />
+            <Button
+              type={'submit'}
+              noWrap={true}
+              disabled={this.props.submitting}
+            >
+              Request Invite?
+            </Button>
+          </form>
+        );
+      }
+    }
+
+    class App extends React.Component {
+      constructor() {
+        super()
+        this.state = {
+          title: 'Payload',
+          currentSubtitle: 0,
+          loading: true,
+          subtitles: [
+            'Configuring Telemetry...',
+            'Priming Heisenberg Compensators...',
+            'Collecting Neutrinos...',
+            'Opening The Pod Bay Doors...',
+          ]
+        }
+        this.handleSubmit = this.handleSubmit.bind(this)
+      }
+      componentDidMount() {
+        setInterval(() => {
+          this.setState({
+            currentSubtitle:
+              (this.state.currentSubtitle + 1) % this.state.subtitles.length,
+          })
+        }, 10000)
+        fetch('/api/issueRandomState', { method: 'POST' })
+          .then(response => {
+            if (response.status !== 200) {
+              throw new Error('Could not get state')
+            }
+            return response.json()
+          })
+          .then(({ state }) => this.setState({
+            randomState: state,
+            loading: false,
+          }))
+          .catch(error => this.setState({
+            error: 'There was an error fetching random state',
+            loading: false,
+          }))
+      }
+      handleSubmit({ email }) {
+        this.setState({
+          inviteCreating: true,
+        })
+        fetch('/api/createInvite', {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            email,
+            state: this.state.randomState,
+          })
+        })
+          .then(response => {
+            if (response.status !== 200) {
+              throw new Error('There was an error creating the invite')
+            }
+            location.replace(`${location.protocol}//${location.host}/invited/`)
+          })
+          .catch(error => {
+            return this.setState({
+              error: 'There was an error creating the invite',
+              inviteCreating: false,
+            });
+          })
+      }
+      render() {
+        return (
+          <div
+            style={{
+              paddingTop: 40,
+              paddingRight: 50,
+              paddingLeft: 50,
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              margin: '0 auto',
+              maxWidth: '80rem',
+            }}
+          >
+            <Header
+              title={this.state.title}
+              subtitle={this.state.subtitles[this.state.currentSubtitle]}
+            />
+            <div style={{ marginTop: '5rem' }} />
+            { this.state.loading ? <Text>Loading...</Text> : null }
+            { !this.state.loading && this.state.error ? <Pulse><Text>{ this.state.error }</Text></Pulse> : null }
+            { !this.state.loading && !this.state.error ?
+              <SignupForm
+                onSubmit={this.handleSubmit}
+                submitting={this.state.inviteCreating}
+                randomState={this.state.randomState}
+              /> : null
+            }
+          </div>
+        );
+      }
+    }
+    ReactDOM.render(
+      <App />,
+      document.getElementById('root')
+    )
+  </script>
 </body>

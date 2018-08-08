@@ -24,7 +24,11 @@
       "node": true,
       "es6": true
     },
-    "plugins": ["prettier", "flowtype", "import"],
+    "plugins": [
+      "prettier",
+      "flowtype",
+      "import"
+    ],
     "extends": [
       "plugin:flowtype/recommended",
       "plugin:import/errors",
@@ -44,7 +48,9 @@
       "import/no-unresolved": [
         2,
         {
-          "ignore": ["api-types"]
+          "ignore": [
+            "api-types"
+          ]
         }
       ],
       "import/no-named-as-default": 0,
@@ -55,8 +61,15 @@
     }
   },
   "payload": {
-    "scripts": ["cd frontend && npm i && npm run build"],
-    "files": ["frontend/build/index.html", "frontend/build/service-worker.js"],
-    "assetManifests": ["frontend/build/asset-manifest.json"]
+    "scripts": [
+      "cd frontend && npm i && npm run build"
+    ],
+    "files": [
+      "frontend/build/index.html",
+      "frontend/build/service-worker.js"
+    ],
+    "assetManifests": [
+      "frontend/build/asset-manifest.json"
+    ]
   }
 }

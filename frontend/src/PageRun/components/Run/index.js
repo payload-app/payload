@@ -2,10 +2,16 @@ import React from 'react'
 import ms from 'ms'
 import TimeAgo from 'react-timeago'
 import Page from '../../../Page'
-import { Text, Pulse, AnimateText, FadeInChildren } from '../../../components'
+import {
+  Text,
+  Pulse,
+  AnimateText,
+  FadeInChildren,
+  style,
+} from '@payloadapp/components'
 import replace from 'react-string-replace'
-import { red, mutedWhite, softLighten } from '../../../components/style/color'
 import FileListViz from '../FileListViz'
+const { color: { red, mutedWhite, softLighten } } = style
 
 const datetimeToMS = ({ datetime }) => new Date(datetime).getTime()
 const formatDuration = ({ start, stop }) => {

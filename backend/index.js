@@ -17,6 +17,9 @@ const setPaymentSource = require('./setPaymentSource')
 const getBillingCustomers = require('./getBillingCustomers')
 const getRepos = require('./getRepos')
 const deactivateRepo = require('./deactivateRepo')
+const inviteStatusHandler = require('./inviteStatusHandler')
+const issueRandomState = require('./issueRandomState')
+const createInvite = require('./createInvite')
 
 const cookieDomain = process.env.COOKIE_DOMAIN
 
@@ -46,6 +49,14 @@ const sessionServiceClient = new RPCClient({
 
 const billingServiceClient = new RPCClient({
   url: 'http://billing-service:3000/rpc',
+})
+
+const inviteServiceClient = new RPCClient({
+  url: 'http://invite-service:3000/rpc',
+})
+
+const randomStateServiceClient = new RPCClient({
+  url: 'http://random-state-service:3000/rpc',
 })
 
 const webhookBaseUrl = process.env.WEBHOOK_BASE_URL
@@ -145,4 +156,14 @@ module.exports = router(
   get('/', healthHandler),
   get('/healthz', healthHandler),
   post('/api/rpc', rpcHandler),
+  post('/api/invite/status', inviteStatusHandler({ inviteServiceClient })),
+  post('/api/issueRandomState', issueRandomState({ randomStateServiceClient })),
+  post(
+    '/api/createInvite',
+    createInvite({
+      randomStateServiceClient,
+      inviteServiceClient,
+      cookieDomain,
+    }),
+  ),
 )

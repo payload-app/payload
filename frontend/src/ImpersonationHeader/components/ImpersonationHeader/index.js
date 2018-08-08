@@ -1,5 +1,5 @@
 import React from 'react'
-import Banner from '../../../components/Banner'
+import { Banner } from '@payloadapp/components'
 
 const ImpersonationHeader = ({
   impersonating,

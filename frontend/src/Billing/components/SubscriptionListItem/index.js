@@ -1,7 +1,7 @@
 import React from 'react'
 import currencySymbolMap from 'currency-symbol-map'
-import { Text, Button } from '../../../components'
-import { text, background } from '../../../components/style/color'
+import { Text, Button, style } from '@payloadapp/components'
+const { color: { text, background } } = style
 
 const SubscriptionListItem = ({ subscription, repos, onDeactivateClick }) => {
   const repo = repos.find(rep => subscription.repoId === rep._id)

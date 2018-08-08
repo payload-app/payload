@@ -1,4 +1,4 @@
 name: init-db
 image:
   repository: payloadapp/init-db
-revision: '001' # version of DB initialization
+revision: '002' # version of DB initialization

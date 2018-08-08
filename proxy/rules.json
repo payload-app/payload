@@ -12,6 +12,7 @@
       "dest": "http://github-auth:3000",
       "handleRedirects": "manual"
     },
+    { "pathname": "/docs", "dest": "http://docs:5000" },
     { "pathname": "/**", "dest": "http://frontend:3000" }
   ]
 }

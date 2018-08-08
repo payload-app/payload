@@ -1,8 +1,17 @@
 import React from 'react'
-import { Link, IconGithub, Button } from '../../../components'
+import { Link, IconGithub, Button } from '@payloadapp/components'
 import Header from '../../../Header'
 
-export default () => (
+const generateQueryString = ({ email, inviteToken }) => {
+  if (email && inviteToken) {
+    return `?email=${encodeURIComponent(
+      email,
+    )}&inviteToken=${encodeURIComponent(inviteToken)}`
+  }
+  return ''
+}
+
+export default ({ email, inviteToken }) => (
   <div
     style={{
       paddingTop: 40,
@@ -15,7 +24,7 @@ export default () => (
   >
     <Header />
     <div style={{ marginTop: '6rem' }}>
-      <Link href="/login">
+      <Link href={`/login${generateQueryString({ email, inviteToken })}`}>
         <Button Icon={IconGithub} fontSize={2}>
           Authenticate With Github
         </Button>
