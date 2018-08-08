@@ -64,3 +64,10 @@ storiesOf('Input', module)
       onBlur={action('Input Blur')}
     />
   ))
+  .add('required', () => (
+    <Input
+      value={'this is required'}
+      required={true}
+      onChange={action('Input Change')}
+    />
+  ))

@@ -12,6 +12,7 @@ const Input = ({
   placeholder,
   disabled,
   focused,
+  required,
   type = 'text',
   fontSize = 1.5,
   fillContainer = true,
@@ -66,6 +67,7 @@ const Input = ({
     placeholder={placeholder}
     onChange={onChange}
     disabled={disabled}
+    required={required}
     onFocus={onFocus}
     onBlur={onBlur}
   />
