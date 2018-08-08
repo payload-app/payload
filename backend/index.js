@@ -1,6 +1,7 @@
 require('dotenv').config()
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const { router, get, post } = require('microrouter')
+const microCors = require('micro-cors')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 const setSession = require('./setSession')
 const repoOwners = require('./repoOwners')
@@ -152,18 +153,45 @@ const rpcHandler = setSession(
 
 const healthHandler = () => 'OK'
 
+const originWhitelist = []
+if (process.env.NODE_ENV === 'development') {
+  originWhitelist.push('http://payload.local')
+} else {
+  originWhitelist.push('https://payload.app')
+}
+
+const marketingCors = microCors({
+  origin: originWhitelist,
+  allowHeaders: [
+    'X-Requested-With',
+    'Access-Control-Allow-Origin',
+    'X-HTTP-Method-Override',
+    'Content-Type',
+    'Authorization',
+    'Accept',
+    'Access-Control-Allow-Credentials',
+  ],
+})
+
 module.exports = router(
   get('/', healthHandler),
   get('/healthz', healthHandler),
   post('/api/rpc', rpcHandler),
   post('/api/invite/status', inviteStatusHandler({ inviteServiceClient })),
-  post('/api/issueRandomState', issueRandomState({ randomStateServiceClient })),
-  post(
-    '/api/createInvite',
-    createInvite({
-      randomStateServiceClient,
-      inviteServiceClient,
-      cookieDomain,
-    }),
+  marketingCors(
+    post(
+      '/api/issueRandomState',
+      issueRandomState({ randomStateServiceClient }),
+    ),
+  ),
+  marketingCors(
+    post(
+      '/api/createInvite',
+      createInvite({
+        randomStateServiceClient,
+        inviteServiceClient,
+        cookieDomain,
+      }),
+    ),
   ),
 )
