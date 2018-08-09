@@ -23,7 +23,7 @@
   <div id="root"></div>
   <script type="text/babel">
     const { Header, Button, Input, Panel, Text, Pulse } = PayloadComponents
-    const backendHost = () =>
+    const appHost = () =>
       window.location.host === 'payload.app' ? 'https://my.payload.app' : 'http://payload.local'
 
     class SignupForm extends React.Component {
@@ -112,7 +112,7 @@
               (this.state.currentSubtitle + 1) % this.state.subtitles.length,
           })
         }, 10000)
-        fetch(`${backendHost()}/api/issueRandomState`, { method: 'POST' })
+        fetch(`${appHost()}/api/issueRandomState`, { method: 'POST' })
           .then(response => {
             if (response.status !== 200) {
               throw new Error('Could not get state')
@@ -132,7 +132,7 @@
         this.setState({
           inviteCreating: true,
         })
-        fetch(`${backendHost()}/api/createInvite`, {
+        fetch(`${appHost()}/api/createInvite`, {
           method: 'POST',
           credentials: 'include',
           body: JSON.stringify({
@@ -144,7 +144,7 @@
             if (response.status !== 200) {
               throw new Error('There was an error creating the invite')
             }
-            location.replace(`${location.protocol}//${location.host}/invited/`)
+            location.replace(`${appHost()}/invited/`)
           })
           .catch(error => {
             return this.setState({
