@@ -444,7 +444,13 @@ const deployInviteService = async (event, payload) =>
     valuesFile: 'values.yaml',
     chart: 'payload-service',
     namespace: 'payload',
-    envVars: [...generateMongodbEnvVars({ payload })],
+    envVars: [
+      ...generateMongodbEnvVars({ payload }),
+      {
+        name: 'JWT_SECRET',
+        value: payload.secrets.INVITE_JWT_SECRET,
+      },
+    ],
   })
 
 const deployInitDbJob = async (event, payload) => {
