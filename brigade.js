@@ -436,6 +436,17 @@ const deployRepoService = async (event, payload) =>
     envVars: [...generateMongodbEnvVars({ payload })],
   })
 
+const deployInviteService = async (event, payload) =>
+  deployService({
+    event,
+    payload,
+    baseDir: 'invite-service',
+    valuesFile: 'values.yaml',
+    chart: 'payload-service',
+    namespace: 'payload',
+    envVars: [...generateMongodbEnvVars({ payload })],
+  })
+
 const deployInitDbJob = async (event, payload) => {
   try {
     await deployService({
@@ -668,6 +679,7 @@ events.on('deploy-organization-service', deployOrganizationService)
 events.on('deploy-user-service', deployUserService)
 events.on('deploy-run-service', deployRunService)
 events.on('deploy-repo-service', deployRepoService)
+events.on('deploy-invite-service', deployInviteService)
 events.on('deploy-init-db-job', deployInitDbJob)
 events.on('deploy-status-broadcaster-service', deployStatusBroadcasterService)
 events.on('deploy-backend-service', deployBackendService)
@@ -704,6 +716,7 @@ events.on('deploy-all-services', async (event, payload) => {
     deployUserService(event, payload),
     deployRunService(event, payload),
     deployRepoService(event, payload),
+    deployInviteService(event, payload),
     deployBillingService(event, payload),
   ])
 
@@ -773,6 +786,9 @@ events.on('update-production-services', async (event, payload) => {
         break
       case 'repo-service':
         events.emit('deploy-repo-service', event, payload)
+        break
+      case 'invite-service':
+        events.emit('deploy-invite-service', event, payload)
         break
       case 'init-db':
         events.emit('deploy-init-db-job', event, payload)

@@ -1,0 +1,3 @@
+name: invite-service
+image:
+  repository: payloadapp/invite-service
