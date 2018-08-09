@@ -1,7 +1,4 @@
-const { promisify } = require('util')
 const { MongoClient } = require('mongodb')
-
-const promisifiedMongoClient = promisify(MongoClient)
 
 const initUserCollection = async ({ dbClient }) => {
   console.log('Init User Collection...')
@@ -68,8 +65,7 @@ const initInvitesCollection = async ({ dbClient }) => {
 }
 
 const initDB = async () => {
-  console.log('Connecting to Client...')
-  const mongoClient = await promisifiedMongoClient.connect(
+  const mongoClient = await MongoClient.connect(
     `${process.env.MONGODB_URL}/${process.env.MONGODB_DATABASE}`,
     {
       auth: {
