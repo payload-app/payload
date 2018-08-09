@@ -1,4 +1,3 @@
-const { promisify } = require('util')
 const { MongoClient } = require('mongodb')
 const { rpc, method } = require('@hharnisc/micro-rpc')
 const RPCClient = require('@hharnisc/micro-rpc-client')
@@ -11,16 +10,10 @@ const getInviteStatus = require('./getInviteStatus')
 const createInviteCookieToken = require('./createInviteCookieToken')
 const verifyInviteCookieToken = require('./verifyInviteCookieToken')
 
-const promisifiedMongoClient = promisify(MongoClient)
-
 const initDB = async handler => {
-  const client = await promisifiedMongoClient.connect(
-    `${process.env.MONGODB_URL}/${process.env.MONGODB_DATABASE}`,
+  const client = await MongoClient.connect(
+    `${process.env.MONGODB_URI}/${process.env.MONGODB_DATABASE}`,
     {
-      auth: {
-        user: process.env.MONGODB_USERNAME,
-        password: process.env.MONGODB_PASSWORD,
-      },
       useNewUrlParser: true,
     },
   )

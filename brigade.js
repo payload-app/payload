@@ -69,10 +69,6 @@ const generateMongodbEnvVars = ({ payload }) => [
     value: payload.secrets.MONGODB_DATABASE,
   },
   {
-    name: 'MONGODB_URL',
-    value: payload.secrets.MONGODB_URL,
-  },
-  {
     name: 'MONGODB_URI',
     value: payload.secrets.MONGODB_URI,
   },

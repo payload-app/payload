@@ -1,5 +1,4 @@
 require('dotenv').config()
-const { promisify } = require('util')
 const stripe = require('stripe')
 const { router, get, post } = require('microrouter')
 const { MongoClient } = require('mongodb')
@@ -15,17 +14,12 @@ const getCustomer = require('./getCustomer')
 const getCustomers = require('./getCustomers')
 const listPlans = require('./listPlans')
 
-const promisifiedMongoClient = promisify(MongoClient)
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
 
 const init = async handler => {
-  const client = await promisifiedMongoClient.connect(
-    `${process.env.MONGODB_URL}/${process.env.MONGODB_DATABASE}`,
+  const client = await MongoClient.connect(
+    `${process.env.MONGODB_URI}/${process.env.MONGODB_DATABASE}`,
     {
-      auth: {
-        user: process.env.MONGODB_USERNAME,
-        password: process.env.MONGODB_PASSWORD,
-      },
       useNewUrlParser: true,
     },
   )
