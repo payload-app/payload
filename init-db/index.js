@@ -66,12 +66,8 @@ const initInvitesCollection = async ({ dbClient }) => {
 
 const initDB = async () => {
   const mongoClient = await MongoClient.connect(
-    `${process.env.MONGODB_URL}/${process.env.MONGODB_DATABASE}`,
+    `${process.env.MONGODB_URI}/${process.env.MONGODB_DATABASE}`,
     {
-      auth: {
-        user: process.env.MONGODB_USERNAME,
-        password: process.env.MONGODB_PASSWORD,
-      },
       useNewUrlParser: true,
     },
   )
