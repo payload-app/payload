@@ -1,0 +1,15 @@
+{
+  "name": "payload-smee-client",
+  "version": "0.0.1",
+  "description": "smee.io client to receive webooks",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "hharnisc@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "smee-client": "^1.0.2"
+  }
+}

@@ -35,7 +35,7 @@ services:
       dockerfile: Dockerfile.development
     environment:
      - COOKIE_DOMAIN=.payload.local
-     # WEBHOOK_BASE_URL supplied in .env file
+     # WEBHOOK_URL supplied in .env file
     volumes:
      - ./backend:/usr/src/app/
     links:
@@ -339,8 +339,6 @@ services:
      - JWT_SECRET=s3cr3t_invite_token
     volumes:
      - ./invite-service:/usr/src/app/
-    ports:
-      - 3000:3000
     links:
      - mongodb
     depends_on:
@@ -356,3 +354,13 @@ services:
       - ./docs:/usr/src/app/
     networks:
      - main
+  smee:
+    build:
+      context: ./smee
+      dockerfile: Dockerfile
+    volumes:
+      - ./smee:/usr/src/app/
+    links:
+     - webhook-collector
+    networks:
+      - main

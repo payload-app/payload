@@ -496,8 +496,8 @@ const deployBackendService = async (event, payload) =>
         value: payload.secrets.APP_HOST,
       },
       {
-        name: 'WEBHOOK_BASE_URL',
-        value: payload.secrets.WEBHOOK_BASE_URL,
+        name: 'WEBHOOK_URL',
+        value: payload.secrets.WEBHOOK_URL,
       },
       {
         name: 'COOKIE_DOMAIN',
@@ -740,7 +740,14 @@ events.on('deploy-all-services', async (event, payload) => {
 })
 
 const validPath = /.+?(?=\/)/
-const ignoredPaths = ['api-types', 'charts', 'proxy', 'docs', 'components']
+const ignoredPaths = [
+  'api-types',
+  'charts',
+  'proxy',
+  'docs',
+  'components',
+  'smee',
+]
 
 const calculateDiffs = ({ event }) => {
   const eventPayload = JSON.parse(event.payload)

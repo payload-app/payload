@@ -40,8 +40,7 @@ const generateWebhookToken = async ({
 
 const createWebhook = async ({
   githubServiceClient,
-  webhookBaseUrl,
-  appName,
+  webhookUrl,
   owner,
   repo,
   accessToken,
@@ -53,8 +52,9 @@ const createWebhook = async ({
     data: {
       name: 'web',
       config: {
-        url: `${webhookBaseUrl}/${appName}/${webhookToken}`,
+        url: webhookUrl,
         content_type: 'json',
+        secret: webhookToken,
       },
       events: ['push', 'pull_request'],
     },
@@ -72,7 +72,7 @@ module.exports = ({
   githubServiceClient,
   organizationServiceClient,
   billingServiceClient,
-  webhookBaseUrl,
+  webhookUrl,
 }) => async ({ owner, repo, type, planType }, { session }) => {
   try {
     await validate({
@@ -156,7 +156,7 @@ module.exports = ({
       appName,
       owner,
       repo,
-      webhookBaseUrl,
+      webhookUrl,
       accessToken,
     })
 
@@ -170,7 +170,7 @@ module.exports = ({
 
     await createWebhook({
       githubServiceClient,
-      webhookBaseUrl,
+      webhookUrl,
       appName,
       owner,
       repo,

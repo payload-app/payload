@@ -1,5 +1,6 @@
 const { json, send } = require('micro')
 const { router, get, post } = require('microrouter')
+const { default: verifyGithubWebhook } = require('verify-github-webhook')
 const RPCClient = require('@hharnisc/micro-rpc-client')
 
 const queueServiceClient = new RPCClient({
@@ -97,9 +98,10 @@ const throwHandledError = ({ message }) => {
 }
 
 const validateRepository = async ({
+  payload,
+  signature,
   repository,
   app,
-  token,
   organization,
   accessToken,
   branch,
@@ -108,7 +110,16 @@ const validateRepository = async ({
   if (!repository.active) {
     throwHandledError({ message: 'repository is not active' })
   }
-  if (!(repository.webhooks[app] && repository.webhooks[app] === token)) {
+  if (
+    !(
+      repository.webhooks[app] &&
+      verifyGithubWebhook(
+        signature,
+        JSON.stringify(payload),
+        repository.webhooks[app],
+      )
+    )
+  ) {
     throwHandledError({ message: 'repository app token does not match' })
   }
 
@@ -202,9 +213,10 @@ const enqueuePullRequest = async ({ req, payload }) => {
     organization: dbOrganization,
   })
   await validateRepository({
+    payload,
+    signature: req.headers['x-hub-signature'],
     repository: dbRepository,
     app: req.params.app,
-    token: req.params.token,
     organization: dbOrganization,
     accessToken,
     branch: head.branch,
@@ -274,9 +286,10 @@ const enqueuePush = async ({ req, payload }) => {
     organization: dbOrganization,
   })
   await validateRepository({
+    payload,
+    signature: req.headers['x-hub-signature'],
     repository: dbRepository,
     app: req.params.app,
-    token: req.params.token,
     organization: dbOrganization,
     accessToken,
     branch: head.branch,
@@ -333,5 +346,5 @@ const healthHandler = () => ({
 module.exports = router(
   get('/', healthHandler),
   get('/healthz', healthHandler),
-  post('/webhook/:app/:token', webhookHandler),
+  post('/webhook/:app', webhookHandler),
 )

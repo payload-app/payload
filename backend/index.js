@@ -60,10 +60,10 @@ const randomStateServiceClient = new RPCClient({
   url: 'http://random-state-service:3000/rpc',
 })
 
-const webhookBaseUrl = process.env.WEBHOOK_BASE_URL
+const webhookUrl = process.env.WEBHOOK_URL
 
-if (webhookBaseUrl === undefined) {
-  console.log('Make sure you have a `WEBHOOK_BASE_URL` set in `backend/.env`')
+if (webhookUrl === undefined) {
+  console.log('Make sure you have a `WEBHOOK_URL` set in `backend/.env`')
 }
 
 const rpcHandler = setSession(
@@ -75,7 +75,7 @@ const rpcHandler = setSession(
         githubServiceClient,
         organizationServiceClient,
         billingServiceClient,
-        webhookBaseUrl,
+        webhookUrl,
       }),
     ),
     method('repoOwners', repoOwners({ organizationServiceClient })),
@@ -143,7 +143,7 @@ const rpcHandler = setSession(
         repoServiceClient,
         githubServiceClient,
         organizationServiceClient,
-        webhookBaseUrl,
+        webhookUrl,
       }),
     ),
     method('logout', logout({ sessionServiceClient, cookieDomain })),

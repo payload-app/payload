@@ -41,8 +41,7 @@ const getUserFromSession = ({ session }) => {
 
 const cleanupExistingWebooks = async ({
   githubServiceClient,
-  webhookBaseUrl,
-  appName,
+  webhookUrl,
   owner,
   repo,
   accessToken,
@@ -64,11 +63,7 @@ const cleanupExistingWebooks = async ({
         id: webhook.id,
         url: webhook.config.url,
       }))
-      .filter(
-        webhook =>
-          webhook.url &&
-          webhook.url.startsWith(`${webhookBaseUrl}/${appName}/`),
-      )
+      .filter(webhook => webhook.url && webhook.url === webhookUrl)
     return [...webhooksToClean, ...newWebhooksToClean]
   }, [])
 

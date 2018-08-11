@@ -13,7 +13,7 @@ module.exports = ({
   repoServiceClient,
   githubServiceClient,
   organizationServiceClient,
-  webhookBaseUrl,
+  webhookUrl,
 }) => async ({ ownerId, ownerType, repoId }, { session }) => {
   try {
     const accessToken = parseGithubTokenFromSession({ session })
@@ -40,7 +40,7 @@ module.exports = ({
       appName: 'payload',
       owner,
       repo,
-      webhookBaseUrl,
+      webhookUrl,
       accessToken,
     })
     await repoServiceClient.call('deactivateRepo', {
