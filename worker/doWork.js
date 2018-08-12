@@ -41,8 +41,14 @@ module.exports = async ({
   } catch (error) {
     logger.info({ message: 'no existing run found' })
   }
-
-  if (run && run.start && !run.stop) {
+  const now = new Date()
+  if (
+    run &&
+    run.start &&
+    !run.stop &&
+    // check that start time is within maxLease time
+    (now - new Date(run.start)) / 1000 < maxLease
+  ) {
     const message = 'Another worker is processing this run'
     logger.mergeLoggerMetadata({ metadata: { runId: run._id } })
     logger.info({ message: message.toLowerCase() })
