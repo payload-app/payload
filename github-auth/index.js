@@ -41,7 +41,7 @@ const init = async handler => {
 }
 
 const redirectWithQueryString = (res, data) => {
-  const location = `${appRootUrl}?${querystring.stringify(data)}`
+  const location = `${appRootUrl}/auth/?${querystring.stringify(data)}`
   redirect(res, 302, location)
 }
 
@@ -59,13 +59,13 @@ const login = async (req, res) => {
   )
 }
 
-// TODO: redirect to error page to display error message
 const callback = ({ admins }) => async (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   const { code, state } = req.query
   if (!code && !state) {
-    redirectWithQueryString(res, {
-      error: 'Provide code and state query param',
+    console.error('Missing code or state')
+    return redirectWithQueryString(res, {
+      errorCode: '1000',
     })
   } else {
     const {
@@ -75,7 +75,10 @@ const callback = ({ admins }) => async (req, res) => {
       state,
     })
     if (!valid) {
-      return redirectWithQueryString(res, { error: 'Unknown state' })
+      console.error('Unknown state')
+      return redirectWithQueryString(res, {
+        errorCode: '1000',
+      })
     }
     await randomStateServiceClient.call('deleteState', {
       state,
@@ -95,7 +98,11 @@ const callback = ({ admins }) => async (req, res) => {
       if (status === 200) {
         const qs = querystring.parse(data)
         if (qs.error) {
-          redirectWithQueryString(res, { error: qs.error_description })
+          // failed to authenticate
+          console.error('qs.error_description', qs.error_description)
+          redirectWithQueryString(res, {
+            errorCode: '1001',
+          })
         } else {
           const { created, invited } = await createSession({
             userServiceClient,
@@ -116,13 +123,16 @@ const callback = ({ admins }) => async (req, res) => {
           }
         }
       } else {
-        redirectWithQueryString(res, { error: 'GitHub server error.' })
+        // Error with github
+        console.error('There was an error with Github servers')
+        redirectWithQueryString(res, { errorCode: '1002' })
       }
     } catch (err) {
-      console.log('err.message', err.message)
-      console.log('err.stack', err.stack)
+      console.error('err.message', err.message)
+      console.error('err.stack', err.stack)
+      // unexpected error
       redirectWithQueryString(res, {
-        error: err.message,
+        errorCode: '1000',
       })
     }
   }

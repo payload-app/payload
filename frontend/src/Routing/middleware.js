@@ -18,7 +18,7 @@ export default ({ dispatch, getState }) => next => action => {
   switch (action.type) {
     case '@@router/LOCATION_CHANGE':
       const { pathname: path, search } = getState().router.location
-      const match = matchRoute({ path, search })
+      const match = matchRoute({ path, search: search.substring(1) }) // remove the ? from search
       const { route: curRoute, params: curParams } = getState()[selector]
       if (match) {
         const { route, params } = match

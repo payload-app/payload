@@ -156,12 +156,13 @@ export const matchRoute = ({ path, search }) => {
     }
   }
   if (path === authRoute()) {
-    const { email, inviteToken } = parse(search)
+    const { email, inviteToken, errorCode } = parse(search)
     return {
       route: routes.AUTH,
       params: {
         email,
         inviteToken,
+        errorCode,
       },
     }
   }

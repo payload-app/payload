@@ -21,3 +21,6 @@ storiesOf('Auth', module)
     return <Provider store={store}>{getStory()}</Provider>
   })
   .add('default', () => <Auth />)
+  .add('default error', () => <Auth errorCode={'1000'} />)
+  .add('failed to auth error', () => <Auth errorCode={'1001'} />)
+  .add('failed to reach github error', () => <Auth errorCode={'1002'} />)
