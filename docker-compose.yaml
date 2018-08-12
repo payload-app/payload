@@ -184,6 +184,7 @@ services:
       dockerfile: Dockerfile.development
     volumes:
      - ./worker:/usr/src/app/
+    restart: always
     links:
      - queue-service
      - run-service
@@ -201,6 +202,7 @@ services:
       dockerfile: Dockerfile.development
     volumes:
      - ./worker:/usr/src/app/
+    restart: always
     links:
      - queue-service
      - run-service

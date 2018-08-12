@@ -1,4 +1,3 @@
-const RPCClient = require('@hharnisc/micro-rpc-client')
 const parsePayloadConfig = require('./parsePayloadConfig')
 const runScripts = require('./runScripts')
 const calculateFileSizes = require('./calculateFileSizes')
@@ -9,12 +8,13 @@ const {
   broadcastFail,
   broadcastRunError,
 } = require('./broadcast')
-
-const runServiceClient = new RPCClient({
-  url: 'http://run-service:3000/rpc',
-})
+const setupWorkerTimeout = require('./setupWorkerTimeout')
 
 module.exports = async ({
+  taskId,
+  maxLease,
+  queue,
+  workerName,
   owner,
   ownerType,
   type,
@@ -27,6 +27,8 @@ module.exports = async ({
   baseRun,
   workingDirBase = '/home/sandbox',
   username = 'sandbox',
+  runServiceClient,
+  queueServiceClient,
 }) => {
   logger.info({ message: 'checking for existing run' })
   let run
@@ -75,6 +77,24 @@ module.exports = async ({
   logger.info({ message: 'run starting' })
   await runServiceClient.call('startRun', {
     id,
+  })
+  const stopWorkerTimemout = setupWorkerTimeout({
+    taskId,
+    maxLease,
+    queue,
+    workerName,
+    logger,
+    runId: id,
+    accessToken,
+    owner,
+    repo,
+    branch,
+    sha,
+    ownerType,
+    type,
+    workingDirBase,
+    queueServiceClient,
+    runServiceClient,
   })
 
   let error
@@ -166,6 +186,8 @@ module.exports = async ({
       })
     }
   }
+  // stop worker timeout so it doesn't kill the worker
+  stopWorkerTimemout()
   await cleanup({
     sha,
     workingDirBase,

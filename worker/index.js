@@ -9,6 +9,9 @@ const sleep = promisify(setTimeout)
 const queueServiceClient = new RPCClient({
   url: 'http://queue-service:3000/rpc',
 })
+const runServiceClient = new RPCClient({
+  url: 'http://run-service:3000/rpc',
+})
 const workingDirBase = '/home/sandbox'
 
 const queue = process.env.WORKER_QUEUE
@@ -81,34 +84,29 @@ const setupLeaseExtender = ({ work, logger }) => {
   const { taskId, lease } = parseWork({ work })
   const leaseExtendId = setInterval(async () => {
     logger.info({ message: 'extending lease' })
-    await queueServiceClient.call('extendLease', {
-      queue,
-      workerName,
-      taskId,
-    })
+    try {
+      await queueServiceClient.call('extendLease', {
+        queue,
+        workerName,
+        taskId,
+      })
+    } catch (error) {
+      await cleanup({
+        workingDirBase,
+        logger,
+      })
+      logger.error({ message: 'could not extend lease, killing worker' })
+      process.exit(1)
+    }
   }, lease * 1000 / 2)
 
   return () => clearInterval(leaseExtendId)
 }
 
-const setupWorkerTimeout = ({ work, logger }) => {
-  const { taskId, maxLease } = parseWork({ work })
-  const timeoutId = setTimeout(async () => {
-    logger.error({ message: 'worker max lease expired' })
-    await queueServiceClient.call('failTask', {
-      queue,
-      workerName,
-      taskId,
-      handled: true,
-      errorMessage: `Worker lease expired - ${maxLease}`,
-    })
-  }, maxLease * 1000)
-
-  return () => clearTimeout(timeoutId)
-}
-
 const doBaseCommitWork = async ({ work, logger }) => {
   const {
+    taskId,
+    maxLease,
     owner,
     ownerType,
     type,
@@ -122,6 +120,10 @@ const doBaseCommitWork = async ({ work, logger }) => {
   })
   try {
     const { fileSizes } = await doWork({
+      taskId,
+      maxLease,
+      queue,
+      workerName,
       owner,
       ownerType,
       type,
@@ -133,6 +135,8 @@ const doBaseCommitWork = async ({ work, logger }) => {
       logger,
       workingDirBase,
       baseRun: true,
+      runServiceClient,
+      queueServiceClient,
     })
     return { fileSizes, failTask: false, stopProcessing: false }
   } catch (error) {
@@ -148,6 +152,8 @@ const doBaseCommitWork = async ({ work, logger }) => {
 
 const doHeadCommitWork = async ({ work, logger }) => {
   const {
+    taskId,
+    maxLease,
     owner,
     ownerType,
     type,
@@ -161,6 +167,10 @@ const doHeadCommitWork = async ({ work, logger }) => {
   })
   try {
     const { fileSizes, increaseThreshold, assetManifests } = await doWork({
+      taskId,
+      maxLease,
+      queue,
+      workerName,
       owner,
       ownerType,
       type,
@@ -171,6 +181,8 @@ const doHeadCommitWork = async ({ work, logger }) => {
       branch: headBranch,
       logger,
       workingDirBase,
+      runServiceClient,
+      queueServiceClient,
     })
     return {
       fileSizes,
@@ -318,10 +330,11 @@ const main = async () => {
     setupLoggerMetadata({ work, logger })
     logger.info({ message: 'found task' })
     let stopLeaseExtender
-    let stopTaskTimeout
     try {
-      stopLeaseExtender = setupLeaseExtender({ work, logger })
-      stopTaskTimeout = setupWorkerTimeout({ work, logger })
+      stopLeaseExtender = setupLeaseExtender({
+        work,
+        logger,
+      })
       await handleWork({ work, logger })
     } catch (error) {
       logger.error({
@@ -334,9 +347,6 @@ const main = async () => {
     }
     if (stopLeaseExtender) {
       stopLeaseExtender()
-    }
-    if (stopTaskTimeout) {
-      stopTaskTimeout()
     }
     cleanup({ workingDirBase, logger, resetLoggerMetadata: true })
   } else {
