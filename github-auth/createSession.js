@@ -14,7 +14,13 @@ module.exports = async ({
   res,
   cookieDomain,
 }) => {
-  const { userId, created, invited, userEmail } = await updateOrCreateUser({
+  const {
+    userId,
+    created,
+    invited,
+    acceptedInvite,
+    userEmail,
+  } = await updateOrCreateUser({
     userServiceClient,
     githubServiceClient,
     billingServiceClient,
@@ -65,5 +71,6 @@ module.exports = async ({
   return {
     created,
     invited,
+    acceptedInvite,
   }
 }

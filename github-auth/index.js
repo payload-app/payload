@@ -104,7 +104,7 @@ const callback = ({ admins }) => async (req, res) => {
             errorCode: '1001',
           })
         } else {
-          const { created, invited } = await createSession({
+          const { created, invited, acceptedInvite } = await createSession({
             userServiceClient,
             sessionServiceClient,
             githubServiceClient,
@@ -119,7 +119,11 @@ const callback = ({ admins }) => async (req, res) => {
           if (invited) {
             redirect(res, 302, `${appRootUrl}/invited/`)
           } else {
-            redirect(res, 302, `${appRootUrl}${created ? '/init/' : ''}`)
+            redirect(
+              res,
+              302,
+              `${appRootUrl}${created || acceptedInvite ? '/init/' : ''}`,
+            )
           }
         }
       } else {

@@ -43,14 +43,19 @@ module.exports = async ({
   }
 
   let invited = false
+  let acceptedInvite = false
   if (!isSuperUser) {
-    const { invited: userInvited } = await acceptOrCreateInvite({
+    const {
+      invited: userInvited,
+      acceptedInvite: userAcceptedInvite,
+    } = await acceptOrCreateInvite({
       randomStateMetadata,
       userId,
       email: data.email,
       inviteServiceClient,
     })
     invited = userInvited
+    acceptedInvite = userAcceptedInvite
   }
   if (!invited) {
     try {
@@ -70,6 +75,7 @@ module.exports = async ({
     userId,
     created,
     invited,
+    acceptedInvite,
     userEmail: data.email,
   }
 }

@@ -6,6 +6,7 @@ module.exports = async ({
 }) => {
   const { email: emailMetadata, inviteToken } = randomStateMetadata || {}
   let invited = false
+  let acceptedInvite = false
   if (inviteToken && emailMetadata) {
     // try to accept the invite
     try {
@@ -14,6 +15,7 @@ module.exports = async ({
         userId,
         inviteToken,
       })
+      acceptedInvite = true
     } catch (error) {
       if (error.message.includes('has already accepted an invite')) {
         throw new Error('The invite token has already been claimed')
@@ -38,5 +40,6 @@ module.exports = async ({
   }
   return {
     invited,
+    acceptedInvite,
   }
 }
