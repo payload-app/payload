@@ -21,6 +21,7 @@ module.exports = ({ collectionClient }) => async ({ email }) => {
       message: parseValidationErrorMessage({ error }),
     })
   }
+  console.log('email', email)
   try {
     const { insertedId } = await collectionClient.insertOne({
       email,

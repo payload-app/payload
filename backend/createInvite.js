@@ -19,6 +19,7 @@ module.exports = ({
       return send(res, 400, { message: 'Invalid random state' })
     }
     try {
+      console.log('email', email)
       const { id } = await inviteServiceClient.call('create', {
         email,
       })
