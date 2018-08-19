@@ -740,14 +740,7 @@ events.on('deploy-all-services', async (event, payload) => {
 })
 
 const validPath = /.+?(?=\/)/
-const ignoredPaths = [
-  'api-types',
-  'charts',
-  'proxy',
-  'docs',
-  'components',
-  'smee',
-]
+const ignoredPaths = ['charts', 'proxy', 'docs', 'components', 'smee']
 
 const calculateDiffs = ({ event }) => {
   const eventPayload = JSON.parse(event.payload)
