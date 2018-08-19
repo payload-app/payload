@@ -59,7 +59,9 @@ const initInvitesCollection = async ({ dbClient }) => {
   await dbClient.createCollection('invites')
   await dbClient.collection('invites').createIndex({ email: 1 }, { unique: 1 })
   await dbClient.collection('invites').createIndex({ createdAt: 1 })
-  await dbClient.collection('invites').createIndex({ userId: 1 }, { unique: 1 })
+  await dbClient
+    .collection('invites')
+    .createIndex({ userId: 1 }, { unique: 1, sparse: true })
   await dbClient.collection('invites').createIndex({ invitedByUserId: 1 })
   console.log('Init Invites Collection...Done')
 }
