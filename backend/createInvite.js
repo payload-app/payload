@@ -19,10 +19,12 @@ module.exports = ({
       return send(res, 400, { message: 'Invalid random state' })
     }
     try {
-      await inviteServiceClient.call('create', {
+      const { id } = await inviteServiceClient.call('create', {
         email,
       })
+      console.log(`invite id: ${id}`)
     } catch (error) {
+      console.log('error', error)
       if (!error.message.includes('E11000')) {
         throw error
       }
