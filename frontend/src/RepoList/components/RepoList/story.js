@@ -1,11 +1,9 @@
-// @flow
-import type { Repo } from 'api-types'
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import RepoList from './index'
 
-const repos: Array<Repo> = [
+const repos = [
   {
     owner: 'payload-app',
     repo: 'org-webhook-tester',
